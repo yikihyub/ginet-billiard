@@ -1,0 +1,20 @@
+import React from "react";
+
+export default function Footer() {
+  return (
+    <footer className="bg-gray-900 text-gray-400 py-6">
+      <div className="container mx-auto text-center">
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+        <p className="mt-2">
+          <a href="/privacy" className="hover:underline">
+            Privacy Policy
+          </a>{" "}
+          |{" "}
+          <a href="/terms" className="hover:underline">
+            Terms of Service
+          </a>
+        </p>
+      </div>
+    </footer>
+  );
+}
