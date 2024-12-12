@@ -1,12 +1,17 @@
+"use client";
+
 import React from "react";
-import { Search, User, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function QuickMenu() {
+  const router = useRouter();
+
   const buttons = [
     {
       id: 1,
       text: "3구",
+      url: "/three-ball/reserve",
       icon: (
         <Image
           src="/main/icons8-snooker-64.png"
@@ -19,6 +24,7 @@ export default function QuickMenu() {
     {
       id: 2,
       text: "4구",
+      url: "/four-ball",
       icon: (
         <Image
           src="/main/icons8-billiard-70.png"
@@ -31,6 +37,7 @@ export default function QuickMenu() {
     {
       id: 3,
       text: "포켓볼",
+      url: "/pocketball",
       icon: (
         <Image
           src="/main/icons8-snooker-66.png"
@@ -43,6 +50,7 @@ export default function QuickMenu() {
     {
       id: 4,
       text: "챌린지",
+      url: "/challenge",
       icon: (
         <Image
           src="/main/icons8-트로피-48.png"
@@ -55,6 +63,7 @@ export default function QuickMenu() {
     {
       id: 5,
       text: "팀매치",
+      url: "/team-match",
       icon: (
         <Image
           src="/main/icons8-사람-피부-유형-7-70.png"
@@ -67,6 +76,7 @@ export default function QuickMenu() {
     {
       id: 6,
       text: "당구용어",
+      url: "/term",
       icon: (
         <Image
           src="/main/icons8-이야기-책-70.png"
@@ -79,6 +89,7 @@ export default function QuickMenu() {
     {
       id: 7,
       text: "당구용품",
+      url: "/shop",
       icon: (
         <Image
           src="/main/icons8-billiard-53.png"
@@ -91,6 +102,7 @@ export default function QuickMenu() {
     {
       id: 8,
       text: "당구레슨",
+      url: "/lesson",
       icon: (
         <Image
           src="/main/icons8-american-67.png"
@@ -108,6 +120,7 @@ export default function QuickMenu() {
         {buttons.map((button) => (
           <button
             key={button.id}
+            onClick={() => router.push(button.url)}
             className="flex flex-col items-center justify-center p-3 bg-white rounded-xl hover:shadow-md transition-shadow"
           >
             <span className="text-xl mb-1">{button.icon}</span>

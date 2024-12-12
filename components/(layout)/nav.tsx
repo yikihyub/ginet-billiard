@@ -8,8 +8,6 @@ export default function Nav() {
     <nav className="bg-white text-black">
       <div className="container mx-auto max-w-screen-lg px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <MenuToggle />
-
           <a href="/" aria-label="Home">
             <Image
               src="/logo/logo.png"
@@ -36,6 +34,9 @@ export default function Nav() {
             <a href="/login" className="hover:underline">
               <User />
             </a>
+          </li>
+          <li>
+            <MenuToggle />
           </li>
         </ul>
       </div>

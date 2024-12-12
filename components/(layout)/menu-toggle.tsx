@@ -3,41 +3,19 @@
 import React, { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "../ui/navigation-menu";
-import { Sheet, SheetContent } from "../ui/sheet";
+  ChevronRight,
+  BarChart3,
+  Settings,
+  Bell,
+  CreditCard,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 
 const MenuToggle = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
-
-  const menuItems = [
-    {
-      title: "회사소개",
-      subItems: ["인사말", "정소프트 SHOP", "오시는 길"],
-    },
-    {
-      title: "홈페이지제작",
-      subItems: ["홈페이지제작", "쇼핑몰제작", "무료 서비스"],
-    },
-    {
-      title: "포트폴리오",
-      subItems: [],
-    },
-    {
-      title: "제작비용",
-      subItems: ["홈페이지 제작비용", "쇼핑몰 제작비용", "부가서비스비용"],
-    },
-    {
-      title: "고객센터",
-      subItems: ["공지사항", "유지보수 신청"],
-    },
-  ];
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -59,72 +37,116 @@ const MenuToggle = () => {
             <Menu className="w-6 h-6" />
           </button>
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetContent side="left">
-              <nav className="space-y-4 pt-10">
-                {menuItems.map((item) => (
-                  <div key={item.title} className="space-y-2">
-                    <div className="font-medium">{item.title}</div>
-                    {item.subItems.length > 0 && (
-                      <div className="pl-4 space-y-2">
-                        {item.subItems.map((subItem) => (
-                          <a
-                            key={subItem}
-                            href="#"
-                            className="block text-gray-600"
-                          >
-                            {subItem}
-                          </a>
-                        ))}
-                      </div>
-                    )}
+            <SheetContent side="right" className="w-full sm:max-w-md p-0">
+              <SheetHeader>
+                <SheetTitle></SheetTitle>
+              </SheetHeader>
+              <div className="h-full overflow-y-auto">
+                {/* 헤더 */}
+                <div className="flex items-center p-4 bg-white">
+                  <div className="text-2xl font-bold">Profile</div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src="/placeholder-avatar.jpg" />
+                      <AvatarFallback>당큐</AvatarFallback>
+                    </Avatar>
+                    <span className="text-lg font-semibold">큐선생님</span>
                   </div>
-                ))}
-              </nav>
+                </div>
+
+                {/* 레벨 & 수업스타일 */}
+                <div className="grid grid-cols-2 gap-4 pl-4 pr-4 pb-2 pt-2">
+                  <button className="p-4 rounded-xl border border-#f8f9fa">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="text-sm text-gray-500">3구 다마</div>
+                        <div className="text-md font-bold mt-1 text-left">
+                          20
+                        </div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </button>
+                  <button className="p-4 rounded-xl border border-#f8f9fa">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="text-sm text-gray-500">4구 다마</div>
+                        <div className="text-md font-bold mt-1 text-left">
+                          400
+                        </div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    </div>
+                  </button>
+                </div>
+
+                {/* 수업 코스 */}
+                <div className="pr-4 pl-4 pb-2 pt-2">
+                  <div className="p-4 bg-white rounded-xl border border-#f8f9fa">
+                    <div className="text-sm text-gray-500">나의 수업코스는</div>
+                    <div className="text-xl font-bold mt-1">
+                      외모 및 성격 묘사하기
+                    </div>
+                    <div className="text-gray-400 mt-2">코스 변경하기</div>
+                  </div>
+                </div>
+
+                {/* 수업 기간 & 출석률 */}
+                <div className="p-4">
+                  <div className="p-4 bg-white rounded-xl">
+                    <div>
+                      <div className="text-sm text-gray-500">수업 기간</div>
+                      <div className="text-lg font-medium mt-1">
+                        2024.10.16 ~ 2024.10.18
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <div className="text-sm text-gray-500">수업 출석률</div>
+                      <div className="flex items-center justify-between mt-2">
+                        <Progress value={0} className="h-2" />
+                        <span className="ml-2">0/0(0%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 메뉴 리스트 */}
+                <div className="p-4 space-y-2">
+                  <button className="flex items-center justify-between w-full p-4 bg-white rounded-xl">
+                    <div className="flex items-center">
+                      <BarChart3 className="w-5 h-5 mr-3" />
+                      <span>레벨테스트 내역</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </button>
+                  <button className="flex items-center justify-between w-full p-4 bg-white rounded-xl">
+                    <div className="flex items-center">
+                      <Settings className="w-5 h-5 mr-3" />
+                      <span>계정 설정 관리</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </button>
+                  <button className="flex items-center justify-between w-full p-4 bg-white rounded-xl">
+                    <div className="flex items-center">
+                      <Bell className="w-5 h-5 mr-3" />
+                      <span>공지사항 / 이벤트</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </button>
+                  <button className="flex items-center justify-between w-full p-4 bg-white rounded-xl">
+                    <div className="flex items-center">
+                      <CreditCard className="w-5 h-5 mr-3" />
+                      <span>결제 / 구독 관리</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </button>
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
         </>
-      )}
-
-      {/* Desktop */}
-      {!isMobile && (
-        <div className="flex items-center">
-          <button
-            onClick={() => setIsMenuVisible(!isMenuVisible)}
-            className="flex items-center gap-2 mr-4"
-            aria-label="Toggle Menu"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-
-          {isMenuVisible && (
-            <div className="absolute top-full left-0 bg-white shadow-lg rounded-md mt-2 min-w-max">
-              <ul className="flex flex-row gap-4 p-4">
-                {menuItems.map((item) => (
-                  <li key={item.title} className="relative group">
-                    <button className="font-medium hover:text-blue-600">
-                      {item.title}
-                    </button>
-                    {item.subItems.length > 0 && (
-                      <div className="absolute hidden group-hover:block left-0 top-full pt-2 min-w-[200px]">
-                        <div className="bg-white shadow-lg rounded-md p-2">
-                          {item.subItems.map((subItem) => (
-                            <a
-                              key={subItem}
-                              href="#"
-                              className="block px-4 py-2 hover:bg-gray-100 rounded-md"
-                            >
-                              {subItem}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
       )}
     </div>
   );
