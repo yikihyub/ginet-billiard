@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, User, Search, CalendarDays } from "lucide-react";
+import { User, Search, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import MenuToggle from "./menu-toggle";
 
@@ -31,7 +31,7 @@ export default function Nav() {
             </a>
           </li>
           <li>
-            <a href="/login" className="hover:underline">
+            <a href="/mypage" className="hover:underline">
               <User />
             </a>
           </li>
