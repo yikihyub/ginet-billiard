@@ -7,7 +7,7 @@ import {
   SheetTrigger,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
+  // SheetDescription,
 } from "@/components/ui/sheet";
 import { ArrowUp } from "lucide-react";
 import { SearchBar } from "../search/search-bar";

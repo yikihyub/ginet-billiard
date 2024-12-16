@@ -1,25 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  CreditCard,
-  MapPin,
-  BookOpen,
-  Award,
-  Gift,
-  Settings,
-  Heart,
-  ClipboardList,
-  ShoppingBag,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
 
 export function Sidebar() {
-  const pathname = usePathname();
-
   const menuGroups = [
     {
       title: "당구장",
@@ -208,25 +193,6 @@ export function Sidebar() {
         </div>
       </div>
     </div>
-  );
-}
-
-function ServiceItem({
-  icon,
-  label,
-  href,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-}) {
-  return (
-    <Link href={href} className="flex flex-col items-center">
-      <div className="w-12 h-12 bg-gray-100 rounded-lg mb-2 flex items-center justify-center">
-        {icon}
-      </div>
-      <span className="text-sm">{label}</span>
-    </Link>
   );
 }
 

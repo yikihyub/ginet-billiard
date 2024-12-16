@@ -14,7 +14,7 @@ function MatchCard({
   details,
   level,
   players,
-  isSpecial,
+  // isSpecial,
   status,
 }: MatchInfo) {
   return (

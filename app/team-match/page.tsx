@@ -3,69 +3,118 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Card } from "@/components/ui/card";
+
+import OptionCard from "./_components/optioncard/option-card";
 import MainBanner from "./_components/banner/main-banner";
+import { Button } from "@/components/ui/button";
+import LocationSelector from "./_components/sidogun/sidogun";
 
 export default function EmploymentForm() {
-  const [selectedValue, setSelectedValue] = useState("company");
+  const [accountSelectedValue, setAccountSelectedValue] = useState("company");
+  const [gameSelectedValue, setGameSelectedValue] = useState("fourball");
+
+  const accountOptions = [
+    {
+      id: "company",
+      value: "company",
+      title: "1 vs 1",
+      description: "개인전",
+    },
+    {
+      id: "headhunter",
+      value: "headhunter",
+      title: "2 vs 2",
+      description:
+        "팀전",
+    },
+  ];
+
+  const gameOptions = [
+    {
+      id: "fourball",
+      value: "fourball",
+      title: "4구",
+      description: "흰공, 노란공, 빨간공 2개로 이루어진 게임",
+    },
+    {
+      id: "threeball",
+      value: "threeball",
+      title: "3구",
+      description:
+        "흰공, 노란공, 빨간공으로 이루어진 게임",
+    },
+    {
+      id: "pocketball",
+      value: "pocketball",
+      title: "포켓볼",
+      description:
+        "총 15개로 본인의 공을 먼저 넣는 게임",
+    },
+  ];
+
   return (
     <div className="max-w-[1024px] mx-auto">
       <MainBanner />
 
       <div className="space-y-8">
-        {/* 계정 유형 선택 */}
+        {/* 매치 유형 */}
+        <p className="p-2">희망지역 선택</p>
+        <LocationSelector />
+
+        {/* 매치 유형 */}
+        <p className="p-2">인원수 선택</p>
         <RadioGroup
           defaultValue="company"
-          className="grid grid-cols-2 gap-4"
-          onValueChange={(value) => setSelectedValue(value)}
+          className="grid grid-cols-2 gap-4 !mt-2"
+          onValueChange={(value) => setAccountSelectedValue(value)}
         >
-          <Label htmlFor="company" className="cursor-pointer">
-            <Card
-              className={`relative p-4 cursor-pointer transition-all ${
-                selectedValue === "company"
-                  ? "border-2 border-blue-500"
-                  : "border border-gray-200"
-              }`}
-            >
-              <RadioGroupItem
-                value="company"
-                id="company"
-                className="absolute right-4 top-4"
-              />
-              <div className="mb-2 font-medium">1 vs 1</div>
-              <div className="text-sm text-gray-600">
-                기업 인사 담당자로 자사 채용을 담당하는 개인 또는 팀
-              </div>
-            </Card>
-          </Label>
-
-          <Label htmlFor="headhunter" className="cursor-pointer">
-            <Card
-              className={`relative p-4 cursor-pointer transition-all ${
-                selectedValue === "headhunter"
-                  ? "border-2 border-blue-500"
-                  : "border border-gray-200"
-              }`}
-            >
-              <RadioGroupItem
-                value="headhunter"
-                id="headhunter"
-                className="absolute right-4 top-4"
-              />
-              <div className="mb-2 font-medium">2 vs 2</div>
-              <div className="text-sm text-gray-600">
-                리크루팅 에이전시로서 기업의 의뢰를 받아 후보자를 연결하는 분
-              </div>
-            </Card>
-          </Label>
+          {accountOptions.map((option) => (
+            <OptionCard
+              key={option.id}
+              {...option}
+              selectedValue={accountSelectedValue}
+              onValueChange={setAccountSelectedValue}
+            />
+          ))}
         </RadioGroup>
 
-        {/* 기업 정보 섹션 */}
-        <Card className="p-4">
-          <h3 className="text-xl font-bold mb-6">기업 정보</h3>
+        {/* 게임 종류 타입 */}
+        <p className="p-2 mt-2">게임종류 선택</p>
+        <RadioGroup
+          defaultValue="fourball"
+          className="grid grid-cols-3 gap-4 !mt-2"
+          onValueChange={(value) => setGameSelectedValue(value)}
+        >
+          {gameOptions.map((option) => (
+            <OptionCard
+              key={option.id}
+              {...option}
+              selectedValue={gameSelectedValue}
+              onValueChange={setGameSelectedValue}
+            />
+          ))}
+        </RadioGroup>
 
+        {/* 개인정보 */}
+        <p className="p-2 mt-2">개인정보</p>
+        <Card className="p-4 !mt-2">
           <div className="space-y-6">
+            {/* 신청자 이름 */}
+            <div>
+              <div>
+                <Label htmlFor="name" className="font-medium">
+                  이름<span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="이름을 입력해주세요"
+                  className="mt-2"
+                />
+              </div>
+            </div>
+
             {/* 회사 이메일 */}
             <div>
               <Label htmlFor="email" className="font-medium">
@@ -115,24 +164,11 @@ export default function EmploymentForm() {
                 다른 경우에는 수정해 주세요. (예시. 개인메일로 인증한 경우)
               </p>
             </div>
-
-            {/* 담당자 정보 섹션 */}
-            <div>
-              <h3 className="text-xl font-bold mb-4">담당자 정보</h3>
-              <div>
-                <Label htmlFor="name" className="font-medium">
-                  이름<span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="이름을 입력해주세요"
-                  className="mt-2"
-                />
-              </div>
-            </div>
           </div>
         </Card>
       </div>
+
+      <Button>등록하기</Button>
     </div>
   );
 }
