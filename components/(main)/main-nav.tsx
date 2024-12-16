@@ -8,9 +8,9 @@ const Navigation = () => {
   const pathname = usePathname(); // useSearchParams 대신 usePathname 사용
 
   const navItems = [
-    { name: "개인전", path: "/", enabled: true },
-    { name: "팀전", path: "/team", enabled: true },
-    { name: "당구장예약", path: "/reservation", enabled: true },
+    { name: "홈", path: "/", enabled: true },
+    { name: "당구장찾기", path: "/three-ball/reserve", enabled: true },
+    { name: "매칭등록", path: "/team-match", enabled: true },
   ];
 
   return (
