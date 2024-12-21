@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Card } from "@/components/ui/card";
-
+import { Checkbox } from "@/components/ui/checkbox";
 import OptionCard from "./_components/optioncard/option-card";
 import MainBanner from "./_components/banner/main-banner";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,7 @@ export default function EmploymentForm() {
       id: "headhunter",
       value: "headhunter",
       title: "2 vs 2",
-      description:
-        "팀전",
+      description: "팀전",
     },
   ];
 
@@ -42,15 +41,13 @@ export default function EmploymentForm() {
       id: "threeball",
       value: "threeball",
       title: "3구",
-      description:
-        "흰공, 노란공, 빨간공으로 이루어진 게임",
+      description: "흰공, 노란공, 빨간공으로 이루어진 게임",
     },
     {
       id: "pocketball",
       value: "pocketball",
       title: "포켓볼",
-      description:
-        "총 15개로 본인의 공을 먼저 넣는 게임",
+      description: "총 15개로 본인의 공을 먼저 넣는 게임",
     },
   ];
 
@@ -60,8 +57,8 @@ export default function EmploymentForm() {
 
       <div className="space-y-8">
         {/* 매치 유형 */}
-        <p className="p-2">희망지역 선택</p>
-        <LocationSelector />
+        {/* <p className="p-2">희망지역 선택</p>
+        <LocationSelector /> */}
 
         {/* 매치 유형 */}
         <p className="p-2">인원수 선택</p>
@@ -118,57 +115,42 @@ export default function EmploymentForm() {
             {/* 회사 이메일 */}
             <div>
               <Label htmlFor="email" className="font-medium">
-                회사 이메일 주소<span className="text-red-500">*</span>
+                연락받을 휴대폰 번호<span className="text-red-500">*</span>
               </Label>
-              <Input
-                id="email"
-                placeholder="회사의 이메일 주소를 입력"
-                className="mt-2"
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                ※ 회사 도메인이 포함된 메일주소로 인증을 진행해 주세요.
-              </p>
+              <Input id="email" placeholder="010-0000-0000" className="mt-2" />
             </div>
 
             {/* 회사명 */}
             <div>
               <Label htmlFor="company-name" className="font-medium">
-                회사명<span className="text-red-500">*</span>
+                본인 다마<span className="text-red-500">*</span>
               </Label>
               <Input
                 id="company-name"
-                placeholder="회사명 입력"
+                placeholder="본인의 다마를 적어주세요."
                 className="mt-2"
               />
-              <p className="text-sm text-gray-500 mt-1">
-                ※ 작성한 회사명으로 등록한 함께 후보자를 관리할 수 있는 기업
-                조직이 생성됩니다
-              </p>
             </div>
 
             {/* 사업자 등록 번호 */}
             <div>
               <Label htmlFor="business-number" className="font-medium">
-                사업자 등록 번호<span className="text-red-500">*</span>
+                개인정보 활용동의<span className="text-red-500">*</span>
               </Label>
-              <Input
-                id="business-number"
-                placeholder="000 - 00 - 00000"
-                className="mt-2"
-              />
-              <p className="text-sm text-red-500 mt-1">
-                사업자 등록 번호를 입력해주세요
-              </p>
+              &nbsp;
+              <Checkbox id="business-checkbox" className="mt-2" />
               <p className="text-sm text-gray-500 mt-1">
-                ※ 자동 입력된 회사명과 사업자 등록번호가 채직중인 회사의 것과
-                다른 경우에는 수정해 주세요. (예시. 개인메일로 인증한 경우)
+                ※ 현재 지역 기준으로 매칭지역에 등록됩니다.
               </p>
             </div>
           </div>
         </Card>
       </div>
 
-      <Button>등록하기</Button>
+      <div className="flex gap-4 justify-center mt-6 mb-4">
+        <Button className="w-full h-12 px-4 py-2 text-md">선수보기</Button>
+        <Button className="w-full h-12 px-4 py-2 text-md">등록하기</Button>
+      </div>
     </div>
   );
 }

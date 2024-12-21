@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { loadKakaoMapsScript } from "@/lib/loadKakaoMap";
+import { useLocation } from "../../LocationContext";
 
 export default function KakaoMap() {
+  const { location } = useLocation(); // Context에서 location 가져오기
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<typeof window.kakao.maps.Map | null>(null);
   const [marker, setMarker] = useState<typeof window.kakao.maps.Marker | null>(
@@ -84,21 +86,26 @@ export default function KakaoMap() {
           if (!mapRef.current) return;
 
           const options = {
-            center: new window.kakao.maps.LatLng(37.5665, 126.978),
+            center: new window.kakao.maps.LatLng(location.lat, location.lng),
             level: 3,
           };
 
           const newMap = new window.kakao.maps.Map(mapRef.current, options);
           setMap(newMap);
 
-          // 지도 타입 컨트롤 추가
+          const newMarker = new window.kakao.maps.Marker({
+            position: new window.kakao.maps.LatLng(location.lat, location.lng),
+            map: newMap,
+          });
+          setMarker(newMarker);
+
+          // 지도 컨트롤 추가
           const mapTypeControl = new window.kakao.maps.MapTypeControl();
           newMap.addControl(
             mapTypeControl,
             window.kakao.maps.ControlPosition.TOPRIGHT
           );
 
-          // 줌 컨트롤 추가
           const zoomControl = new window.kakao.maps.ZoomControl();
           newMap.addControl(
             zoomControl,
@@ -112,6 +119,17 @@ export default function KakaoMap() {
 
     initMap();
   }, []);
+
+  useEffect(() => {
+    if (map && marker) {
+      const newPosition = new window.kakao.maps.LatLng(
+        location.lat,
+        location.lng
+      );
+      map.setCenter(newPosition);
+      marker.setPosition(newPosition);
+    }
+  }, [location, map, marker]);
 
   return (
     <div style={{ position: "relative", width: "99vw", height: "100vh" }}>
