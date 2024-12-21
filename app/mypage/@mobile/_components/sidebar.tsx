@@ -4,6 +4,10 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+
 export function Sidebar() {
   const menuGroups = [
     {
@@ -192,6 +196,15 @@ export function Sidebar() {
           ))}
         </div>
       </div>
+
+      <Button
+        onClick={() => signOut({ callbackUrl: "/" })} // 로그아웃 후 메인 페이지로 리다이렉트
+        variant="ghost"
+        className="flex items-center gap-2"
+      >
+        <LogOut className="w-4 h-4" />
+        로그아웃
+      </Button>
     </div>
   );
 }

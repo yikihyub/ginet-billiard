@@ -5,12 +5,12 @@
   bottom: 0px;
   height: fit-content;
   min-height: 100vh;
-  z-index: 9999;
+  z-index: 49;
   border-top: 1px solid #eee;
 }
 .customHr {
   height: 1px;
-  border: none white;
+  border: 1px solid #eee;
   background-color: rgb(213, 213, 213);
   width: 100%;
 }

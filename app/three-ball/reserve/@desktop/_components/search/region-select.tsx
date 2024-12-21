@@ -1,0 +1,125 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useLocation } from "../../../LocationContext";
+
+import coordinates from "@/public/region_coordinates.json";
+
+// JSON 타입 정의
+type RegionData = {
+  bjd_cd: number;
+  center_long: number;
+  center_lati: number;
+  bjd_nm: string;
+  sd_nm: string;
+  sgg_nm: string;
+  emd_nm: string;
+};
+
+// coordinates 데이터가 RegionData[] 타입임을 단언
+const regionData = coordinates as RegionData[];
+
+export function RegionSelect() {
+  const { setLocation } = useLocation();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<string>("");
+
+  const cities = [...new Set(regionData.map((item: RegionData) => item.sd_nm))];
+  const districts = selectedCity
+    ? [
+        ...new Set(
+          regionData
+            .filter((item: RegionData) => item.sd_nm === selectedCity)
+            .map((item: RegionData) => item.sgg_nm)
+            .filter(Boolean)
+        ),
+      ]
+    : [];
+
+  const handleRegionSelect = (district: string) => {
+    const selectedLocation = regionData.find(
+      (item: RegionData) =>
+        item.sd_nm === selectedCity && item.sgg_nm === district && !item.emd_nm
+    );
+
+    if (selectedLocation) {
+      setSelectedRegion(`${selectedLocation.sd_nm} ${selectedLocation.sgg_nm}`);
+      setLocation(selectedLocation.center_lati, selectedLocation.center_long);
+      setIsOpen(false);
+
+      console.log("Selected Location:", {
+        lat: selectedLocation.center_lati,
+        lng: selectedLocation.center_long,
+      });
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className="w-full justify-between"
+        >
+          {selectedRegion || "지역을 선택해주세요"}
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[500px] h-[600px]">
+        <DialogHeader>
+          <DialogTitle>지역 선택</DialogTitle>
+        </DialogHeader>
+
+        <div className="flex flex-1 gap-4 h-[calc(80vh-100px)] mt-4">
+          {/* 왼쪽 시/도 목록 */}
+          <div className="w-1/3 border-r pr-4 max-h-[500px] overflow-y-auto">
+            <div className="space-y-2">
+              {cities.map((city) => (
+                <button
+                  key={city}
+                  className={cn(
+                    "w-full text-left px-2 py-1 rounded-md transition-colors",
+                    selectedCity === city
+                      ? "bg-blue-100 text-blue-700"
+                      : "hover:bg-gray-100"
+                  )}
+                  onClick={() => setSelectedCity(city)}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 오른쪽 구/군 목록 */}
+          <div className="flex-1 overflow-y-auto max-h-[500px]">
+            <div className="grid grid-cols-2 gap-2">
+              {districts.map((district) => (
+                <button
+                  key={district}
+                  className="px-2 py-1 text-left hover:bg-gray-100 rounded-md transition-colors"
+                  onClick={() => handleRegionSelect(district)}
+                >
+                  {district}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

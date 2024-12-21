@@ -4,6 +4,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -22,15 +25,15 @@ export function Sidebar() {
         { name: "즐겨찾는 당구장", path: "/mypage/favorite-billiard" },
       ],
     },
-    {
-      title: "레슨",
-      items: [
-        { name: "레슨 상담", path: "/mypage/lesson" },
-        { name: "최근 레슨 내역", path: "/mypage/latest-lesson" },
-        { name: "즐겨 찾는 레슨", path: "/mypage/favorite-lesson" },
-        { name: "레슨 프로 목록", path: "/mypage/inventory" },
-      ],
-    },
+    // {
+    //   title: "레슨",
+    //   items: [
+    //     { name: "레슨 상담", path: "/mypage/lesson" },
+    //     { name: "최근 레슨 내역", path: "/mypage/latest-lesson" },
+    //     { name: "즐겨 찾는 레슨", path: "/mypage/favorite-lesson" },
+    //     { name: "레슨 프로 목록", path: "/mypage/inventory" },
+    //   ],
+    // },
     {
       title: "기록",
       items: [
@@ -39,10 +42,10 @@ export function Sidebar() {
         { name: "포켓볼 기록", path: "/mypage/pocketball" },
       ],
     },
-    {
-      title: "결제",
-      items: [{ name: "결제수단", path: "/mypage/@desktop/payment" }],
-    },
+    // {
+    //   title: "결제",
+    //   items: [{ name: "결제수단", path: "/mypage/@desktop/payment" }],
+    // },
     {
       title: "이벤트",
       items: [
@@ -59,7 +62,6 @@ export function Sidebar() {
         { name: "자주묻는 질문", path: "/mypage/faq" },
         { name: "알림설정", path: "/mypage/notice-set" },
         { name: "차단 친구 관리", path: "/mypage/block-set" },
-        { name: "로그아웃", path: "/mypage/logout" },
       ],
     },
   ];
@@ -84,6 +86,14 @@ export function Sidebar() {
           ))}
         </div>
       ))}
+      <Button
+        onClick={() => signOut({ callbackUrl: "/" })} // 로그아웃 후 메인 페이지로 리다이렉트
+        variant="ghost"
+        className="flex items-center gap-2"
+      >
+        <LogOut className="w-4 h-4" />
+        로그아웃
+      </Button>
     </nav>
   );
 }

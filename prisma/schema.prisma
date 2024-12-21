@@ -1,14 +1,86 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(50)
+  email        String        @unique @db.VarChar(100)
+  password     String        @db.VarChar(255)
+  phonenum     String?       @db.VarChar(20)
+  userAbility  Int
+  preferGame   GameType      @default(FOUR_BALL)
+  loginAt      DateTime      @default(now())
+  logoutAt     DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+  clubs        Club[]        // 추가: User와 Club의 관계
+  clubMembers  ClubMember[]  // 추가: User와 ClubMember의 관계
+
+  @@map("bi_user")
+}
+
+model Game {
+  id          Int       @id @default(autoincrement())
+  gameType    GameType
+  description String?
+  gameAverage String?
+  gameHighrun Int
+  gameInning  Int
+  createdAt   DateTime  @default(now())
+  endAt       DateTime  @default(now())
+
+  @@map("bi_game")
+}
+
+model Club {
+  id              Int          @id @default(autoincrement())
+  name            String       @db.VarChar(100)
+  description     String?
+  userId          Int
+  isPossible      Boolean
+  createdAt       DateTime     @default(now())
+  endAt           DateTime     @default(now())
+  user            User         @relation(fields: [userId], references: [id])
+  members         ClubMember[] // 추가: Club과 ClubMember의 관계
+
+  @@map("bi_club")
+}
+
+model ClubMember {
+  clubId    Int
+  userId    Int
+  joinedAt  DateTime @default(now())
+  club      Club     @relation(fields: [clubId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@id([clubId, userId])
+  @@map("bi_clubmember")
+}
+
+model Location {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  description String   @db.VarChar(100)
+  address     String   @db.VarChar(255)
+  latitude    Float
+  longitude   Float
+  phone       String?  @db.VarChar(20)
+  timeStart   DateTime
+  timeEnd     DateTime
+  threeBall   Int
+  fourBall    Int
+  tableType   Int
+  createdAt   DateTime @default(now())
+
+  @@map("bi_location")
+}
+
+enum GameType {
+  THREE_BALL  @map("3구")
+  FOUR_BALL   @map("4구")
 }

@@ -7,7 +7,7 @@ interface TeamMatchLayoutProps {
 
 export default function TeamMatchLayout({ children }: TeamMatchLayoutProps) {
   return (
-    <div className="m-auto max-w-[1024px] h-[100vh]">
+    <div className="m-auto max-w-[1024px] p-4">
       <Navigation />
       {children}
     </div>
