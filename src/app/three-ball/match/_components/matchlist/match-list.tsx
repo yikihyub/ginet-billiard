@@ -1,118 +1,112 @@
-interface MatchInfo {
-  time: string;
+'use client';
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar } from '@/components/ui/avatar';
+import { MapPin, Star, User } from 'lucide-react';
+
+interface MatchUser {
+  id: string;
+  name: string;
+  profileImage: string;
+  distance: number;
   location: string;
-  details: string;
-  level: string;
-  players: string;
-  isSpecial?: boolean;
-  status: "매칭임박" | "대기" | "신청가능";
+  score: {
+    fourBall: number;
+    threeBall: number;
+  };
 }
 
-function MatchCard({
-  time,
-  location,
-  details,
-  level,
-  players,
-  // isSpecial,
-  status,
-}: MatchInfo) {
-  return (
-    <div className="border-b py-4">
-      <div className="flex justify-between items-start">
-        <div>
-          <div className="text-lg mb-1">{time}</div>
-          <div className="text-lg font-medium mb-2">{location}</div>
-          <div className="flex items-center gap-1 text-sm">
-            <span className="text-red-500">•</span>
-            <span className="text-gray-600">여자매치</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-gray-600">{players}</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-gray-600">{details}</span>
-            {level && (
-              <>
-                <span className="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-xs">
-                  {level}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-        <button
-          className={`px-4 py-2 rounded-md ${
-            status === "매칭임박"
-              ? "bg-red-500 text-white"
-              : status === "신청가능"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-600"
-          }`}
-        >
-          {status}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export default function MatchList() {
-  const matches: MatchInfo[] = [
+export default function MatchingPage() {
+  const nearbyUsers: MatchUser[] = [
     {
-      time: "19:00",
-      location: "안양 평촌 칼라힐 풋살파크 A구장",
-      details: "6vs6 · 3파전",
-      level: "아마추어1 이하",
-      players: "여자매치",
-      status: "매칭임박",
+      id: '1',
+      name: '김철수',
+      profileImage: '/profile1.jpg',
+      distance: 0.5,
+      location: '서울 강남구',
+      score: {
+        fourBall: 80,
+        threeBall: 40,
+      },
     },
     {
-      time: "19:00",
-      location: "서울 도봉 루다 풋살장",
-      details: "5vs5 · 3파전 · 일반",
-      players: "여자매치",
-      level: "",
-      status: "매칭임박",
-    },
-    {
-      time: "19:00",
-      location: "서울 도봉 루다 풋살장",
-      details: "5vs5 · 3파전 · 일반",
-      players: "여자매치",
-      level: "",
-      status: "매칭임박",
-    },
-    {
-      time: "19:00",
-      location: "서울 도봉 루다 풋살장",
-      details: "5vs5 · 3파전 · 일반",
-      players: "여자매치",
-      level: "",
-      status: "매칭임박",
-    },
-    {
-      time: "19:00",
-      location: "서울 도봉 루다 풋살장",
-      details: "5vs5 · 3파전 · 일반",
-      players: "여자매치",
-      level: "",
-      status: "매칭임박",
-    },
-    {
-      time: "19:00",
-      location: "서울 도봉 루다 풋살장",
-      details: "5vs5 · 3파전 · 일반",
-      players: "여자매치",
-      level: "",
-      status: "매칭임박",
+      id: '2',
+      name: '홍길동',
+      profileImage: '/profile1.jpg',
+      distance: 0.5,
+      location: '서울 강남구',
+      score: {
+        fourBall: 80,
+        threeBall: 40,
+      },
     },
   ];
 
+  const registeredUsers: MatchUser[] = [
+    // ... 등록된 사용자 데이터
+  ];
+
+  const UserCard = ({ user }: { user: MatchUser }) => (
+    <div className="mb-2 flex items-center gap-4 bg-white p-4">
+      <Avatar className="h-16 w-16">
+        <div className="flex h-full w-full items-center justify-center bg-gray-100">
+          <User className="h-8 w-8 text-gray-400" />
+        </div>
+      </Avatar>
+
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium">{user.name}</h3>
+          <span className="text-sm text-gray-500">{user.distance}km</span>
+        </div>
+
+        <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+          <MapPin size={14} />
+          <span>{user.location}</span>
+        </div>
+
+        <div className="mt-2 flex gap-4">
+          <div className="flex items-center gap-1">
+            <Star size={14} className="text-yellow-500" />
+            <span className="text-sm">4구: {user.score.fourBall}점</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Star size={14} className="text-yellow-500" />
+            <span className="text-sm">3구: {user.score.threeBall}점</span>
+          </div>
+        </div>
+      </div>
+
+      <button className="rounded-lg bg-blue-500 px-4 py-2 text-sm text-white">
+        매칭신청
+      </button>
+    </div>
+  );
+
   return (
-    <div className="w-full mx-auto pl-4 pr-4 mt-6">
-      <div className="text-xl font-bold">12월 12일 목요일</div>
-      {matches.map((match, index) => (
-        <MatchCard key={index} {...match} />
-      ))}
+    <div className="min-h-screen bg-gray-50">
+      <Tabs defaultValue="nearby" className="mt-6 w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="nearby">내 주변 상대</TabsTrigger>
+          <TabsTrigger value="registered">등록된 상대</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="nearby" className="!mt-0 bg-gray-100">
+          <div className="divide-y">
+            {nearbyUsers.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="registered" className="bg-gray-100">
+          <div className="divide-y">
+            {registeredUsers.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

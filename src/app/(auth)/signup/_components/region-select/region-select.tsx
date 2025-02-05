@@ -11,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useLocation } from '../../../LocationContext';
 import coordinates from '@/data/region_coordinates.json';
 
 type RegionData = {
@@ -27,7 +26,6 @@ type RegionData = {
 const regionData = coordinates as RegionData[];
 
 export function RegionSelect() {
-  const { setLocation } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('');
@@ -55,7 +53,6 @@ export function RegionSelect() {
 
     if (selectedLocation) {
       setSelectedRegion(`${selectedLocation.sd_nm} ${selectedLocation.sgg_nm}`);
-      setLocation(selectedLocation.center_lati, selectedLocation.center_long);
       setIsOpen(false);
     }
   };
@@ -66,7 +63,7 @@ export function RegionSelect() {
         <Button
           variant="outline"
           role="combobox"
-          className="text-md h-12 w-full justify-between shadow-none"
+          className="mt-1 h-14 w-full border-0 bg-gray-100"
         >
           {selectedRegion || '지역'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
