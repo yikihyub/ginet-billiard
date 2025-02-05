@@ -1,32 +1,32 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-import MenuToggle from "./menu-toggle";
+import MenuToggle from './menu-toggle';
 
-import { usePathname, useRouter } from "next/navigation";
-import { User, Search, CalendarDays, ChevronLeft } from "lucide-react";
+import { usePathname, useRouter } from 'next/navigation';
+import { User, Search, CalendarDays, ChevronLeft } from 'lucide-react';
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Nav() {
   const pathname = usePathname(); // 현재 경로 가져오기
   const router = useRouter();
-  const shouldShowBackArrow = pathname !== "/";
+  const shouldShowBackArrow = pathname !== '/';
 
   // 특정 경로에서는 Nav를 렌더링하지 않음
-  if (pathname.startsWith("/login")) {
+  if (pathname.startsWith('/login')) {
     return null;
   }
 
-  if (pathname.startsWith("/signup")) {
+  if (pathname.startsWith('/signup')) {
     return null;
   }
 
   return (
     <nav className="bg-white text-black">
-      <div className="container mx-auto max-w-screen-lg px-4 py-3 flex justify-between items-center">
+      <div className="container mx-auto flex max-w-screen-lg items-center justify-between px-4 py-3">
         <div className="flex items-center space-x-4">
           {shouldShowBackArrow && (
             <button
@@ -49,12 +49,12 @@ export default function Nav() {
         </div>
         <ul className="flex space-x-4">
           <li>
-            <Link href="/reservation" className="hover:underline">
+            <Link href="/record" className="hover:underline">
               <Search />
             </Link>
           </li>
           <li>
-            <Link href="/about" className="hover:underline">
+            <Link href="/reservation" className="hover:underline">
               <CalendarDays />
             </Link>
           </li>
