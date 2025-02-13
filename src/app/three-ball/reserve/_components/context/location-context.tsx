@@ -1,7 +1,6 @@
-// app/three-ball/reserve/LocationContext.tsx
-"use client";
+'use client';
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface LocationContextType {
   location: { lat: number; lng: number };
@@ -34,6 +33,6 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
 export const useLocation = () => {
   const context = useContext(LocationContext);
   if (!context)
-    throw new Error("useLocation must be used within LocationProvider");
+    throw new Error('useLocation must be used within LocationProvider');
   return context;
 };

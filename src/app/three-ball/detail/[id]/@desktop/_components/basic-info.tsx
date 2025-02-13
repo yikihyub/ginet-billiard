@@ -1,26 +1,31 @@
-import React from "react";
+import React from 'react';
+import { Store } from '@/types/(reserve)';
 
-const BasicInfo = () => {
+interface BasicInfoProps {
+  store: Store;
+}
+
+const BasicInfo = ({ store }: BasicInfoProps) => {
   return (
-    <div className="p-4 border-b">
-      <div className="flex justify-between items-start mb-4">
+    <div className="border-b p-4">
+      <div className="mb-4 flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-bold mb-2">두꺼비 당구장</h1>
-          <p className="text-gray-600">충남 당진시 북문로1길 41-17 3층</p>
+          <h1 className="mb-2 text-xl font-bold">{store?.name}</h1>
+          <p className="text-gray-600">{store?.address}</p>
         </div>
         <div className="text-right">
-          <div className="text-xl font-bold">1,800원</div>
+          <div className="text-xl font-bold">{store?.hourly_rate}원</div>
           <div className="text-sm text-gray-500">/10분</div>
         </div>
       </div>
       <div className="flex space-x-2">
-        <span className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+        <span className="rounded-full bg-gray-100 px-2 py-1 text-sm">
           4구 중대
         </span>
-        <span className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+        <span className="rounded-full bg-gray-100 px-2 py-1 text-sm">
           3구 중대
         </span>
-        <span className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+        <span className="rounded-full bg-gray-100 px-2 py-1 text-sm">
           포켓볼
         </span>
       </div>

@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useLocation } from '../../../LocationContext';
+import { useLocation } from '../../../_components/context/location-context';
 import coordinates from '@/data/region_coordinates.json';
 
 type RegionData = {

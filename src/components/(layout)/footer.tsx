@@ -1,29 +1,33 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-import { usePathname } from "next/navigation";
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/login")) {
+  if (pathname.startsWith('/login')) {
     return null;
   }
 
-  if (pathname.startsWith("/signup")) {
+  if (pathname.startsWith('/three-ball/reserve')) {
+    return null;
+  }
+
+  if (pathname.startsWith('/signup')) {
     return null;
   }
 
   return (
-    <footer className="bg-gray-900 text-gray-400 py-6">
+    <footer className="bg-gray-900 py-6 text-gray-400">
       <div className="container mx-auto text-center">
         <p>&copy; 2024 My Website. All rights reserved.</p>
         <p className="mt-2">
           <a href="/privacy" className="hover:underline">
             Privacy Policy
-          </a>{" "}
-          |{" "}
+          </a>{' '}
+          |{' '}
           <a href="/terms" className="hover:underline">
             Terms of Service
           </a>

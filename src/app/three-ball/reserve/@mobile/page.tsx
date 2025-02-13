@@ -1,75 +1,29 @@
-// import React from "react";
-// import {
-//   Sheet,
-//   SheetContent,
-//   SheetTrigger,
-//   SheetHeader,
-//   SheetTitle,
-// } from "@/components/ui/sheet";
-// import { ArrowUp } from "lucide-react";
-// import { SearchBar } from "./_components/search/search-bar";
-// import { BilliardRoomCard } from "./_components/card/billiard-roomcard";
+'use client';
 
-// export default function MobilePage() {
-//   return (
-//     <>
-//       <div className="fixed top-4 z-50">
-//         <Sheet>
-//           <SheetTrigger className="fixed bottom-0 w-full bg-white rounded-t-xl shadow-lg p-4">
-//             <div className="flex flex-col items-center">
-//               <ArrowUp className="text-gray-400 mb-2 h-5 w-5" />
-//               <span className="text-sm text-gray-600">
-//                 근처 당구장 목록보기
-//               </span>
-//             </div>
-//           </SheetTrigger>
-//           <SheetContent side="bottom" className="h-[100%] p-4">
-//             <SheetHeader>
-//               <SheetTitle></SheetTitle>
-//             </SheetHeader>
-//             <div>
-//               <div className="flex w-full flex-col h-full">
-//                 <SearchBar />
-//               </div>
-//               <div className="mt-2 mb-2 border border-[#eee]"></div>
-//               <BilliardRoomCard />
-//               <div className="mt-2 mb-2 border border-[#eee]"></div>
-//               <BilliardRoomCard />
-//               <div className="mt-2 mb-2 border border-[#eee]"></div>
-//               <BilliardRoomCard />
-//               <div className="mt-2 mb-2 border border-[#eee]"></div>
-//               <BilliardRoomCard />
-//               <div className="mt-2 mb-2 border border-[#eee]"></div>
-//               <BilliardRoomCard />
-//             </div>
-//           </SheetContent>
-//         </Sheet>
-//       </div>
-//     </>
-//   );
-// }
+import React, { useState } from 'react';
 
-import React from "react";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { ArrowUp } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { SearchBar } from "./_components/search/search-bar";
-import { BilliardRoomCard } from "./_components/card/billiard-roomcard";
+} from '@/components/ui/drawer';
+import { ArrowUp } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { SearchBar } from './_components/search/search-bar';
+import { StoreList } from './_components/list/store-list';
 
 export default function MobilePage() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <div className="fixed top-4 z-50">
-        <Drawer>
-          <DrawerTrigger className="fixed bottom-0 w-full bg-white rounded-t-xl shadow-lg p-4">
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+          <DrawerTrigger className="fixed bottom-0 w-full rounded-t-xl bg-white p-4 shadow-lg">
             <div className="flex flex-col items-center">
-              <ArrowUp className="text-gray-400 mb-2 h-5 w-5" />
+              <ArrowUp className="mb-2 h-5 w-5 text-gray-400" />
               <span className="text-sm text-gray-600">
                 근처 당구장 목록보기
               </span>
@@ -81,19 +35,9 @@ export default function MobilePage() {
             </DrawerHeader>
             <div className="h-[calc(100vh-12rem)]">
               <SearchBar />
-              <div className="mt-2 mb-2 border border-[#eee]"></div>
+              <div className="mb-2 mt-2 border border-[#eee]"></div>
               <ScrollArea className="h-[calc(100%-5rem)]">
-                <BilliardRoomCard />
-                <div className="mt-2 mb-2 border border-[#eee]"></div>
-                <BilliardRoomCard />
-                <div className="mt-2 mb-2 border border-[#eee]"></div>
-                <BilliardRoomCard />
-                <div className="mt-2 mb-2 border border-[#eee]"></div>
-                <BilliardRoomCard />
-                <div className="mt-2 mb-2 border border-[#eee]"></div>
-                <BilliardRoomCard />
-                <div className="mt-2 mb-2 border border-[#eee]"></div>
-                <BilliardRoomCard />
+                <StoreList onCloseDrawer={() => setIsOpen(false)} />
               </ScrollArea>
             </div>
           </DrawerContent>

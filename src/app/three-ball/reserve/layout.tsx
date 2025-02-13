@@ -1,8 +1,6 @@
-"use client";
-
-import React from "react";
-import { LocationProvider } from "./LocationContext";
-import KakaoMap from "@/app/three-ball/reserve/_components/kakaomap/kakaomap";
+import React from 'react';
+import { LocationProvider } from './_components/context/location-context';
+import KakaoMap from '@/app/three-ball/reserve/_components/map/kakaomap';
 
 export default function RootLayout({
   mobile,
@@ -13,13 +11,13 @@ export default function RootLayout({
 }) {
   return (
     <LocationProvider>
-      <article className="flex w-full h-screen">
+      <article className="flex h-screen w-full">
         {/* 모바일 사이드바 */}
         <div className="md:hidden">{mobile}</div>
 
         {/* 데스크톱 사이드바 */}
         <div className="hidden md:block">{desktop}</div>
-        <div className="md:w-full md:ml-0">
+        <div className="md:ml-0 md:w-full">
           <KakaoMap />
         </div>
       </article>

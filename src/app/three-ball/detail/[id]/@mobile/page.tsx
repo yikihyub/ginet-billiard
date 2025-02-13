@@ -1,74 +1,97 @@
-import React from "react";
+'use client';
 
-import ImageSlider from "./_components/image-slider";
-import BasicInfo from "./_components/basic-info";
-import MatchData from "./_components/match-data";
-import FacilityInfo from "./_components/facility-info";
-import ReserveButton from "./_components/reserve-button";
-import IntroInfo from "./_components/intro-info";
-import { TimeTable } from "./_components/timetable";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+import ImageSlider from './_components/image-slider';
+import BasicInfo from './_components/basic-info';
+import FacilityInfo from './_components/facility-info';
+import ReserveButton from './_components/reserve-button';
+import IntroInfo from './_components/intro-info';
+import { TimeTable } from './_components/timetable';
 
-export default async function MobileDetailPage({ params }: PageProps) {
-  const { id } = await Promise.resolve(params);
+export default function MobileDetailPage() {
+  const { id } = useParams();
+  const [store, setStore] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const daytimes = [
-    {
-      yoil: "월요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-    },
-    {
-      yoil: "화요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-    },
-    {
-      yoil: "수요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-    },
-    {
-      yoil: "목요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-    },
-    {
-      yoil: "금요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-    },
-  ];
+  useEffect(() => {
+    const fetchStore = async () => {
+      try {
+        const response = await fetch(`/api/store/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch store data');
+        }
+        const data = await response.json();
+        console.log(data);
+        setStore(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const weektimes = [
-    {
-      yoil: "토요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-      discountPrice: 26500,
-    },
-    {
-      yoil: "일요일",
-      time: "00:00 ~ 24:00",
-      originalPrice: 1800,
-    },
-  ];
+    fetchStore();
+  }, [id]);
+
+  const daytimes = store
+    ? [
+        {
+          yoil: '월요일',
+          time: `${store.open_time} ~ ${store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+        },
+        {
+          yoil: '화요일',
+          time: `${store.open_time} ~ ${store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+        },
+        {
+          yoil: '수요일',
+          time: `${store.open_time} ~ ${store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+        },
+        {
+          yoil: '목요일',
+          time: `${store.open_time} ~ ${store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+        },
+        {
+          yoil: '금요일',
+          time: `${store.open_time} ~ ${store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+        },
+      ]
+    : [];
+
+  const weektimes = store
+    ? [
+        {
+          yoil: '토요일',
+          time: `${store.saturday_open || store.open_time} ~ ${store.saturday_close || store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+          discountPrice: store.weekend_rate,
+        },
+        {
+          yoil: '일요일',
+          time: `${store.sunday_open || store.open_time} ~ ${store.sunday_close || store.close_time}`,
+          originalPrice: store.hourly_rate || 0,
+          discountPrice: store.weekend_rate,
+        },
+      ]
+    : [];
 
   return (
     <div className="flex flex-col">
       <div className="flex-1">
         <ImageSlider />
-        <BasicInfo />
-        <IntroInfo />
+        <BasicInfo store={store} />
+        <IntroInfo store={store} />
         <TimeTable dayTimes={daytimes} weekendTimes={weektimes} />
         <FacilityInfo />
       </div>
-      <ReserveButton />
+      <ReserveButton store={store} />
     </div>
   );
 }
