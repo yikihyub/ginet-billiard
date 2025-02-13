@@ -11,20 +11,10 @@ import {
 } from '@/components/ui/dialog';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useLocation } from '../../../LocationContext';
+import { useLocation } from '../../../_components/context/location-context';
 
 import coordinates from '@/data/region_coordinates.json';
-
-// JSON 타입 정의
-type RegionData = {
-  bjd_cd: number;
-  center_long: number;
-  center_lati: number;
-  bjd_nm: string;
-  sd_nm: string;
-  sgg_nm: string;
-  emd_nm: string;
-};
+import { RegionData } from '@/types/(reserve)';
 
 // coordinates 데이터가 RegionData[] 타입임을 단언
 const regionData = coordinates as RegionData[];
@@ -72,9 +62,9 @@ export function RegionSelect() {
         <Button
           variant="outline"
           role="combobox"
-          className="w-full justify-between"
+          className="h-[52px] w-full justify-between"
         >
-          {selectedRegion || '지역을 선택해주세요'}
+          {selectedRegion || '지역 선택'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DialogTrigger>

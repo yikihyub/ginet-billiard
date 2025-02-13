@@ -1,12 +1,25 @@
-"use client";
+'use client';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export function GameTypeSelect() {
   return (
-    <select className="w-full p-2 border rounded-md">
-      <option>3구</option>
-      <option>4구</option>
-      <option>포켓볼</option>
-      <option>상관없음</option>
-    </select>
+    <Select>
+      <SelectTrigger className="h-[52px] w-full">
+        <SelectValue placeholder="게임 유형 선택" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="3구">3구</SelectItem>
+        <SelectItem value="4구">4구</SelectItem>
+        <SelectItem value="포켓볼">포켓볼</SelectItem>
+        <SelectItem value="상관없음">상관없음</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }

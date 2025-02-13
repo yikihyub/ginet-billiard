@@ -4,7 +4,8 @@
   top: 104px;
   bottom: 0px;
   height: fit-content;
-  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
   z-index: 49;
   border-top: 1px solid #eee;
 }

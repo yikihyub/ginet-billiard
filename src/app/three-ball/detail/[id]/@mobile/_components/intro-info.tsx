@@ -1,14 +1,15 @@
-import React from "react";
+import React from 'react';
+import { Store } from '@/types/(reserve)';
 
-const IntroInfo = () => {
+interface IntroInfoProps {
+  store: Store;
+}
+
+const IntroInfo = ({ store }: IntroInfoProps) => {
   return (
-    <div className="p-4 border-b bg-white mb-1">
-      <h2 className="text-lg font-bold mb-4">매장 소개</h2>
-      <div>
-        안녕하세요. 두꺼비 당구장입니다.
-        <br />
-        좋은 서비스를 주기 위해 항상 노력하겠습니다~!
-      </div>
+    <div className="mb-1 border-b bg-white p-4">
+      <h2 className="mb-4 text-lg font-bold">매장 소개</h2>
+      <div>{store?.comment}</div>
     </div>
   );
 };
