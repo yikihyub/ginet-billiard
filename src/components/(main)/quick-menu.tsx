@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function QuickMenu() {
   const router = useRouter();
@@ -36,8 +36,8 @@ export default function QuickMenu() {
     // },
     {
       id: 1,
-      text: "팀매치",
-      url: "/team-match",
+      text: '팀매치',
+      url: '/team-match',
       icon: (
         <Image
           src="/main/icons8-billiard-70.png"
@@ -49,8 +49,8 @@ export default function QuickMenu() {
     },
     {
       id: 2,
-      text: "당구장찾기",
-      url: "/three-ball/reserve",
+      text: '당구장찾기',
+      url: '/three-ball/reserve',
       icon: (
         <Image
           src="/main/icons8-snooker-64.png"
@@ -62,8 +62,8 @@ export default function QuickMenu() {
     },
     {
       id: 3,
-      text: "상대찾기",
-      url: "/three-ball/match",
+      text: '상대찾기',
+      url: '/match',
       icon: (
         <Image
           src="/main/icons8-사람-피부-유형-7-70.png"
@@ -75,8 +75,8 @@ export default function QuickMenu() {
     },
     {
       id: 4,
-      text: "당구용어",
-      url: "/term",
+      text: '당구용어',
+      url: '/term',
       icon: (
         <Image
           src="/main/icons8-이야기-책-70.png"
@@ -88,8 +88,8 @@ export default function QuickMenu() {
     },
     {
       id: 5,
-      text: "동호회",
-      url: "/club/search",
+      text: '동호회',
+      url: '/club/search',
       icon: (
         <Image
           src="/main/icons8-american-67.png"
@@ -129,15 +129,15 @@ export default function QuickMenu() {
 
   return (
     <>
-      <div className="grid grid-cols-5 sm:grid-cols-5 lg:grid-cols-5 gap-1 max-w-1024px m-auto pt-4 ">
+      <div className="m-auto grid max-w-1024px grid-cols-5 gap-1 pt-4 sm:grid-cols-5 lg:grid-cols-5">
         {buttons.map((button) => (
           <button
             key={button.id}
             onClick={() => router.push(button.url)}
-            className="flex flex-col items-center justify-center p-4 bg-white rounded-xl hover:shadow-md transition-shadow"
+            className="flex flex-col items-center justify-center rounded-xl bg-white p-4 transition-shadow hover:shadow-md"
           >
-            <span className="text-xl mb-1">{button.icon}</span>
-            <span className="text-sm text-gray-700 whitespace-nowrap">
+            <span className="mb-1 text-xl">{button.icon}</span>
+            <span className="whitespace-nowrap text-sm text-gray-700">
               {button.text}
             </span>
           </button>

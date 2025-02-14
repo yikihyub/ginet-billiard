@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { RegionSelect } from './region-select/region-select';
+import { RegionSelect } from '../region-select/region-select';
 
 export default function Step5() {
   const [gender, setGender] = useState('');
