@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Step1 from "../_components/step1";
-import Step2 from "../_components/step2";
-import Step3 from "../_components/step3";
-import Step4 from "../_components/step4";
-import Step5 from "../_components/step5";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import Step1 from '../_components/(mobile)/step1';
+import Step2 from '../_components/(mobile)/step2';
+import Step3 from '../_components/(mobile)/step3';
+import Step4 from '../_components/(mobile)/step4';
+import Step5 from '../_components/(mobile)/step5';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -22,12 +22,12 @@ export default function SignupPage() {
       marketing: false,
     },
     userInfo: {
-      name: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      nickname: "",
-      phone: "",
+      name: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      nickname: '',
+      phone: '',
     },
   });
 
@@ -53,7 +53,7 @@ export default function SignupPage() {
 
       // 모든 항목이 체크되었는지 확인
       const allChecked = Object.keys(newAgreements)
-        .filter((key) => key !== "all")
+        .filter((key) => key !== 'all')
         .every((key) => newAgreements[key as keyof typeof newAgreements]);
 
       return {
@@ -83,7 +83,7 @@ export default function SignupPage() {
       ) {
         setStep(2);
       } else {
-        alert("필수 약관에 모두 동의해주세요.");
+        alert('필수 약관에 모두 동의해주세요.');
       }
     }
     // step 2일 때는 form의 handleNext가 호출됨
@@ -97,8 +97,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <div className="flex-1 p-4 mt-20">
+    <div className="flex min-h-screen flex-col bg-white">
+      <div className="mt-20 flex-1 p-4">
         {step === 1 && (
           <Step1
             agreements={formData.agreements}
@@ -111,13 +111,13 @@ export default function SignupPage() {
         {step === 4 && <Step4 onNext={handleFormSubmit} />}
         {step === 5 && <Step5 />}
 
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        <div className="fixed bottom-0 left-0 right-0 bg-white p-4">
           <Button
             onClick={handleNext}
-            className="w-full h-14 bg-green-600 hover:bg-green-700 rounded-lg"
+            className="h-14 w-full rounded-lg bg-green-600 hover:bg-green-700"
             disabled={step === 1 && !formData.agreements.age}
           >
-            {step === totalSteps ? "가입하기" : `다음 (${step}/${totalSteps})`}
+            {step === totalSteps ? '가입하기' : `다음 (${step}/${totalSteps})`}
           </Button>
         </div>
       </div>

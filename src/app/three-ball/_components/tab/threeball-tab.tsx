@@ -1,32 +1,29 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const ThreeballTab = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "예약하기", path: "/three-ball/reserve", enabled: true },
-    { name: "상대찾기", path: "/three-ball/match", enabled: true },
+    { name: '예약하기', path: '/three-ball/reserve', enabled: true },
+    { name: '상대찾기', path: '/match', enabled: true },
   ];
 
   return (
-    <div className="max-w-1024px m-auto ">
+    <div className="m-auto max-w-1024px">
       <ul className="flex border-b">
         {navItems.map((item) => (
           <li key={item.path} className="mr-1 flex-1 text-center">
             <Link
               href={item.path}
-              className={`
-               inline-block px-6 py-3 rounded-t-lg 
-               ${
-                 pathname === item.path
-                   ? "bg-white text-black font-bold border-b-2 border-black"
-                   : "text-gray-600 hover:text-black hover:bg-gray-50"
-               }
-             `}
+              className={`inline-block rounded-t-lg px-6 py-3 ${
+                pathname === item.path
+                  ? 'border-b-2 border-black bg-white font-bold text-black'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-black'
+              } `}
             >
               {item.name}
             </Link>

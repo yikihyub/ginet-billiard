@@ -10,25 +10,34 @@ datasource db {
 }
 
 model User {
-  id             Int          @id @default(autoincrement())
-  name           String       @db.VarChar(50)
-  email          String       @unique @db.VarChar(100)
-  password       String?      @db.VarChar(255)
-  phonenum       String?      @db.VarChar(20)
-  userAbility    Int
-  preferGame     GameType     @default(FOUR_BALL)
-  loginAt        DateTime     @default(now())
-  logoutAt       DateTime     @default(now())
-  createdAt      DateTime     @default(now())
-  mb_id          String?      @unique(map: "bi_user_mb_id_unique") @db.VarChar
-  mb_today_login DateTime?    @db.Date
-  mb_login_ip    String?      @db.VarChar
-  mb_memo_cnt    Int?
-  social_id      String?      @db.VarChar(100)
-  profile_image  String?      @db.VarChar(255)
-  provider       String?      @db.VarChar(20)
-  clubs          Club[]
-  clubMembers    ClubMember[]
+  id                                                       Int                 @id @default(autoincrement())
+  name                                                     String              @db.VarChar(50)
+  email                                                    String              @unique @db.VarChar(100)
+  password                                                 String?             @db.VarChar(255)
+  phonenum                                                 String?             @db.VarChar(20)
+  userAbility                                              Int
+  preferGame                                               GameType            @default(FOUR_BALL)
+  loginAt                                                  DateTime            @default(now())
+  logoutAt                                                 DateTime            @default(now())
+  createdAt                                                DateTime            @default(now())
+  mb_id                                                    String?             @unique(map: "bi_user_mb_id_unique") @db.VarChar
+  mb_today_login                                           DateTime?           @db.Date
+  mb_login_ip                                              String?             @db.VarChar
+  mb_memo_cnt                                              Int?
+  social_id                                                String?             @db.VarChar(100)
+  profile_image                                            String?             @db.VarChar(255)
+  provider                                                 String?             @db.VarChar(20)
+  location                                                 String?
+  latitude                                                 Float?              @db.Real
+  longitude                                                Float?              @db.Real
+  clubs                                                    Club[]
+  clubMembers                                              ClubMember[]
+  bi_match_bi_match_loser_idTobi_user                      bi_match[]          @relation("bi_match_loser_idTobi_user")
+  bi_match_bi_match_player1_idTobi_user                    bi_match[]          @relation("bi_match_player1_idTobi_user")
+  bi_match_bi_match_player2_idTobi_user                    bi_match[]          @relation("bi_match_player2_idTobi_user")
+  bi_match_bi_match_winner_idTobi_user                     bi_match[]          @relation("bi_match_winner_idTobi_user")
+  bi_match_requests_bi_match_requests_receiver_idTobi_user bi_match_requests[] @relation("bi_match_requests_receiver_idTobi_user")
+  bi_match_requests_bi_match_requests_sender_idTobi_user   bi_match_requests[] @relation("bi_match_requests_sender_idTobi_user")
 
   @@unique([social_id, provider], map: "unique_social_id_provider")
   @@map("bi_user")
@@ -255,9 +264,73 @@ model spatial_ref_sys {
   @@schema("public")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_match {
+  match_id                             Int       @id(map: "matches_pkey") @default(autoincrement())
+  player1_id                           String?   @db.VarChar
+  player2_id                           String?   @db.VarChar
+  match_date                           DateTime? @default(now()) @db.Timestamp(6)
+  game_type                            String?   @db.VarChar(10)
+  location                             String?   @db.VarChar(255)
+  player1_score                        Int?
+  player2_score                        Int?
+  winner_id                            String?   @db.VarChar
+  loser_id                             String?   @db.VarChar
+  player1_dama                         Decimal?  @db.Decimal(5, 2)
+  player2_dama                         Decimal?  @db.Decimal(5, 2)
+  match_duration                       Int?
+  match_status                         String?   @default("완료") @db.VarChar(10)
+  bi_user_bi_match_loser_idTobi_user   User?     @relation("bi_match_loser_idTobi_user", fields: [loser_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_loser_id_fkey")
+  bi_user_bi_match_player1_idTobi_user User?     @relation("bi_match_player1_idTobi_user", fields: [player1_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player1_id_fkey")
+  bi_user_bi_match_player2_idTobi_user User?     @relation("bi_match_player2_idTobi_user", fields: [player2_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player2_id_fkey")
+  bi_user_bi_match_winner_idTobi_user  User?     @relation("bi_match_winner_idTobi_user", fields: [winner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_winner_id_fkey")
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_match_requests {
+  request_id                                     Int                      @id(map: "match_requests_pkey") @default(autoincrement())
+  sender_id                                      String?                  @db.VarChar
+  receiver_id                                    String?                  @db.VarChar
+  game_type                                      game_type_enum?
+  status                                         match_request_type_enum? @default(대기)
+  created_at                                     DateTime?                @default(now()) @db.Timestamp(6)
+  bi_user_bi_match_requests_receiver_idTobi_user User?                    @relation("bi_match_requests_receiver_idTobi_user", fields: [receiver_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "match_requests_receiver_id_fkey")
+  bi_user_bi_match_requests_sender_idTobi_user   User?                    @relation("bi_match_requests_sender_idTobi_user", fields: [sender_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "match_requests_sender_id_fkey")
+
+  @@schema("public")
+}
+
 enum GameType {
   THREE_BALL @map("3구")
   FOUR_BALL  @map("4구")
 
+  @@schema("public")
+}
+
+enum game_type_enum {
+  THREE_BALL @map("4구")
+  FOUR_BALL  @map("3구")
+
+  포켓볼 @map("포켓볼")
+  @@schema("public")
+}
+
+enum match_request_type_enum {
+
+   대기 @map("대기")
+   수락됨 @map("수락됨")
+   거절됨 @map("거절됨")
+ 취소됨 @map("취소됨")
+  @@schema("public")
+}
+
+enum match_status_enum {
+
+   완료 @map("완료")
+   진행중 @map("진행중")
+   취소 @map("취소")
   @@schema("public")
 }
