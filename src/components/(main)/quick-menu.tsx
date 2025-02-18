@@ -129,12 +129,12 @@ export default function QuickMenu() {
 
   return (
     <>
-      <div className="m-auto grid max-w-1024px grid-cols-5 gap-1 pt-4 sm:grid-cols-5 lg:grid-cols-5">
+      <div className="m-auto flex max-w-1024px justify-between pl-4 pr-4 pt-4">
         {buttons.map((button) => (
           <button
             key={button.id}
             onClick={() => router.push(button.url)}
-            className="flex flex-col items-center justify-center rounded-xl bg-white p-4 transition-shadow hover:shadow-md"
+            className="flex flex-col items-center justify-center rounded-xl bg-white transition-shadow hover:shadow-md"
           >
             <span className="mb-1 text-xl">{button.icon}</span>
             <span className="whitespace-nowrap text-sm text-gray-700">
