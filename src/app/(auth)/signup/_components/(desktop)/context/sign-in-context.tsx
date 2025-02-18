@@ -1,60 +1,7 @@
 'use client';
 
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-
-interface FormState {
-  terms: {
-    age: boolean;
-    terms: boolean;
-    privacy: boolean;
-    privacyOption: boolean;
-    marketing: boolean;
-  };
-  userInfo: {
-    email: string;
-    password: string;
-    ownerName: string;
-    phoneNumber: string;
-  };
-  storeInfo: {
-    businessNumber: string;
-    storeName: string;
-    ownerName: string;
-    storeNumber: string;
-  };
-  location: {
-    address: string;
-    directions?: string;
-    parkingType: string;
-    parkingCapacity?: string;
-    parkingNote?: string;
-  };
-  operation: {
-    weekdayHours: { open: string; close: string };
-    saturdayHours?: { open: string; close: string };
-    sundayHours?: { open: string; close: string };
-    regularHolidays: string[];
-    brand: string;
-    totalTables: string;
-    facilities: string[];
-  };
-  facilities: {
-    priceInfo: {
-      weekdayPrice: string;
-      weekendPrice?: string;
-    };
-    priceNote?: string;
-  };
-}
-
-type FormAction =
-  | { type: 'SET_TERMS'; payload: FormState['terms'] }
-  | { type: 'SET_USER_INFO'; payload: FormState['userInfo'] }
-  | { type: 'SET_STORE_INFO'; payload: FormState['storeInfo'] }
-  | { type: 'SET_LOCATION'; payload: FormState['location'] }
-  | { type: 'SET_OPERATION'; payload: FormState['operation'] }
-  | { type: 'SET_FACILITIES'; payload: FormState['facilities'] }
-  | { type: 'RESET' };
+import { FormState, FormAction } from '@/types/(login)/form';
 
 const initialState: FormState = {
   terms: {
@@ -71,26 +18,30 @@ const initialState: FormState = {
     phoneNumber: '',
   },
   storeInfo: {
-    businessNumber: '',
-    storeName: '',
-    ownerName: '',
-    storeNumber: '',
+    preferGame: '',
+    userThreeAbility: 0,
+    userFourAbility: 0,
   },
   location: {
     address: '',
-    parkingType: '',
+    latitude: 0,
+    longitude: 0,
   },
-  operation: {
-    weekdayHours: { open: '', close: '' },
-    regularHolidays: [],
-    brand: '',
-    totalTables: '',
-    facilities: [],
+  matching: {
+    locationConsent: false,
+    preferredAgeGroup: [],
+    preferredGender: 'any',
+    preferredSkillLevel: [],
+    playStyle: [],
+    preferredTime: [],
   },
-  facilities: {
-    priceInfo: {
-      weekdayPrice: '',
-    },
+  favoriteStores: {
+    selectedStores: [],
+    searchKeyword: '',
+    searchResults: [],
+    showResults: false,
+    markers: [],
+    mapInstance: null,
   },
 };
 
@@ -109,10 +60,16 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
       return { ...state, storeInfo: action.payload };
     case 'SET_LOCATION':
       return { ...state, location: action.payload };
-    case 'SET_OPERATION':
-      return { ...state, operation: action.payload };
-    case 'SET_FACILITIES':
-      return { ...state, facilities: action.payload };
+    case 'SET_MATCHING':
+      return { ...state, matching: action.payload };
+    case 'SET_FAVORITE_STORES':
+      return {
+        ...state,
+        favoriteStores: {
+          ...state.favoriteStores, // 기존 값들 유지
+          ...action.payload, // 새로운 값으로 업데이트
+        },
+      };
     case 'RESET':
       return initialState;
     default:

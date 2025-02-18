@@ -21,13 +21,13 @@ export interface FormErrors {
 }
 
 export type EmailCheckStatus =
-  | "idle"
-  | "checking"
-  | "available"
-  | "unavailable";
+  | 'idle'
+  | 'checking'
+  | 'available'
+  | 'unavailable';
 export type PhoneVerificationStatus =
-  | "idle"
-  | "sending"
-  | "sent"
-  | "verifying"
-  | "verified";
+  | 'idle'
+  | 'sending'
+  | 'sent'
+  | 'verifying'
+  | 'verified';

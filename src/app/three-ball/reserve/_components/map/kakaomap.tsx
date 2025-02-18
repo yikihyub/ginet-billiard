@@ -65,27 +65,19 @@ export default function KakaoMap() {
     address: string
   ): Promise<{ lat: number; lng: number }> => {
     return new Promise((resolve, reject) => {
-      console.log('1. 주소 변환 시작:', address);
-
       const geocoder = new window.kakao.maps.services.Geocoder();
 
       geocoder.addressSearch(address, (result: any, status: any) => {
-        console.log('2. 카카오맵 응답:', { status, result });
-
         if (status === window.kakao.maps.services.Status.OK) {
           if (result && result[0]) {
-            console.log('3. 변환 성공:', result[0]);
-
             resolve({
               lat: parseFloat(result[0].y),
               lng: parseFloat(result[0].x),
             });
           } else {
-            console.log('3. 결과 없음');
             reject(new Error('No results found'));
           }
         } else {
-          console.log('3. 변환 실패:', status);
           reject(new Error(`Geocoding failed: ${status}`));
         }
       });
@@ -292,7 +284,6 @@ export default function KakaoMap() {
         const response = await fetch(`/api/store/getstore?${params}`);
         if (response.ok) {
           const stores = await response.json();
-          console.log(stores);
           displayStoreMarkers(stores);
         }
 

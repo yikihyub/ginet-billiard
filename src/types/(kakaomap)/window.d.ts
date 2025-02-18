@@ -29,6 +29,21 @@ interface Window {
             address: string,
             callback: (result: any[], status: any) => void
           ) => void;
+          coord2Address: (
+            lng: number,
+            lat: number,
+            callback: (
+              result: Array<{
+                address: {
+                  address_name: string;
+                  region_1depth_name: string;
+                  region_2depth_name: string;
+                  region_3depth_name: string;
+                };
+              }>,
+              status: string
+            ) => void
+          ) => void;
         };
       };
       event: {

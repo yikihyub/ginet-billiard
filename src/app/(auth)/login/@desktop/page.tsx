@@ -22,8 +22,8 @@ export default function LoginPage() {
 
     try {
       const res = await signIn('credentials', {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
+        user_id: formData.get('user_id') as string,
+        userpw: formData.get('userpw') as string,
         redirect: false,
       });
 
@@ -45,14 +45,14 @@ export default function LoginPage() {
         {/* 이메일 로그인 폼 */}
         <div className="w-full max-w-sm space-y-4">
           <input
-            name="email"
+            name="user_id"
             type="email"
             placeholder="이메일"
             className="w-full rounded-lg border p-3"
             required
           />
           <input
-            name="password"
+            name="userpw"
             type="password"
             placeholder="비밀번호"
             className="w-full rounded-lg border p-3"
