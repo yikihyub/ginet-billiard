@@ -1,51 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React from 'react';
+import { Slider } from '@/components/ui/slider';
 
-export default function FilterSection() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGame, setSelectedGame] = useState('all');
+interface FilterSectionProps {
+  maxDistance: number;
+  onMaxDistanceChange: (value: number) => void;
+}
 
+export default function FilterSection({
+  maxDistance,
+  onMaxDistanceChange,
+}: FilterSectionProps) {
   return (
-    <div className="mb-6 space-y-4 rounded-lg bg-white p-4 shadow-sm">
-      <div className="flex gap-4">
-        <Input
-          placeholder="이름 또는 지역으로 검색"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1"
+    <div className="space-y-4 rounded-lg bg-white p-4 shadow-sm">
+      <div>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          검색 반경: {maxDistance}km
+        </label>
+        <Slider
+          value={[maxDistance]}
+          onValueChange={(value) => onMaxDistanceChange(value[0])}
+          min={1}
+          max={50}
+          step={1}
         />
-        <Button variant="outline" className="gap-2">
-          <Filter className="h-4 w-4" />
-          필터
-        </Button>
       </div>
-      <div className="flex gap-2">
-        <Button
-          variant={selectedGame === 'all' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setSelectedGame('all')}
-        >
-          전체
-        </Button>
-        <Button
-          variant={selectedGame === '4ball' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setSelectedGame('4ball')}
-        >
-          4구
-        </Button>
-        <Button
-          variant={selectedGame === '3ball' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setSelectedGame('3ball')}
-        >
-          3구
-        </Button>
-      </div>
+      {/* 추가 필터 옵션들을 여기에 구현할 수 있습니다 */}
     </div>
   );
 }

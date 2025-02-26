@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from '@/app/(auth)/signup/_components/(desktop)/context/sign-in-context';
+import { useForm } from '@/app/(auth)/signin/_components/(desktop)/context/sign-in-context';
 import { TERMS_CONTENT } from '@/constants/(login)/terms/terms-content';
 
 type TermType = keyof typeof TERMS_CONTENT;

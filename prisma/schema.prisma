@@ -10,54 +10,59 @@ datasource db {
 }
 
 model User {
-  id                                                            Int                   @id @default(autoincrement())
-  name                                                          String                @db.VarChar(50)
-  email                                                         String                @unique @db.VarChar(100)
-  password                                                      String?               @db.VarChar(255)
-  phonenum                                                      String?               @db.VarChar(20)
+  id                                                            Int                    @id @default(autoincrement())
+  name                                                          String                 @db.VarChar(50)
+  email                                                         String                 @unique @db.VarChar(100)
+  password                                                      String?                @db.VarChar(255)
+  phonenum                                                      String?                @db.VarChar(20)
   user_three_ability                                            Int
-  preferGame                                                    GameType              @default(FOUR_BALL)
-  loginAt                                                       DateTime              @default(now())
-  logoutAt                                                      DateTime              @default(now())
-  createdAt                                                     DateTime              @default(now())
-  mb_id                                                         String?               @unique(map: "bi_user_mb_id_unique") @db.VarChar
-  mb_today_login                                                DateTime?             @db.Date
-  mb_login_ip                                                   String?               @db.VarChar
+  preferGame                                                    GameType               @default(FOUR_BALL)
+  loginAt                                                       DateTime               @default(now())
+  logoutAt                                                      DateTime               @default(now())
+  createdAt                                                     DateTime               @default(now())
+  mb_id                                                         String?                @unique(map: "bi_user_mb_id_unique") @db.VarChar
+  mb_today_login                                                DateTime?              @db.Date
+  mb_login_ip                                                   String?                @db.VarChar
   mb_memo_cnt                                                   Int?
-  social_id                                                     String?               @db.VarChar(100)
-  profile_image                                                 String?               @db.VarChar(255)
-  provider                                                      String?               @db.VarChar(20)
+  social_id                                                     String?                @db.VarChar(100)
+  profile_image                                                 String?                @db.VarChar(255)
+  provider                                                      String?                @db.VarChar(20)
   location                                                      String?
-  latitude                                                      Float?                @db.Real
-  longitude                                                     Float?                @db.Real
+  latitude                                                      Float?                 @db.Real
+  longitude                                                     Float?                 @db.Real
   user_four_ability                                             Int?
-  agree_terms                                                   Boolean               @default(false)
-  agree_privacy                                                 Boolean               @default(false)
-  agree_location                                                Boolean               @default(false)
+  agree_terms                                                   Boolean                @default(false)
+  agree_privacy                                                 Boolean                @default(false)
+  agree_location                                                Boolean                @default(false)
   agree_marketing                                               Boolean?
-  agreed_at                                                     DateTime?             @default(now()) @db.Timestamp(6)
-  preferred_age_group                                           String[]              @default([])
-  preferred_gender                                              String                @default("")
-  preferred_skill_level                                         String[]              @default([])
-  play_style                                                    String[]              @default([])
-  preferred_time                                                String[]              @default([])
-  address                                                       String?               @db.VarChar
-  favorite_store_ids                                            Int[]                 @default([])
+  agreed_at                                                     DateTime?              @default(now()) @db.Timestamp(6)
+  preferred_age_group                                           String[]               @default([])
+  preferred_gender                                              String                 @default("")
+  preferred_skill_level                                         String[]               @default([])
+  play_style                                                    String[]               @default([])
+  preferred_time                                                String[]               @default([])
+  address                                                       String?                @db.VarChar
+  favorite_store_ids                                            Int[]                  @default([])
+  agree_marketing_privacy                                       Boolean?
+  bi_alert                                                      bi_alert[]
+  bi_alert_log                                                  bi_alert_log[]
   clubs                                                         Club[]
   clubMembers                                                   ClubMember[]
-  bi_match_bi_match_loser_idTobi_user                           bi_match[]            @relation("bi_match_loser_idTobi_user")
-  bi_match_bi_match_player1_idTobi_user                         bi_match[]            @relation("bi_match_player1_idTobi_user")
-  bi_match_bi_match_player2_idTobi_user                         bi_match[]            @relation("bi_match_player2_idTobi_user")
-  bi_match_bi_match_winner_idTobi_user                          bi_match[]            @relation("bi_match_winner_idTobi_user")
-  bi_match_dispute_bi_match_dispute_reporter_idTobi_user        bi_match_dispute[]    @relation("bi_match_dispute_reporter_idTobi_user")
-  bi_match_dispute_bi_match_dispute_resolved_byTobi_user        bi_match_dispute[]    @relation("bi_match_dispute_resolved_byTobi_user")
-  bi_match_evaluation_bi_match_evaluation_evaluator_idTobi_user bi_match_evaluation[] @relation("bi_match_evaluation_evaluator_idTobi_user")
-  bi_match_evaluation_bi_match_evaluation_target_idTobi_user    bi_match_evaluation[] @relation("bi_match_evaluation_target_idTobi_user")
-  bi_match_request_bi_match_request_recipient_idTobi_user       bi_match_request[]    @relation("bi_match_request_recipient_idTobi_user")
-  bi_match_request_bi_match_request_requester_idTobi_user       bi_match_request[]    @relation("bi_match_request_requester_idTobi_user")
-  bi_match_result_bi_match_result_loser_idTobi_user             bi_match_result[]     @relation("bi_match_result_loser_idTobi_user")
-  bi_match_result_bi_match_result_owner_idTobi_user             bi_match_result[]     @relation("bi_match_result_owner_idTobi_user")
-  bi_match_result_bi_match_result_winner_idTobi_user            bi_match_result[]     @relation("bi_match_result_winner_idTobi_user")
+  bi_match_bi_match_loser_idTobi_user                           bi_match[]             @relation("bi_match_loser_idTobi_user")
+  bi_match_bi_match_player1_idTobi_user                         bi_match[]             @relation("bi_match_player1_idTobi_user")
+  bi_match_bi_match_player2_idTobi_user                         bi_match[]             @relation("bi_match_player2_idTobi_user")
+  bi_match_bi_match_winner_idTobi_user                          bi_match[]             @relation("bi_match_winner_idTobi_user")
+  bi_match_dispute_bi_match_dispute_reporter_idTobi_user        bi_match_dispute[]     @relation("bi_match_dispute_reporter_idTobi_user")
+  bi_match_dispute_bi_match_dispute_resolved_byTobi_user        bi_match_dispute[]     @relation("bi_match_dispute_resolved_byTobi_user")
+  bi_match_evaluation_bi_match_evaluation_evaluator_idTobi_user bi_match_evaluation[]  @relation("bi_match_evaluation_evaluator_idTobi_user")
+  bi_match_evaluation_bi_match_evaluation_target_idTobi_user    bi_match_evaluation[]  @relation("bi_match_evaluation_target_idTobi_user")
+  bi_match_participant                                          bi_match_participant[]
+  bi_match_reg                                                  bi_match_reg[]
+  bi_match_request_bi_match_request_recipient_idTobi_user       bi_match_request[]     @relation("bi_match_request_recipient_idTobi_user")
+  bi_match_request_bi_match_request_requester_idTobi_user       bi_match_request[]     @relation("bi_match_request_requester_idTobi_user")
+  bi_match_result_bi_match_result_loser_idTobi_user             bi_match_result[]      @relation("bi_match_result_loser_idTobi_user")
+  bi_match_result_bi_match_result_owner_idTobi_user             bi_match_result[]      @relation("bi_match_result_owner_idTobi_user")
+  bi_match_result_bi_match_result_winner_idTobi_user            bi_match_result[]      @relation("bi_match_result_winner_idTobi_user")
 
   @@unique([social_id, provider], map: "unique_social_id_provider")
   @@map("bi_user")
@@ -405,6 +410,67 @@ model bi_match_result {
   @@schema("public")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_alert {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  title      String    @db.VarChar(200)
+  message    String
+  type       String?   @db.VarChar(50)
+  status     String?   @default("unread") @db.VarChar(20)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  read_at    DateTime? @db.Timestamp(6)
+  category   String?   @db.VarChar(50)
+  bi_user    User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_alert_log {
+  id              Int       @id @default(autoincrement())
+  event_type      String    @db.VarChar(50)
+  description     String?
+  user_id         Int?
+  ip_address      String?   @db.VarChar(45)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
+  additional_data Json?
+  bi_user         User?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model bi_match_reg {
+  id                   Int                    @id @default(autoincrement())
+  match_type           MatchType              @default(ONE_VS_ONE)
+  game_type            game_type_enum         @default(FOUR_BALL)
+  creator_id           Int
+  status               match_status           @default(PENDING)
+  player_count         Int
+  current_players      Int                    @default(1)
+  created_at           DateTime               @default(now()) @db.Timestamp(6)
+  updated_at           DateTime               @default(now()) @db.Timestamp(6)
+  billiard_place       String?                @db.VarChar
+  match_date           DateTime?              @db.Timestamp(6)
+  bi_match_participant bi_match_participant[]
+  bi_user              User                   @relation(fields: [creator_id], references: [id])
+
+  @@schema("public")
+}
+
+model bi_match_participant {
+  id           Int          @id @default(autoincrement())
+  match_id     Int
+  user_id      Int
+  team         Int
+  created_at   DateTime     @default(now()) @db.Timestamp(6)
+  bi_match_reg bi_match_reg @relation(fields: [match_id], references: [id])
+  bi_user      User         @relation(fields: [user_id], references: [id])
+
+  @@unique([match_id, user_id])
+  @@schema("public")
+}
+
 enum GameType {
   THREE_BALL @map("3구")
   FOUR_BALL  @map("4구")
@@ -453,6 +519,13 @@ enum request_status {
   REJECTED
   CANCELLED
   EXPIRED
+
+  @@schema("public")
+}
+
+enum MatchType {
+  ONE_VS_ONE
+  TWO_VS_TWO
 
   @@schema("public")
 }

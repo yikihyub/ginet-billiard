@@ -11,11 +11,11 @@ export default function Footer() {
     return null;
   }
 
-  if (pathname.startsWith('/three-ball/reserve')) {
+  if (pathname.startsWith('/billiard-place/reserve')) {
     return null;
   }
 
-  if (pathname.startsWith('/signup')) {
+  if (pathname.startsWith('/signin')) {
     return null;
   }
 

@@ -2,13 +2,12 @@
 
 import React from 'react';
 
-import MenuToggle from './menu-toggle';
-
 import { usePathname, useRouter } from 'next/navigation';
-import { User, Search, CalendarDays, ChevronLeft } from 'lucide-react';
+import { User, Search, CalendarDays, ChevronLeft, Bell } from 'lucide-react';
 
 import Image from 'next/image';
 import Link from 'next/link';
+import NotificationDropdown from '../(alert)/AlertDropdown';
 
 export default function Nav() {
   const pathname = usePathname(); // 현재 경로 가져오기
@@ -20,7 +19,7 @@ export default function Nav() {
     return null;
   }
 
-  if (pathname.startsWith('/signup')) {
+  if (pathname.startsWith('/signin')) {
     return null;
   }
 
@@ -48,6 +47,9 @@ export default function Nav() {
           </Link>
         </div>
         <ul className="flex space-x-4">
+          <li>
+            <NotificationDropdown />
+          </li>
           <li>
             <Link href="/record" className="hover:underline">
               <Search />
