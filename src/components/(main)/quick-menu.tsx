@@ -36,7 +36,7 @@ export default function QuickMenu() {
     // },
     {
       id: 1,
-      text: '팀매치',
+      text: '매칭등록',
       url: '/team-match',
       icon: (
         <Image
@@ -50,7 +50,7 @@ export default function QuickMenu() {
     {
       id: 2,
       text: '당구장찾기',
-      url: '/three-ball/reserve',
+      url: '/billiard-place/reserve',
       icon: (
         <Image
           src="/main/icons8-snooker-64.png"

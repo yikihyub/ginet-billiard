@@ -53,3 +53,7 @@ export interface MBilliardRoomCardProps {
   room: Store;
   onCloseDrawer: () => void;
 }
+
+export interface ReserveButtonProps {
+  store: Store;
+}

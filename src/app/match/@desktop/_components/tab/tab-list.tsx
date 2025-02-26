@@ -1,33 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useSession } from 'next-auth/react';
+
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+import { User } from '@/types/(match)';
 
 import FilterSection from '../filter/filter-section';
 import UserCard from '../card/user-card';
-
-interface User {
-  mb_id: string;
-  id: number;
-  name: string;
-  profileImage: string;
-  distance: number;
-  location: string;
-  score: {
-    fourBall: number;
-    threeBall: number;
-  };
-  preferredTime: string;
-  level: string;
-  matchCount: number;
-  winRate: number;
-  lastActive: string;
-  preferredGame: string[];
-  user_four_ability: number;
-  user_three_ability: number;
-  preferred_time: string;
-}
+import UserRegisterCard from '../card/user-register-card';
 
 export default function TabList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -94,12 +76,14 @@ export default function TabList() {
         <TabsTrigger value="registered">등록된 상대</TabsTrigger>
       </TabsList>
 
-      <FilterSection
-        maxDistance={maxDistance}
-        onMaxDistanceChange={setMaxDistance}
-      />
-
-      <TabsContent value="nearby" className="space-y-4 bg-gray-50 p-4">
+      <TabsContent
+        value="nearby"
+        className="min-h-[80vh] space-y-4 bg-gray-50 p-4"
+      >
+        <FilterSection
+          maxDistance={maxDistance}
+          onMaxDistanceChange={setMaxDistance}
+        />
         {users.length === 0 ? (
           <div className="py-8 text-center text-gray-500">
             주변에 등록된 상대가 없습니다
@@ -111,6 +95,12 @@ export default function TabList() {
             ))}
           </div>
         )}
+      </TabsContent>
+      <TabsContent
+        value="registered"
+        className="min-h-[80vh] space-y-4 bg-gray-50 p-4"
+      >
+        <UserRegisterCard />
       </TabsContent>
     </Tabs>
   );

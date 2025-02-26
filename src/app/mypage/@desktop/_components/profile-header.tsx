@@ -1,15 +1,39 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import React, { useEffect, useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useSession } from 'next-auth/react';
+import { number } from 'zod';
+
+interface UserData {
+  name?: string;
+  email?: string;
+  user_four_ability?: number;
+  user_three_ability?: number;
+}
 
 export default function ProfileHeader() {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const { data: session } = useSession();
+  const userId = session?.user.mb_id;
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    fetch(`/api/member/getinfomember?userId=${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setUserData(data);
+      });
+  }, [userId]);
 
   return (
     <div
-      className={`px-6 py-4 flex ${
-        isMobile ? "flex-col gap-4" : "items-center justify-between"
+      className={`flex px-6 py-4 ${
+        isMobile ? 'flex-col gap-4' : 'items-center justify-between'
       } border-b`}
     >
       <div className="flex items-center gap-3">
@@ -19,27 +43,33 @@ export default function ProfileHeader() {
         </Avatar>
         <div>
           <div className="flex items-center gap-1">
-            <span className="font-medium">지아이넷</span>
-            <span className="text-gray-400">{">"}</span>
+            {userData && <span className="font-medium">{userData.name}</span>}
+            <span className="text-gray-400">{'>'}</span>
           </div>
-          <div className="text-sm text-gray-500">ginet-korea@gmail.com</div>
+          {userData && (
+            <div className="text-sm text-gray-500">{userData.email}</div>
+          )}
         </div>
       </div>
 
       <div
         className={`flex ${
-          isMobile ? "justify-between" : ""
+          isMobile ? 'justify-between' : ''
         } items-center gap-6`}
       >
         <div className="text-center">
-          <p className="text-sm text-gray-600">쿠폰</p>
-          <p className="font-bold">25</p>
+          <p className="text-sm text-gray-600">3구</p>
+          {userData && (
+            <p className="font-bold">{userData.user_three_ability}</p>
+          )}
         </div>
         <div className="text-center">
-          <p className="text-sm text-gray-600">캐시</p>
-          <p className="font-bold">0</p>
+          <p className="text-sm text-gray-600">4구</p>
+          {userData && (
+            <p className="font-bold">{userData.user_four_ability}</p>
+          )}
         </div>
-        <button className="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium">
+        <button className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium">
           구독하기
         </button>
       </div>

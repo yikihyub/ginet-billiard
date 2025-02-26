@@ -43,6 +43,10 @@ export default function LoginPage() {
     <form onSubmit={handleSubmit}>
       <div className="flex h-screen flex-col items-center justify-center space-y-6 px-4">
         {/* 이메일 로그인 폼 */}
+        {/* 제목 */}
+        <h1 className="text-center text-2xl font-bold">
+          로그인 방법을 선택하세요
+        </h1>
         <div className="w-full max-w-sm space-y-4">
           <input
             name="user_id"
@@ -67,10 +71,15 @@ export default function LoginPage() {
           {error && <p className="text-red-500">{error}</p>}
         </div>
 
-        {/* 제목 */}
-        <h1 className="text-center text-2xl font-bold">
-          로그인 방법을 선택하세요
-        </h1>
+        {/* 구분선 */}
+        <div className="w-full max-w-sm space-y-3">
+          <div className="relative flex items-center justify-center py-4">
+            <Separator className="w-full" />
+            <span className="absolute bg-white px-4 text-sm text-gray-500">
+              또는
+            </span>
+          </div>
+        </div>
 
         {/* 로그인 버튼 그룹 */}
         <div className="w-full max-w-sm space-y-3">
@@ -99,16 +108,8 @@ export default function LoginPage() {
             네이버 로그인
           </Button>
 
-          {/* 구분선 */}
-          <div className="relative flex items-center justify-center py-4">
-            <Separator className="w-full" />
-            <span className="absolute bg-white px-4 text-sm text-gray-500">
-              또는
-            </span>
-          </div>
-
           {/* 이메일 로그인 */}
-          <Button
+          {/* <Button
             className={cn(
               'w-full border bg-white text-black shadow-none hover:bg-gray-100',
               'text-md rounded-lg py-6 font-semibold',
@@ -117,7 +118,7 @@ export default function LoginPage() {
           >
             <Mail className="mr-2 h-6 w-6" />
             이메일 로그인
-          </Button>
+          </Button> */}
         </div>
 
         {/* 하단 링크 */}
@@ -126,7 +127,7 @@ export default function LoginPage() {
             계정 찾기
           </a>
           <Separator orientation="vertical" className="h-4" />
-          <Link href="/signup" className="hover:underline">
+          <Link href="/signin" className="hover:underline">
             회원가입
           </Link>
         </div>

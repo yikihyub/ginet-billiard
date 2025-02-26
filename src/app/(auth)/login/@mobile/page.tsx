@@ -120,7 +120,7 @@ export default function LoginPage() {
         <span className="text-gray-300">|</span>
         <button>비밀번호 찾기</button>
         <span className="text-gray-300">|</span>
-        <button onClick={() => router.push('/signup')}>회원가입</button>
+        <button onClick={() => router.push('/signin')}>회원가입</button>
       </div>
 
       {/* 소셜 로그인 섹션 */}

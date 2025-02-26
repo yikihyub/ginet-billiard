@@ -9,8 +9,9 @@ const Navigation = () => {
 
   const navItems = [
     { name: '홈', path: '/', enabled: true },
-    { name: '당구장찾기', path: '/three-ball/reserve', enabled: true },
+    { name: '당구장찾기', path: '/billiard-place/reserve', enabled: true },
     { name: '매칭등록', path: '/team-match', enabled: true },
+    { name: '공지사항', path: '/notice', enabled: true },
   ];
 
   return (

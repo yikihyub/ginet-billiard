@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { useForm } from '@/app/(auth)/signup/_components/(desktop)/context/sign-in-context';
-import { loadKakaoMapsScript } from '@/lib/loadKakaoMap';
+import { useForm } from '@/app/(auth)/signin/_components/(desktop)/context/sign-in-context';
+import { loadKakaoMapsScript } from '@/lib/kakaomap';
 
 export function useFavoriteBilliard(onComplete: () => void) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -160,7 +160,7 @@ export function useFavoriteBilliard(onComplete: () => void) {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/signup', {
+      const response = await fetch('/api/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,21 +172,12 @@ export function useFavoriteBilliard(onComplete: () => void) {
           matching: state.matching,
           selectedStores: selectedStores,
           agree_terms: state.terms.terms,
+          agree_marketing: state.terms.marketing || false,
+          agree_marketing_privacy: state.terms.privacyOption || false,
           agree_privacy: state.terms.privacy,
           agree_location: state.matching.locationConsent,
         }),
       });
-
-      console.log('userInfo:', state.userInfo);
-      console.log('storeInfo:', state.storeInfo);
-      console.log('location:', state.location);
-      console.log('matching:', state.matching);
-      console.log('selectedStores:', selectedStores);
-      console.log(
-        state.terms.terms,
-        state.terms.privacy,
-        state.matching.locationConsent
-      );
 
       const data = await response.json();
 

@@ -1,17 +1,17 @@
 // app/mypage/_components/sidebar.tsx
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { signOut } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { LogOut } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
-  const isMobile = useMediaQuery("(max-width: 768px)");
-  const isMainPage = pathname === "/mypage";
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMainPage = pathname === '/mypage';
 
   if (isMobile && !isMainPage) {
     return null;
@@ -19,10 +19,10 @@ export function Sidebar() {
 
   const menuGroups = [
     {
-      title: "당구장",
+      title: '당구장',
       items: [
-        { name: "최근 이용한 당구장", path: "/mypage/latest-billiard" },
-        { name: "즐겨찾는 당구장", path: "/mypage/favorite-billiard" },
+        { name: '최근 이용한 당구장', path: '/mypage/latest-billiard' },
+        { name: '즐겨찾는 당구장', path: '/mypage/favorite-billiard' },
       ],
     },
     // {
@@ -35,11 +35,11 @@ export function Sidebar() {
     //   ],
     // },
     {
-      title: "기록",
+      title: '기록',
       items: [
-        { name: "4구 기록", path: "/mypage/four-ball" },
-        { name: "3구 기록", path: "/mypage/three-ball" },
-        { name: "포켓볼 기록", path: "/mypage/pocketball" },
+        { name: '4구 기록', path: '/mypage/four-ball' },
+        { name: '3구 기록', path: '/mypage/billiard-place' },
+        { name: '포켓볼 기록', path: '/mypage/pocketball' },
       ],
     },
     // {
@@ -47,38 +47,38 @@ export function Sidebar() {
     //   items: [{ name: "결제수단", path: "/mypage/@desktop/payment" }],
     // },
     {
-      title: "이벤트",
+      title: '이벤트',
       items: [
-        { name: "친구 초대하기", path: "/mypage/invite" },
-        { name: "매장 정보 제보하기", path: "/mypage/shop-info" },
-        { name: "이벤트 모아보기", path: "/mypage/event" },
+        { name: '친구 초대하기', path: '/mypage/invite' },
+        { name: '매장 정보 제보하기', path: '/mypage/shop-info' },
+        { name: '이벤트 모아보기', path: '/mypage/event' },
       ],
     },
     {
-      title: "고객센터 및 설정",
+      title: '고객센터 및 설정',
       items: [
-        { name: "1:1 문의", path: "/mypage/require" },
-        { name: "공지사항", path: "/mypage/notice" },
-        { name: "자주묻는 질문", path: "/mypage/faq" },
-        { name: "알림설정", path: "/mypage/notice-set" },
-        { name: "차단 친구 관리", path: "/mypage/block-set" },
+        { name: '1:1 문의', path: '/mypage/require' },
+        { name: '공지사항', path: '/mypage/notice' },
+        { name: '자주묻는 질문', path: '/mypage/faq' },
+        { name: '알림설정', path: '/mypage/notice-set' },
+        { name: '차단 친구 관리', path: '/mypage/block-set' },
       ],
     },
   ];
 
   return (
-    <nav className={`${isMobile ? "w-full" : "w-[280px]"} p-6`}>
+    <nav className={`${isMobile ? 'w-full' : 'w-[280px]'} p-6`}>
       {menuGroups.map((group, index) => (
         <div key={index} className="mb-6">
-          <h2 className="text-sm font-semibold text-gray-500 mb-2">
+          <h2 className="mb-2 text-sm font-semibold text-gray-500">
             {group.title}
           </h2>
           {group.items.map((item) => (
             <Link
               key={item.path}
               href={item.path}
-              className={`block p-3 rounded-lg font-semibold ${
-                pathname === item.path ? "bg-gray-100" : "hover:bg-gray-50"
+              className={`block rounded-lg p-3 font-semibold ${
+                pathname === item.path ? 'bg-gray-100' : 'hover:bg-gray-50'
               }`}
             >
               {item.name}
@@ -87,11 +87,11 @@ export function Sidebar() {
         </div>
       ))}
       <Button
-        onClick={() => signOut({ callbackUrl: "/" })} // 로그아웃 후 메인 페이지로 리다이렉트
+        onClick={() => signOut({ callbackUrl: '/' })} // 로그아웃 후 메인 페이지로 리다이렉트
         variant="ghost"
         className="flex items-center gap-2"
       >
-        <LogOut className="w-4 h-4" />
+        <LogOut className="h-4 w-4" />
         로그아웃
       </Button>
     </nav>

@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
     const store = await prisma.bi_store.findMany({
       where: {
         name: {
-          contains: decodeURIComponent(store_name), // 부분 검색 (LIKE '%두꺼비 당구%')
-          mode: 'insensitive', // 대소문자 구분 없음
+          contains: decodeURIComponent(store_name),
+          mode: 'insensitive',
         },
       },
       select: {

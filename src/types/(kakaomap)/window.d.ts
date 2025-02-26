@@ -1,6 +1,7 @@
 interface Window {
   kakao: {
     maps: {
+      Point: any;
       Map: any;
       Marker: any;
       MarkerImage: any;
@@ -47,6 +48,7 @@ interface Window {
         };
       };
       event: {
+        removeListener(idleListener: void): unknown;
         addListener: (target: any, type: string, handler: () => void) => void;
       };
     };

@@ -1,41 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
 import { MapPin, Star, User, Clock } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+
 import MatchRequest from '../modal/match-modal';
 import MatchResultForm from '../modal/match-result';
 
-interface MatchStatus {
-  canRequest: boolean;
-  status?: 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  matchId?: number;
-}
-
-interface MatchUser {
-  id: number;
-  name: string;
-  mb_id: string;
-  profileImage: string;
-  distance: number;
-  location: string;
-  score: {
-    fourBall: number;
-    threeBall: number;
-  };
-  preferredTime: string;
-  level: string;
-  matchCount: number;
-  winRate: number;
-  lastActive: string;
-  preferredGame: string[];
-  user_four_ability: number;
-  user_three_ability: number;
-  preferred_time: string;
-}
+import { MatchStatus, MatchUser } from '@/types/(match)';
 
 export default function UserCard({ user }: { user: MatchUser }) {
   const { data: session } = useSession();
@@ -113,10 +88,10 @@ export default function UserCard({ user }: { user: MatchUser }) {
 
   return (
     <div className="mb-4 rounded-xl bg-white p-6 shadow-sm transition-all hover:shadow-md">
-      <div className="flex items-start gap-4">
-        <Avatar className="h-20 w-20">
+      <div className="flex items-center gap-4">
+        <Avatar className="h-24 w-24">
           <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-100">
-            <User className="h-10 w-10 text-gray-400" />
+            <User className="h-18 w-18 text-gray-400" />
           </div>
         </Avatar>
 
@@ -166,18 +141,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
         <Button variant="outline" className="text-sm">
           프로필 보기
         </Button>
-        {/* <Button className="bg-blue-600 text-sm hover:bg-blue-700">
-          매칭신청
-        </Button> */}
         {renderMatchButton()}
-        {/* <MatchRequest
-          userId={userId!}
-          opponentId={user.mb_id}
-          opponentName={user.name}
-          onRequestSent={() => {
-            console.log(1);
-          }}
-        /> */}
       </div>
     </div>
   );

@@ -2,14 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from 'next-auth/middleware';
 
 // 로그인 없이 접근 가능한 공개 경로 정의
-const publicPaths = ['/', '/api/auth', '/api/login', '/login'];
+const publicPaths = ['/', '/api/auth', '/api/login', '/login', '/signin'];
 
 // 보호된 경로 정의
-const protectedPaths = ['/app', '/dashboard', '/mypage'];
+const protectedPaths = [
+  '/app',
+  '/dashboard',
+  '/mypage',
+  '/billiard-place',
+  '/match',
+  '/team-match',
+];
 
 // API 경로 체크 함수
 const isPublicApiPath = (pathname: string) => {
-  return ['/api/auth', '/api/login'].some((path) => pathname.startsWith(path));
+  return [
+    '/api/auth',
+    '/api/login',
+    '/api/check',
+    '/api/store/allstore',
+    '/api/signin',
+  ].some((path) => pathname.startsWith(path));
 };
 
 // 경로가 보호된 경로인지 확인하는 함수
@@ -53,6 +66,24 @@ export default withAuth(
     const token = (req as any).nextauth?.token;
 
     if (pathname === '/mypage') {
+      if (!token) {
+        return NextResponse.redirect(new URL('/login', req.url));
+      }
+    }
+
+    if (pathname.startsWith('/billiard-place')) {
+      if (!token) {
+        return NextResponse.redirect(new URL('/login', req.url));
+      }
+    }
+
+    if (pathname === '/match') {
+      if (!token) {
+        return NextResponse.redirect(new URL('/login', req.url));
+      }
+    }
+
+    if (pathname === '/team-match') {
       if (!token) {
         return NextResponse.redirect(new URL('/login', req.url));
       }
@@ -106,7 +137,7 @@ export default withAuth(
         if (isProtectedPath(pathname)) {
           return !!token;
         }
-        if (pathname === '/login') {
+        if (pathname === '/login' || pathname === '/signup') {
           return !token;
         }
 

@@ -31,6 +31,7 @@ export async function GET(request: Request) {
         sunday_open: true,
         sunday_close: true,
         weekend_rate: true,
+        has_table: true,
       },
     });
 
