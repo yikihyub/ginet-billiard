@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
           ),
         };
       })
-      .filter((user) => user.distance <= Number(maxDistance))
+      .filter((user: any) => user.distance <= Number(maxDistance))
       .sort((a, b) => a.distance - b.distance);
 
     return NextResponse.json(usersWithDistance);
