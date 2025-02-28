@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     });
 
     const usersWithDistance = allUsers
-      .map((user) => {
+      .map((user: any) => {
         if (
           !user.latitude ||
           !user.longitude ||
