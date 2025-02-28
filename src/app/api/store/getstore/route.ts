@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 응답 데이터 포맷 변환
-    const formattedStores = stores.map((store) => ({
+    const formattedStores = stores.map((store: any) => ({
       ...store,
       latitude: parseFloat(store.coord_y || '0'),
       longitude: parseFloat(store.coord_x || '0'),
