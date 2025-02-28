@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 클라이언트에 필요한 형식으로 데이터 가공
-    const formattedMatches = matches.map((match) => {
+    const formattedMatches = matches.map((match: any) => {
       const player1 = match.bi_user_bi_match_player1_idTobi_user;
       const player2 = match.bi_user_bi_match_player2_idTobi_user;
 
