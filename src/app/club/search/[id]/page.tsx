@@ -1,10 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { MapPin, UserRound, ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { MapPin, UserRound } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
-export default function ClubDetailPage({ params }: { params: { id: string } }) {
+export default function ClubDetailPage() {
+  const { id } = useParams();
+  console.log(id);
   return (
     <div className="h-[100vh] bg-white">
       {/* 메인 컨텐츠 */}

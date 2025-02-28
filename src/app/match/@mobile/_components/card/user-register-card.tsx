@@ -41,6 +41,7 @@ export default function UserRegisterCard() {
       const data = await response.json();
       setPlayers(data);
     } catch (error) {
+      console.log(error);
       toast({
         title: '불러오기 실패',
         description: '선수 목록을 불러오는데 실패했습니다.',

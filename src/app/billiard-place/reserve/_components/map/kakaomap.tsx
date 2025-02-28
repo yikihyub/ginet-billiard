@@ -24,6 +24,10 @@ export default function KakaoMap() {
     null
   );
 
+  if (isLoading) {
+    <div>loading...</div>;
+  }
+
   const displayStoreMarkers = useCallback(async (stores: Store[]) => {
     if (!mapInstance.current) return;
 

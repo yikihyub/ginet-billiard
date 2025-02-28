@@ -14,6 +14,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
   const userId = session?.user.mb_id;
   const [matchStatus, setMatchStatus] = useState<MatchStatus>({
     canRequest: true,
+    isRequester: false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +31,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
         canRequest: !data.existingMatch,
         status: data.existingMatch?.match_status,
         matchId: data.existingMatch?.match_id,
+        isRequester: data.isRequester,
       });
     } catch (error) {
       console.error('매치 상태 확인 오류:', error);

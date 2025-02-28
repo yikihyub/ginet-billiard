@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,7 +22,9 @@ export default function BilliardSelect({
   value,
 }: BilliardSelectProps) {
   const mapRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [map, setMap] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [marker, setMarker] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [stores, setStores] = useState<Store[]>([]);
@@ -30,6 +34,9 @@ export default function BilliardSelect({
     value || null
   );
 
+  if (isMapLoading) {
+    <div>loading..</div>;
+  }
   // 카카오맵 초기화
   useEffect(() => {
     const initializeMap = async () => {
@@ -86,6 +93,7 @@ export default function BilliardSelect({
 
     const geocoder = new window.kakao.maps.services.Geocoder();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     geocoder.addressSearch(address, (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
@@ -129,6 +137,7 @@ export default function BilliardSelect({
   };
 
   // 디바운스 함수
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function debounce<T extends (...args: any[]) => void>(
     func: T,
     delay: number

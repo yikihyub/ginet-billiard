@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
       play_style: matching.playStyle,
       preferred_time: matching.preferredTime,
       favorite_store_ids: selectedStores.map((store: any) => store.id),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       agree_marketing: agree_marketing || false,
       agree_marketing_privacy: agree_marketing_privacy || false,
     };

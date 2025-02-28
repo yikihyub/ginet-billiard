@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const { userId, latitude, longitude } = await request.json();
 
-    const updatedUser = await prisma.$executeRaw`
+    await prisma.$executeRaw`
       UPDATE "User"
       SET 
         location = ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)::geography,

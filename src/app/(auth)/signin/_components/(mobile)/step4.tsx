@@ -1,9 +1,8 @@
 // Step2.tsx
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -11,28 +10,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import * as z from "zod";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import * as z from 'zod';
 
 // 폼 유효성 검증 스키마
 const signupSchema = z
   .object({
-    name: z.string().min(2, "이름을 입력해주세요"),
-    email: z.string().email("올바른 이메일을 입력해주세요"),
-    password: z.string().min(8, "비밀번호는 8자 이상이어야 합니다"),
+    name: z.string().min(2, '이름을 입력해주세요'),
+    email: z.string().email('올바른 이메일을 입력해주세요'),
+    password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다'),
     passwordConfirm: z.string(),
-    nickname: z.string().min(2, "닉네임을 입력해주세요"),
+    nickname: z.string().min(2, '닉네임을 입력해주세요'),
     phone: z
       .string()
       .regex(
         /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/,
-        "올바른 전화번호를 입력해주세요"
+        '올바른 전화번호를 입력해주세요'
       ),
   })
   .refine((data) => data.password === data.passwordConfirm, {
-    message: "비밀번호가 일치하지 않습니다",
-    path: ["passwordConfirm"],
+    message: '비밀번호가 일치하지 않습니다',
+    path: ['passwordConfirm'],
   });
 
 // 타입 추론을 위한 타입 정의
@@ -46,12 +45,12 @@ export default function Step4({
   const form = useForm<FormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      nickname: "",
-      phone: "",
+      name: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      nickname: '',
+      phone: '',
     },
   });
 
@@ -78,7 +77,7 @@ export default function Step4({
               <FormControl>
                 <Input
                   placeholder="이름을 입력해주세요"
-                  className="w-full p-5 h-12 border-none rounded-lg text-base bg-gray-100"
+                  className="h-12 w-full rounded-lg border-none bg-gray-100 p-5 text-base"
                   {...field}
                 />
               </FormControl>
@@ -97,7 +96,7 @@ export default function Step4({
                 <Input
                   placeholder="이메일을 입력해주세요"
                   type="email"
-                  className="w-full p-5 h-12 border-none rounded-lg text-base bg-gray-100"
+                  className="h-12 w-full rounded-lg border-none bg-gray-100 p-5 text-base"
                   {...field}
                 />
               </FormControl>
@@ -116,7 +115,7 @@ export default function Step4({
                 <Input
                   placeholder="비밀번호를 입력해주세요"
                   type="password"
-                  className="w-full p-5 h-12 border-none rounded-lg text-base bg-gray-100"
+                  className="h-12 w-full rounded-lg border-none bg-gray-100 p-5 text-base"
                   {...field}
                 />
               </FormControl>
@@ -135,7 +134,7 @@ export default function Step4({
                 <Input
                   placeholder="비밀번호를 다시 입력해주세요"
                   type="password"
-                  className="w-full p-5 h-12 border-none rounded-lg text-base bg-gray-100"
+                  className="h-12 w-full rounded-lg border-none bg-gray-100 p-5 text-base"
                   {...field}
                 />
               </FormControl>
@@ -153,7 +152,7 @@ export default function Step4({
               <FormControl>
                 <Input
                   placeholder="닉네임을 입력해주세요"
-                  className="w-full p-5 h-12 border-none rounded-lg text-base bg-gray-100"
+                  className="h-12 w-full rounded-lg border-none bg-gray-100 p-5 text-base"
                   {...field}
                 />
               </FormControl>

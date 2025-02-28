@@ -1,15 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronRight, Zap, Users, Calendar, Globe } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, Check } from 'lucide-react';
+import { Zap, Users, Calendar, Globe, AlertCircle, Check } from 'lucide-react';
 
-interface GuidelineCheck {
-  checked: boolean;
-}
+import { cn } from '@/lib/utils';
 
 type ClubType = '3구' | '4구' | '포켓볼' | '종합';
 
@@ -25,7 +21,6 @@ interface FormData {
 
 export default function RegisterMobilePage() {
   const [step, setStep] = useState(1);
-  const [showTypeSelection, setShowTypeSelection] = useState(false);
   const [guidelineChecked, setGuidelineChecked] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     type: null,
@@ -85,7 +80,7 @@ export default function RegisterMobilePage() {
                   <AlertCircle className="h-6 w-6 text-red-500" />
                 </div>
                 <h2 className="text-xl font-bold">
-                  모두가 즐거운 소셜링이
+                  모두가 즐거운 당구장 동호회가
                   <br />될 수 있도록 함께 지켜주세요
                 </h2>
               </div>
@@ -139,7 +134,7 @@ export default function RegisterMobilePage() {
                   {guidelineChecked && <Check className="h-4 w-4 text-white" />}
                 </div>
                 <span className="text-sm">
-                  소셜링 이용 규칙을 지키겠습니다!
+                  당구장 동호회 이용 규칙을 지키겠습니다!
                 </span>
               </button>
             </main>

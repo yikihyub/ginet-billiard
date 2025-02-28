@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { Mail, Apple, MessageSquare, Rss } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {

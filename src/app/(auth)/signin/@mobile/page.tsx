@@ -1,19 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Step1 from '../_components/(mobile)/step1';
 import Step2 from '../_components/(mobile)/step2';
 import Step3 from '../_components/(mobile)/step3';
 import Step4 from '../_components/(mobile)/step4';
 import Step5 from '../_components/(mobile)/step5';
+import { UserInfo, FormData } from '@/types/(signin)/mobile';
 
 export default function SignupPage() {
-  const router = useRouter();
   const totalSteps = 6;
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     agreements: {
       all: false,
       age: false,
@@ -66,7 +65,7 @@ export default function SignupPage() {
     });
   };
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: UserInfo) => {
     setFormData((prev) => ({
       ...prev,
       userInfo: data,

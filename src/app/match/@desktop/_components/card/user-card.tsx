@@ -17,6 +17,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
   const userId = session?.user.mb_id;
   const [matchStatus, setMatchStatus] = useState<MatchStatus>({
     canRequest: true,
+    isRequester: false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +26,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
 
     try {
       const response = await fetch(
-        `/api/match/status?player1_id=${userId}&player2_id=${user.mb_id}`
+        `/api/match/status?currentUserId=${userId}&otherUserId=${user.mb_id}`
       );
       const data = await response.json();
 
@@ -33,9 +34,43 @@ export default function UserCard({ user }: { user: MatchUser }) {
         canRequest: !data.existingMatch,
         status: data.existingMatch?.match_status,
         matchId: data.existingMatch?.match_id,
+        isRequester: data.isRequester, // API에서 받은 역할 정보 저장
       });
     } catch (error) {
       console.error('매치 상태 확인 오류:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMatchResponse = async (
+    matchId: number,
+    response: 'ACCEPT' | 'REJECT'
+  ) => {
+    if (!userId) return;
+
+    try {
+      setLoading(true);
+
+      const apiResponse = await fetch(`/api/match/response`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          matchId,
+          response,
+          userId,
+        }),
+      });
+
+      if (!apiResponse.ok) {
+        throw new Error('매치 응답 처리 중 오류가 발생했습니다.');
+      }
+      // const matchData = await apiResponse.json();
+      checkMatchStatus();
+    } catch (error) {
+      console.error('매치 응답 처리 오류:', error);
     } finally {
       setLoading(false);
     }
@@ -52,7 +87,33 @@ export default function UserCard({ user }: { user: MatchUser }) {
 
     switch (matchStatus.status) {
       case 'PENDING':
-        return <Button variant="outline">매칭 대기중</Button>;
+        // 내가 요청자인지 수신자인지에 따라 다른 UI 표시
+        if (matchStatus.isRequester) {
+          // 내가 요청자라면 대기중 버튼 표시
+          return <Button variant="outline">매칭 대기중</Button>;
+        } else {
+          // 내가 수신자라면 수락/거절 버튼 표시
+          return (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() =>
+                  handleMatchResponse(matchStatus.matchId!, 'ACCEPT')
+                }
+              >
+                수락
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() =>
+                  handleMatchResponse(matchStatus.matchId!, 'REJECT')
+                }
+              >
+                거절
+              </Button>
+            </div>
+          );
+        }
 
       case 'ACCEPTED':
         return <Button variant="outline">매칭 성사됨</Button>;

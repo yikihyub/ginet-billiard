@@ -42,8 +42,8 @@ export default withAuth(
 
     // API 경로 처리
     if (pathname.startsWith('/api')) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const token = (req as any).nextauth?.token;
-
       // 공개 API 경로는 통과
       if (isPublicApiPath(pathname)) {
         return NextResponse.next();
@@ -63,8 +63,8 @@ export default withAuth(
     }
 
     // 토큰에서 사용자 정보 접근
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const token = (req as any).nextauth?.token;
-
     if (pathname === '/mypage') {
       if (!token) {
         return NextResponse.redirect(new URL('/login', req.url));

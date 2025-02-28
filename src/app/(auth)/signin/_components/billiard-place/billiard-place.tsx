@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { loadKakaoMapsScript } from "@/lib/loadKakaoMap";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { useEffect, useRef, useState } from 'react';
+import { loadKakaoMapsScript } from '@/lib/kakaomap';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface KakaoMapModalProps {
   open: boolean;
   onClose: () => void;
   onSelectPlace: (place: any) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }
 
 export function KakaoMapModal({
@@ -18,15 +19,18 @@ export function KakaoMapModal({
 }: KakaoMapModalProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
-  const [searchKeyword, setSearchKeyword] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [places, setPlaces] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   // 장소 검색 함수
   const searchPlaces = (keyword: string) => {
     if (!map) return;
 
     const ps = new window.kakao.maps.services.Places();
-    ps.keywordSearch(keyword + " 당구장", (data: any, status: any) => {
+    ps.keywordSearch(keyword + ' 당구장', (data: any, status: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (status === window.kakao.maps.services.Status.OK) {
         setPlaces(data);
 
@@ -82,8 +86,8 @@ export function KakaoMapModal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogTitle></DialogTitle>
-      <DialogContent className="max-w-3xl h-[80vh]">
-        <div className="space-y-4 h-full">
+      <DialogContent className="h-[80vh] max-w-3xl">
+        <div className="h-full space-y-4">
           <h2 className="text-xl font-bold">당구장 검색</h2>
 
           <div className="flex gap-2">
@@ -92,27 +96,27 @@ export function KakaoMapModal({
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               onKeyPress={(e) =>
-                e.key === "Enter" && searchPlaces(searchKeyword)
+                e.key === 'Enter' && searchPlaces(searchKeyword)
               }
               placeholder="지역명으로 검색 (예: 강남역)"
-              className="flex-1 p-2 border rounded"
+              className="flex-1 rounded border p-2"
             />
             <button
               onClick={() => searchPlaces(searchKeyword)}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="rounded bg-blue-500 px-4 py-2 text-white"
             >
               검색
             </button>
           </div>
 
           <div className="flex h-[calc(100%-120px)]">
-            <div ref={mapRef} className="w-2/3 h-full" />
-            <div className="w-1/3 h-full overflow-y-auto pl-4">
+            <div ref={mapRef} className="h-full w-2/3" />
+            <div className="h-full w-1/3 overflow-y-auto pl-4">
               {places.map((place) => (
                 <div
                   key={place.id}
                   onClick={() => onSelectPlace(place)}
-                  className="p-3 border-b cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer border-b p-3 hover:bg-gray-50"
                 >
                   <h3 className="font-medium">{place.place_name}</h3>
                   <p className="text-sm text-gray-600">{place.address_name}</p>

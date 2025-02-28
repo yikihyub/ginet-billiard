@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useSession } from 'next-auth/react';
-import { number } from 'zod';
 
 interface UserData {
   name?: string;
@@ -70,7 +69,7 @@ export default function ProfileHeader() {
           )}
         </div>
         <button className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium">
-          구독하기
+          정보수정
         </button>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { Store } from '@/types/(reserve)';
-import { MapBounds, KakaoMapEventListener } from '@/types/(kakaomap)/kakao';
+import { MapBounds } from '@/types/(kakaomap)/kakao';
 
 // x,y 좌표 변환
 export const addressToCoords = async (
@@ -8,6 +8,7 @@ export const addressToCoords = async (
   return new Promise((resolve, reject) => {
     const geocoder = new window.kakao.maps.services.Geocoder();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     geocoder.addressSearch(address, (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
         if (result && result[0]) {

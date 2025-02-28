@@ -39,7 +39,7 @@ export const generateTimeSlots = (startTime: string, endTime: string) => {
   const start = new Date(`2000-01-01 ${startTime}`);
   const end = new Date(`2000-01-01 ${endTime}`);
 
-  let current = new Date(start);
+  const current = new Date(start);
   while (current <= end) {
     slots.push(
       current.toLocaleTimeString('ko-KR', {

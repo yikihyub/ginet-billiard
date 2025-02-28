@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 import { ko } from 'date-fns/locale';
 
 interface MatchRequestProps {
@@ -39,6 +39,7 @@ export default function MatchRequest({
   opponentName,
   onRequestSent,
 }: MatchRequestProps) {
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>('');
@@ -79,6 +80,11 @@ export default function MatchRequest({
       if (!response.ok) {
         throw new Error('매칭 신청에 실패했습니다.');
       }
+      toast({
+        title: '매칭신청',
+        description: '매칭신청이 성공적으로 완료되었습니다!',
+        variant: 'default',
+      });
 
       setIsOpen(false);
       if (onRequestSent) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronRight, Zap, Users, Calendar } from 'lucide-react';
+import { Zap, Users, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type ClubType = '3구' | '4구' | '포켓볼' | '종합';

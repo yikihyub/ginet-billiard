@@ -21,6 +21,7 @@ export function BilliardRoomCard({ room }: BilliardRoomCardProps) {
 
       // 주소로 좌표 검색
       geocoder.addressSearch(room.address, (result: any, status: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (status === window.kakao.maps.services.Status.OK) {
           const coords = {
             lat: Number(result[0].y),

@@ -19,6 +19,7 @@ export default function Step2() {
   const [timer, setTimer] = useState(180);
   const [isVerified, setIsVerified] = useState(false);
   const recaptchaVerifier = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   useEffect(() => {
     // 기존 verifier가 있다면 clear
@@ -62,6 +63,7 @@ export default function Step2() {
       setIsSent(true);
       startTimer();
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       console.error('Error details:', error.code, error.message);
       alert(error.message || '인증번호 발송에 실패했습니다.');
     }

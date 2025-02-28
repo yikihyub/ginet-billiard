@@ -44,7 +44,9 @@ export interface FormState {
     searchKeyword: string;
     searchResults: BilliardStore[];
     showResults: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     markers: any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mapInstance: any;
   };
 }

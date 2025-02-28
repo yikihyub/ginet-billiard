@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { userId } = await params;
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
     const mbId = userId;
 
     if (!mbId) {
@@ -30,7 +28,6 @@ export async function GET(
     }
 
     // URL에서 쿼리 파라미터 추출
-    const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = parseInt(searchParams.get('offset') || '0');
     const status = searchParams.get('status'); // 'read', 'unread', null (모두)

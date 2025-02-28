@@ -101,6 +101,14 @@ export async function POST(request: NextRequest) {
 
       // 6. 알림 저장
 
+      // data 필드 준비
+      const alertData = {
+        matchId: match.match_id,
+        gameType: game_type,
+        requesterId: player1_id,
+        recipient_id: player2_id,
+      };
+
       // 상대방 알람
       const alert = await tx.bi_alert.create({
         data: {
@@ -109,6 +117,8 @@ export async function POST(request: NextRequest) {
           message: fullAlertMessage,
           type: 'match_request',
           status: 'unread',
+          category: '매칭',
+          data: alertData,
         },
       });
 

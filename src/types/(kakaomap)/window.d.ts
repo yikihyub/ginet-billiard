@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface Window {
   kakao: {
     maps: {
@@ -54,3 +55,4 @@ interface Window {
     };
   };
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any

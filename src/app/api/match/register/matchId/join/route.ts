@@ -1,12 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(
-  request: Request,
-  { params }: { params: { matchId: string } }
-) {
+export async function POST(request: NextRequest) {
   try {
-    const matchId = parseInt(params.matchId);
+    const { searchParams } = new URL(request.url);
+    const matchId = parseInt(searchParams.get('matchId') || '');
     const { playerInfo } = await request.json();
 
     // 1. 매치 정보 조회

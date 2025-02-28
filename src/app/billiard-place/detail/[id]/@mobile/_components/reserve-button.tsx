@@ -28,12 +28,14 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
   const [selectedDuration, setSelectedDuration] = useState(2);
   const [selectedType, setSelectedType] = useState('4구');
 
+  console.log(showReservationForm);
+
   const generateTimeSlots = (startTime: string, endTime: string) => {
     const slots = [];
     const start = new Date(`2000-01-01 ${startTime}`);
     const end = new Date(`2000-01-01 ${endTime}`);
 
-    let current = new Date(start);
+    const current = new Date(start);
     while (current <= end) {
       slots.push(
         current.toLocaleTimeString('ko-KR', {
@@ -57,16 +59,16 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
     return slotDate < now;
   };
 
-  const calculateEndTime = (startTime: string, durationHours: number) => {
-    const [hours, minutes] = startTime.split(':').map(Number);
-    const endDate = new Date();
-    endDate.setHours(hours + durationHours, minutes);
-    return endDate.toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
+  // const calculateEndTime = (startTime: string, durationHours: number) => {
+  //   const [hours, minutes] = startTime.split(':').map(Number);
+  //   const endDate = new Date();
+  //   endDate.setHours(hours + durationHours, minutes);
+  //   return endDate.toLocaleTimeString('ko-KR', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     hour12: false,
+  //   });
+  // };
 
   // 운영 시간 내의 시간 슬롯 생성
   const timeSlots = useMemo(() => {
@@ -81,41 +83,41 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
     }
   }, [timeSlots]);
 
-  const handleReservation = async (formData: {
-    customer_name: string;
-    phone: string;
-  }) => {
-    try {
-      const response = await fetch('/api/reserve/postreserve', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          store_id: store.id,
-          table_number: selectedTable,
-          customer_name: formData.customer_name,
-          phone: formData.phone,
-          reservation_date: new Date().toISOString().split('T')[0], // 오늘 날짜
-          start_time: selectedTime,
-          end_time: calculateEndTime(selectedTime!, selectedDuration),
-        }),
-      });
+  // const handleReservation = async (formData: {
+  //   customer_name: string;
+  //   phone: string;
+  // }) => {
+  //   try {
+  //     const response = await fetch('/api/reserve/postreserve', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         store_id: store.id,
+  //         table_number: selectedTable,
+  //         customer_name: formData.customer_name,
+  //         phone: formData.phone,
+  //         reservation_date: new Date().toISOString().split('T')[0], // 오늘 날짜
+  //         start_time: selectedTime,
+  //         end_time: calculateEndTime(selectedTime!, selectedDuration),
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error('예약 처리 중 오류가 발생했습니다.');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('예약 처리 중 오류가 발생했습니다.');
+  //     }
 
-      alert('예약이 완료되었습니다!');
-      setShowReservationForm(false);
-    } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : '예약 처리 중 오류가 발생했습니다.'
-      );
-    }
-  };
+  //     alert('예약이 완료되었습니다!');
+  //     setShowReservationForm(false);
+  //   } catch (error) {
+  //     alert(
+  //       error instanceof Error
+  //         ? error.message
+  //         : '예약 처리 중 오류가 발생했습니다.'
+  //     );
+  //   }
+  // };
 
   const gameTypes = ['3구', '4구', '포켓볼'];
 
