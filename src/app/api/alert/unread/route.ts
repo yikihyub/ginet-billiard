@@ -27,9 +27,9 @@ export async function GET() {
       },
       take: 10, // 최신 10개만 가져오기
     });
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return NextResponse.json({
-      notifications: unreadNotifications.map((notification) => ({
+      notifications: unreadNotifications.map((notification: any) => ({
         id: notification.id,
         type: notification.type || 'general',
         title: notification.title,
