@@ -12,16 +12,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function NotificationDropdown() {
-  const router = useRouter();
-
   const { notifications, unreadCount, loading, markAsRead } =
     useNotificationsPolling();
   const [isOpen, setIsOpen] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleNotificationClick = (notification: any) => {
     if (notification.status === 'unread') {
       markAsRead(notification.id);
@@ -107,7 +105,7 @@ export default function NotificationDropdown() {
             {notifications.length > 0 && (
               <div className="border-t p-2 text-center">
                 <Link
-                  href="/mypage/alert"
+                  href="/alert"
                   className="text-sm text-blue-500 hover:underline"
                 >
                   모든 알림 보기

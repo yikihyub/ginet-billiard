@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React, { Suspense } from 'react';
 export default function RootLayout({
   mobile,
   desktop,
@@ -11,9 +11,13 @@ export default function RootLayout({
   return (
     <>
       {/* 모바일 사이드바 */}
-      <div className="md:hidden w-full">{mobile}</div>
-      {/* 데스크톱 사이드바 */}
-      <div className="hidden md:block">{desktop}</div>
+      <Suspense fallback={<div>Loading Desktop... </div>}>
+        <div className="w-full md:hidden">{mobile}</div>
+      </Suspense>
+      <Suspense fallback={<div>Loading Mobile... </div>}>
+        {/* 데스크톱 사이드바 */}
+        <div className="hidden md:block">{desktop}</div>
+      </Suspense>
     </>
   );
 }

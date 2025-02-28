@@ -18,7 +18,9 @@ export function useNotificationsPolling() {
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/alert/${userId}?limit=20`);
+      const response = await fetch(
+        `/api/alert/getalert?userId=${userId}&limit=20`
+      );
 
       if (!response.ok) {
         throw new Error('알림을 불러오는데 실패했습니다.');

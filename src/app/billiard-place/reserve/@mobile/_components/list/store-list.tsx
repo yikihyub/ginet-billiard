@@ -28,7 +28,7 @@ export function StoreList({ onCloseDrawer }: StoreListProps) {
       return (
         <div className="py-8 text-center">
           <p className="text-gray-500">
-            "{searchQuery}"에 대한 검색 결과가 없습니다.
+            &quot;{searchQuery}&quot;에 대한 검색 결과가 없습니다.
           </p>
           <p className="mt-2 text-sm text-gray-400">
             다른 검색어를 사용해보세요.
@@ -45,6 +45,7 @@ export function StoreList({ onCloseDrawer }: StoreListProps) {
 
   const handleRoomClick = (roomId: number) => {
     if (onCloseDrawer) {
+      console.log(roomId);
       onCloseDrawer();
     }
   };
@@ -53,7 +54,7 @@ export function StoreList({ onCloseDrawer }: StoreListProps) {
     <div>
       {searchQuery && (
         <p className="mb-4 mt-3 text-sm text-gray-500">
-          "{searchQuery}" 검색 결과: {filteredRooms.length}개
+          &quot;{searchQuery}&quot; 검색 결과: {filteredRooms.length}개
         </p>
       )}
       {filteredRooms.map((room) => (

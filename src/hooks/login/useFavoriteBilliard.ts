@@ -85,12 +85,14 @@ export function useFavoriteBilliard(onComplete: () => void) {
         });
       }
     } catch (error) {
+      console.log(error);
       setError('검색 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addBilliardStore = (store: any) => {
     if (selectedStores.length >= 3) {
       setError('최대 3개의 당구장만 등록할 수 있습니다.');

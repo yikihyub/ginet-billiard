@@ -1,7 +1,18 @@
-export default function MobileLayout({
-  children,
+import React from 'react';
+
+export default function AlertRootLayout({
+  mobile,
+  desktop,
 }: {
-  children: React.ReactNode;
+  mobile: React.ReactNode;
+  desktop: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div>
+      {/* 모바일 */}
+      <div className="md:hidden">{mobile}</div>
+      {/* 데스크톱 */}
+      <div className="hidden md:block">{desktop}</div>
+    </div>
+  );
 }

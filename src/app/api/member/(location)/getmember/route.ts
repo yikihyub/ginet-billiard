@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { calculateDistance, toRad } from '@/lib/utils';
+import { calculateDistance } from '@/lib/utils';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;

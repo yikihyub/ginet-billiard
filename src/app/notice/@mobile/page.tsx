@@ -1,25 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 
 const notices = [
   {
     id: 1,
     date: '2025-02-12',
-    title: '29CM 고객센터 전화번호 변경 안내',
+    title: '고객센터 전화번호 변경 안내',
   },
   {
     id: 2,
     date: '2025-02-12',
-    title: '29CM 안전 거래 정책 위반 행위에 대한 조사 및 제재 사항 안내',
+    title: '안전 거래 정책 위반 행위에 대한 조사 및 제재 사항 안내',
   },
   {
     id: 3,
     date: '2025-02-05',
-    title: 'SSG 페이 결제 수단 제외 안내',
+    title: '페이 결제 수단 제외 안내',
   },
   {
     id: 4,

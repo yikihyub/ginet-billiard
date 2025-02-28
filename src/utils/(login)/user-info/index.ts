@@ -48,6 +48,7 @@ export const verifyCode = async (
   code: string
 ): Promise<boolean> => {
   return new Promise((resolve) => {
+    console.log(phone);
     setTimeout(() => {
       resolve(code === '1234'); // 테스트용 인증번호
     }, 1000);

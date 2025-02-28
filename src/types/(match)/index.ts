@@ -57,6 +57,7 @@ export interface OptionType {
 
 export interface MatchStatus {
   canRequest: boolean;
+  isRequester: boolean;
   status?: 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
   matchId?: number;
 }

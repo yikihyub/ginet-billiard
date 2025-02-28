@@ -41,6 +41,8 @@ export function useMatching(onNext: () => void) {
         },
       });
     } catch (error) {
+      console.log(error);
+
       setError(
         '위치 정보를 가져오는데 실패했습니다. 브라우저 설정을 확인해주세요.'
       );

@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { User, Search, CalendarDays, ChevronLeft, Bell } from 'lucide-react';
+import { User, Search, CalendarDays, ChevronLeft } from 'lucide-react';
 
 import Image from 'next/image';
 import Link from 'next/link';

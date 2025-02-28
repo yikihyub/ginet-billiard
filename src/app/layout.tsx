@@ -3,6 +3,9 @@ import Nav from '@/components/(layout)/nav';
 import Footer from '@/components/(layout)/footer';
 
 import { Providers } from './providers';
+import { NotificationProvider } from '@/components/(provider)/notification-context';
+import ServiceWorkerRegistration from '@/components/(alert)/service-worker-registration';
+
 import type { Metadata } from 'next';
 
 import './globals.css';
@@ -35,7 +38,10 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <Nav />
-          <main>{children}</main>
+          <NotificationProvider>
+            <main>{children}</main>
+            <ServiceWorkerRegistration />
+          </NotificationProvider>
           <Footer />
         </body>
       </Providers>

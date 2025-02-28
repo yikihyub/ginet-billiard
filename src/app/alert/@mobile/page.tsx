@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MoreHorizontal, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSession } from 'next-auth/react';
@@ -45,7 +45,7 @@ export default function AlertPage() {
       setIsLoading(true);
 
       // 카테고리별 필터링
-      let apiUrl = `/api/alert/${session.user.mb_id}`;
+      let apiUrl = `/api/alert/getalert?userId=${session.user.mb_id}`;
       if (activeTab !== '전체') {
         apiUrl += `?category=${encodeURIComponent(activeTab)}`;
       }

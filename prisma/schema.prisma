@@ -421,6 +421,7 @@ model bi_alert {
   created_at DateTime? @default(now()) @db.Timestamp(6)
   read_at    DateTime? @db.Timestamp(6)
   category   String?   @db.VarChar(50)
+  data       Json?
   bi_user    User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
@@ -501,6 +502,7 @@ enum match_status {
   IN_PROGRESS
   COMPLETED
   EVALUATE
+  REJECTED
 
   @@schema("public")
 }

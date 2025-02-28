@@ -16,6 +16,10 @@ export default function Step5() {
   const [ageGroup, setAgeGroup] = useState('');
   const [region, setRegion] = useState('');
 
+  const handleClick = () => {
+    setRegion('테스트입니다.');
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold">
@@ -72,7 +76,12 @@ export default function Step5() {
 
         <div>
           {/* 지역 선택 */}
-          <label className="text-sm font-medium text-gray-700">선호 지역</label>
+          <label
+            className="text-sm font-medium text-gray-700"
+            onClick={handleClick}
+          >
+            선호 지역
+          </label>
           <RegionSelect />
         </div>
       </div>

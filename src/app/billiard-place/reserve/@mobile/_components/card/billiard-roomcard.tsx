@@ -25,6 +25,7 @@ export function BilliardRoomCard({
 
       // 주소로 좌표 검색
       geocoder.addressSearch(room.address, (result: any, status: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (status === window.kakao.maps.services.Status.OK) {
           const coords = {
             lat: Number(result[0].y),
@@ -32,7 +33,7 @@ export function BilliardRoomCard({
           };
 
           // Context를 통해 위치 업데이트
-          setLocation(coords.lat, coords.lng);
+          setLocation(coords.lat, coords.lng, 3);
 
           // Drawer 닫기
           onCloseDrawer();

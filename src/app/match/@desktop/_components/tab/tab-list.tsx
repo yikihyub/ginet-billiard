@@ -10,6 +10,7 @@ import { User } from '@/types/(match)';
 import FilterSection from '../filter/filter-section';
 import UserCard from '../card/user-card';
 import UserRegisterCard from '../card/user-register-card';
+import MyMatchesCard from '../card/my-match-card';
 
 export default function TabList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -71,9 +72,11 @@ export default function TabList() {
 
   return (
     <Tabs defaultValue="nearby" className="space-y-4">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="nearby">내 주변 상대</TabsTrigger>
-        <TabsTrigger value="registered">등록된 상대</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-4">
+        <TabsTrigger value="nearby">주변 상대</TabsTrigger>
+        <TabsTrigger value="registered">등록 경기</TabsTrigger>
+        <TabsTrigger value="my-matches">나의 경기</TabsTrigger>
+        <TabsTrigger value="ranking">랭킹</TabsTrigger>
       </TabsList>
 
       <TabsContent
@@ -101,6 +104,18 @@ export default function TabList() {
         className="min-h-[80vh] space-y-4 bg-gray-50 p-4"
       >
         <UserRegisterCard />
+      </TabsContent>
+      <TabsContent
+        value="my-matches"
+        className="min-h-[80vh] space-y-4 bg-gray-50 p-4"
+      >
+        <MyMatchesCard userId={userId!} />
+      </TabsContent>
+      <TabsContent
+        value="ranking"
+        className="min-h-[80vh] space-y-4 bg-gray-50 p-4"
+      >
+        준비중...
       </TabsContent>
     </Tabs>
   );

@@ -11,10 +11,23 @@ import IntroInfo from './_components/intro-info';
 import { TimeTable } from './_components/timetable';
 import NoticeInfoPage from './_components/notice-info';
 
+import { Store } from '@/types/(reserve)';
+
 export default function MobileDetailPage() {
   const { id } = useParams();
-  const [store, setStore] = useState<any>(null);
+  const [store, setStore] = useState<Store>({
+    longitude: '',
+    latitude: '',
+    id: 0,
+    name: '',
+    open_time: '',
+    close_time: '',
+  });
   const [loading, setLoading] = useState(true);
+
+  if (loading) {
+    <div>loading...</div>;
+  }
 
   useEffect(() => {
     const fetchStore = async () => {

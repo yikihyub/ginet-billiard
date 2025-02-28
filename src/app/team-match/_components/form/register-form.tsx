@@ -140,7 +140,7 @@ export default function MatchRegisterForm() {
         throw new Error(errorData.message || '매치 등록에 실패했습니다.');
       }
 
-      const data = await response.json();
+      // const data = await response.json();
       toast.toast({
         title: '등록 완료',
         description: '매치가 성공적으로 등록되었습니다!',
