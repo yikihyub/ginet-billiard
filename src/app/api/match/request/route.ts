@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // 트랜잭션 사용하여 매치 생성, 매치 요청, 알림까지 한번에 처리
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // 1. 신청자 정보 조회
       const requester = await tx.user.findUnique({
         where: { mb_id: player1_id },

@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 트랜잭션으로 여러 테이블을 함께 업데이트
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // 1. bi_match 테이블 업데이트
       const updatedMatch = await tx.bi_match.update({
         where: { match_id: matchId },
