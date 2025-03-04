@@ -3,12 +3,11 @@ import Nav from '@/components/(layout)/nav';
 import Footer from '@/components/(layout)/footer';
 
 import { Providers } from './providers';
-import { NotificationProvider } from '@/components/(provider)/notification-context';
-import ServiceWorkerRegistration from '@/components/(alert)/service-worker-registration';
 
 import type { Metadata } from 'next';
 
 import './globals.css';
+import ServiceWorkerRegistration from '@/components/(alert)/ServiceWorkerRegistration';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -38,11 +37,9 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <Nav />
-          <NotificationProvider>
-            <main>{children}</main>
-            <ServiceWorkerRegistration />
-          </NotificationProvider>
+          <main>{children}</main>
           <Footer />
+          <ServiceWorkerRegistration />
         </body>
       </Providers>
     </html>
