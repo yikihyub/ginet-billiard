@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 import { useToast } from '@/hooks/use-toast';
 import { format, isToday, isYesterday } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import PushNotificationButton from '../_components/button/push-notification-button';
 
 // 알림 타입 정의
 type Alert = {
@@ -177,6 +178,8 @@ export default function AlertPage() {
           <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
         </Button>
       </div>
+
+      <PushNotificationButton />
 
       {/* 알림 목록 */}
       <ScrollArea className="h-[600px]">

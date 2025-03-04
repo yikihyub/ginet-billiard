@@ -44,6 +44,10 @@ model User {
   address                                                       String?                @db.VarChar
   favorite_store_ids                                            Int[]                  @default([])
   agree_marketing_privacy                                       Boolean?
+  push_enabled                                                  Boolean?               @default(false)
+  push_endpoint                                                 String?
+  push_p256dh                                                   String?
+  push_auth                                                     String?
   bi_alert                                                      bi_alert[]
   bi_alert_log                                                  bi_alert_log[]
   clubs                                                         Club[]

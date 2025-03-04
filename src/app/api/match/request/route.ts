@@ -1,5 +1,74 @@
+import webpush from 'web-push';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+
+// web-push 설정정
+webpush.setVapidDetails(
+  'mailto:your-email@example.com', // 변경 필요: 실제 이메일 주소로 변경
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
+  process.env.VAPID_PRIVATE_KEY || ''
+);
+
+// 웹 푸시 알림 전송 함수
+async function sendWebPushNotification(
+  userId: number,
+  title: string,
+  message: string,
+  data: any = {}
+) {
+  console.log(data);
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        push_enabled: true, // 푸시 알림 활성화 여부
+        push_endpoint: true, // 브라우저 엔드포인트
+        push_p256dh: true, // 공개 키
+        push_auth: true, // 인증 토큰
+      },
+    });
+
+    // 푸시 알림이 비활성화되었거나 필요한 정보가 없으면 중단
+    if (
+      !user?.push_enabled ||
+      !user.push_endpoint ||
+      !user.push_p256dh ||
+      !user.push_auth
+    ) {
+      return {
+        success: false,
+        message: '푸시 알림 정보가 없거나 비활성화되었습니다.',
+      };
+    }
+
+    // 알림 페이로드 구성
+    const payload = JSON.stringify({
+      title,
+      message,
+      url: '/alert',
+      timestamp: new Date().toISOString(),
+    });
+
+    // 웹 푸시 알림 전송
+    await webpush.sendNotification(
+      {
+        endpoint: user.push_endpoint,
+        keys: {
+          p256dh: user.push_p256dh,
+          auth: user.push_auth,
+        },
+      },
+      payload
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error('웹 푸시 알림 전송 실패:', error);
+    return { success: false, error };
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -166,6 +235,19 @@ export async function POST(request: NextRequest) {
             preferredDate: preferred_date,
           },
         },
+      });
+
+      sendWebPushNotification(
+        recipient.id, // 수신자 ID
+        title, // 기존에 정의한 알림 제목
+        fullAlertMessage, // 기존에 정의한 알림 내용
+        {
+          url: '/notifications', // 알림 클릭 시 이동할 URL
+          matchId: match.match_id,
+        }
+      ).catch((error) => {
+        console.error('웹 푸시 알림 전송 중 오류 발생:', error);
+        // 푸시 알림 실패는 API 응답에 영향을 주지 않습니다
       });
 
       return {
