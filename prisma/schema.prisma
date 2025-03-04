@@ -1,13 +1,14 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
+    previewFeatures = []
+  // previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  schemas  = ["ownerdb", "public"]
+  // schemas  = ["ownerdb", "public"]
 }
 
 model User {
