@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { MessageSquare } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,10 +44,11 @@ export default function LoginPage() {
     <form onSubmit={handleSubmit}>
       <div className="flex h-screen flex-col items-center justify-center space-y-6 px-4">
         {/* 이메일 로그인 폼 */}
+        <Image width={150} height={250} alt="" src="/logo/logo3.png" />
         {/* 제목 */}
-        <h1 className="text-center text-2xl font-bold">
+        {/* <h1 className="text-center text-2xl font-bold">
           로그인 방법을 선택하세요
-        </h1>
+        </h1> */}
         <div className="w-full max-w-sm space-y-4">
           <input
             name="user_id"
@@ -64,7 +66,7 @@ export default function LoginPage() {
           />
           <Button
             type="submit"
-            className="w-full bg-blue-500 text-white hover:bg-blue-600"
+            className="text-md h-12 w-full bg-blue-500 font-semibold text-white hover:bg-blue-600"
           >
             로그인
           </Button>

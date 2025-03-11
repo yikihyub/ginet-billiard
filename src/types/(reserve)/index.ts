@@ -30,6 +30,7 @@ export interface Store {
   regular_holiday?: string;
   created_at?: Date;
   updated_at?: Date;
+  is_favorite?: boolean;
 }
 
 // @desktop

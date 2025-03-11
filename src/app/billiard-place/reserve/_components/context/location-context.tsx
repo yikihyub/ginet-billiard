@@ -15,6 +15,7 @@ interface LocationContextType {
   bounds: MapBounds | null; // bounds 정보 추가
   setLocation: (lat: number, lng: number, level: number) => void;
   setBounds: (bounds: MapBounds) => void;
+  userId?: string | null;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(
@@ -72,6 +73,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       value={{
         location,
         bounds,
+        userId,
         setLocation: handleSetLocation,
         setBounds: handleSetBounds,
       }}

@@ -27,7 +27,7 @@ export default function LoginNav() {
           )}
           <Link href="/" aria-label="Home" className="!ml-0">
             <Image
-              src="/logo/logo.png"
+              src="/logo/main_logo.png"
               alt="Website Logo"
               width={40}
               height={20}

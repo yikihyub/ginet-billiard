@@ -2,10 +2,10 @@ import React from 'react';
 
 import { SearchBar } from './_components/search/search-bar';
 import { StoreList } from './_components/list/store-list';
+import { SearchProvider } from '../_components/provider/search-provider';
+import FavoritesList from './_components/list/favorite-list';
 
 import '../../threeBall.css';
-import { SearchProvider } from '../_components/provider/search-provider';
-import FavoritesList from './_components/list/favprote-list';
 
 export default function DesktopPage() {
   return (
@@ -21,7 +21,7 @@ export default function DesktopPage() {
         </div>
       </aside>
       {/* 즐겨찾기 섹션 - 지도 위에 고정 */}
-      <div className="absolute left-[410px] top-28 z-10 h-full w-[360px]">
+      <div className="absolute left-[410px] top-28 z-10 w-[360px]">
         <FavoritesList />
       </div>
     </>

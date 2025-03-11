@@ -18,8 +18,6 @@ export default function PushNotificationButton() {
     null
   );
 
-  console.log(permission);
-
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

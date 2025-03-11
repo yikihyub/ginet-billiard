@@ -1,29 +1,45 @@
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing.');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activated.');
   return self.clients.claim();
 });
 
-// 푸시 알림을 받을 때 호출되는 이벤트 리스너
 self.addEventListener('push', (event) => {
   if (!event.data) return;
-  console.log('푸시 이벤트 수신:', event);
+
   try {
     const data = event.data.json();
 
     const options = {
       body: data.message || '새로운 알림이 있습니다.',
-      icon: '/icons/notification-icon.png', // PWA 아이콘 경로 (아이콘 파일 필요)
-      badge: '/icons/badge-icon.png', // 작은 아이콘 (없으면 제거해도 됨)
+      icon: '/logo/notification-icon.png', // 알림 아이콘 (192x192px 권장)
+      badge: '/logo/badge-icon.png', // 작은 아이콘 (모바일용, 72x72px 권장)
+      image: '/images/hero-image.jpg', // 큰 이미지 (알림에 표시)
+      vibrate: [100, 50, 100], // 진동 패턴 (모바일)
+      tag: data.type || 'default', // 알림 그룹화 태그
+      actions: [
+        // 액션 버튼 (최대 2개)
+        {
+          action: 'view',
+          title: '확인하기',
+          icon: '/icons/view-icon.png',
+        },
+        {
+          action: 'dismiss',
+          title: '닫기',
+          icon: '/icons/dismiss-icon.png',
+        },
+      ],
       data: {
-        url: data.url || '/alert', // 알림 클릭 시 이동할 URL
+        url: data.url || '/notifications',
         matchId: data.matchId,
         type: data.type,
       },
+      requireInteraction: true, // 사용자가 상호작용할 때까지 알림 유지
+      silent: false, // 소리 재생 여부
+      timestamp: data.timestamp || Date.now(), // 알림 타임스탬프
     };
 
     event.waitUntil(

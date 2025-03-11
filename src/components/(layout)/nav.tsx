@@ -30,17 +30,17 @@ export default function Nav() {
           {shouldShowBackArrow && (
             <button
               onClick={() => router.back()}
-              className="mr-2 flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
+              className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
           )}
-          <Link href="/" aria-label="Home" className="!ml-0">
+          <Link href="/" aria-label="Home" className="!ml-0 flex items-center">
             <Image
-              src="/logo/logo.png"
+              src="/logo/main_logo.png"
               alt="Website Logo"
-              width={40}
-              height={20}
+              width={60}
+              height={32}
               priority={true}
               className="h-auto w-auto"
             />

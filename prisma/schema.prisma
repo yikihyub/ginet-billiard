@@ -6,68 +6,75 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
   schemas  = ["ownerdb", "public"]
 }
 
 model User {
-  id                                                            Int                    @id @default(autoincrement())
-  name                                                          String                 @db.VarChar(50)
-  email                                                         String                 @unique @db.VarChar(100)
-  password                                                      String?                @db.VarChar(255)
-  phonenum                                                      String?                @db.VarChar(20)
-  user_three_ability                                            Int
-  preferGame                                                    GameType               @default(FOUR_BALL)
-  loginAt                                                       DateTime               @default(now())
-  logoutAt                                                      DateTime               @default(now())
-  createdAt                                                     DateTime               @default(now())
-  mb_id                                                         String?                @unique(map: "bi_user_mb_id_unique") @db.VarChar
-  mb_today_login                                                DateTime?              @db.Date
-  mb_login_ip                                                   String?                @db.VarChar
-  mb_memo_cnt                                                   Int?
-  social_id                                                     String?                @db.VarChar(100)
-  profile_image                                                 String?                @db.VarChar(255)
-  provider                                                      String?                @db.VarChar(20)
-  location                                                      String?
-  latitude                                                      Float?                 @db.Real
-  longitude                                                     Float?                 @db.Real
-  user_four_ability                                             Int?
-  agree_terms                                                   Boolean                @default(false)
-  agree_privacy                                                 Boolean                @default(false)
-  agree_location                                                Boolean                @default(false)
+  id                                                            Int                             @id @default(autoincrement())
+  name                                                          String                          @db.VarChar(50)
+  email                                                         String                          @unique @db.VarChar(100)
+  password                                                      String?                         @db.VarChar(255)
+  phonenum                                                      String?                         @db.VarChar(20)
+  preferGame                                                    GameType                        @default(FOUR_BALL)
+  loginAt                                                       DateTime                        @default(now())
+  logoutAt                                                      DateTime                        @default(now())
+  createdAt                                                     DateTime                        @default(now())
+  address                                                       String?                         @db.VarChar
+  agree_location                                                Boolean                         @default(false)
   agree_marketing                                               Boolean?
-  agreed_at                                                     DateTime?              @default(now()) @db.Timestamp(6)
-  preferred_age_group                                           String[]               @default([])
-  preferred_gender                                              String                 @default("")
-  preferred_skill_level                                         String[]               @default([])
-  play_style                                                    String[]               @default([])
-  preferred_time                                                String[]               @default([])
-  address                                                       String?                @db.VarChar
-  favorite_store_ids                                            Int[]                  @default([])
   agree_marketing_privacy                                       Boolean?
-  push_enabled                                                  Boolean?               @default(false)
+  agree_privacy                                                 Boolean                         @default(false)
+  agree_terms                                                   Boolean                         @default(false)
+  agreed_at                                                     DateTime?                       @default(now()) @db.Timestamp(6)
+  favorite_store_ids                                            Int[]                           @default([])
+  latitude                                                      Float?                          @db.Real
+  location                                                      String?
+  longitude                                                     Float?                          @db.Real
+  mb_id                                                         String?                         @unique(map: "bi_user_mb_id_unique") @db.VarChar
+  mb_login_ip                                                   String?                         @db.VarChar
+  mb_memo_cnt                                                   Int?
+  mb_today_login                                                DateTime?                       @db.Date
+  play_style                                                    String[]                        @default([])
+  preferred_age_group                                           String[]                        @default([])
+  preferred_gender                                              String                          @default("")
+  preferred_skill_level                                         String[]                        @default([])
+  preferred_time                                                String[]                        @default([])
+  profile_image                                                 String?                         @db.VarChar(255)
+  provider                                                      String?                         @db.VarChar(20)
+  push_auth                                                     String?
+  push_enabled                                                  Boolean?                        @default(false)
   push_endpoint                                                 String?
   push_p256dh                                                   String?
-  push_auth                                                     String?
+  social_id                                                     String?                         @db.VarChar(100)
+  user_four_ability                                             Int?
+  user_three_ability                                            Int
   bi_alert                                                      bi_alert[]
   bi_alert_log                                                  bi_alert_log[]
-  clubs                                                         Club[]
-  clubMembers                                                   ClubMember[]
-  bi_match_bi_match_loser_idTobi_user                           bi_match[]             @relation("bi_match_loser_idTobi_user")
-  bi_match_bi_match_player1_idTobi_user                         bi_match[]             @relation("bi_match_player1_idTobi_user")
-  bi_match_bi_match_player2_idTobi_user                         bi_match[]             @relation("bi_match_player2_idTobi_user")
-  bi_match_bi_match_winner_idTobi_user                          bi_match[]             @relation("bi_match_winner_idTobi_user")
-  bi_match_dispute_bi_match_dispute_reporter_idTobi_user        bi_match_dispute[]     @relation("bi_match_dispute_reporter_idTobi_user")
-  bi_match_dispute_bi_match_dispute_resolved_byTobi_user        bi_match_dispute[]     @relation("bi_match_dispute_resolved_byTobi_user")
-  bi_match_evaluation_bi_match_evaluation_evaluator_idTobi_user bi_match_evaluation[]  @relation("bi_match_evaluation_evaluator_idTobi_user")
-  bi_match_evaluation_bi_match_evaluation_target_idTobi_user    bi_match_evaluation[]  @relation("bi_match_evaluation_target_idTobi_user")
+  bi_chat_room_participants                                     bi_chat_room_participants[]
+  bi_club                                                       Club[]
+  bi_club_announcement                                          bi_club_announcement[]
+  bi_club_gallery                                               bi_club_gallery[]
+  bi_club_join_request                                          bi_club_join_request[]
+  bi_club_member                                                bi_club_member[]
+  bi_club_schedule_participants                                 bi_club_schedule_participants[]
+  bi_match_bi_match_loser_idTobi_user                           bi_match[]                      @relation("bi_match_loser_idTobi_user")
+  bi_match_bi_match_player1_idTobi_user                         bi_match[]                      @relation("bi_match_player1_idTobi_user")
+  bi_match_bi_match_player2_idTobi_user                         bi_match[]                      @relation("bi_match_player2_idTobi_user")
+  bi_match_bi_match_winner_idTobi_user                          bi_match[]                      @relation("bi_match_winner_idTobi_user")
+  bi_match_dispute_bi_match_dispute_reporter_idTobi_user        bi_match_dispute[]              @relation("bi_match_dispute_reporter_idTobi_user")
+  bi_match_dispute_bi_match_dispute_resolved_byTobi_user        bi_match_dispute[]              @relation("bi_match_dispute_resolved_byTobi_user")
+  bi_match_evaluation_bi_match_evaluation_evaluator_idTobi_user bi_match_evaluation[]           @relation("bi_match_evaluation_evaluator_idTobi_user")
+  bi_match_evaluation_bi_match_evaluation_target_idTobi_user    bi_match_evaluation[]           @relation("bi_match_evaluation_target_idTobi_user")
   bi_match_participant                                          bi_match_participant[]
   bi_match_reg                                                  bi_match_reg[]
-  bi_match_request_bi_match_request_recipient_idTobi_user       bi_match_request[]     @relation("bi_match_request_recipient_idTobi_user")
-  bi_match_request_bi_match_request_requester_idTobi_user       bi_match_request[]     @relation("bi_match_request_requester_idTobi_user")
-  bi_match_result_bi_match_result_loser_idTobi_user             bi_match_result[]      @relation("bi_match_result_loser_idTobi_user")
-  bi_match_result_bi_match_result_owner_idTobi_user             bi_match_result[]      @relation("bi_match_result_owner_idTobi_user")
-  bi_match_result_bi_match_result_winner_idTobi_user            bi_match_result[]      @relation("bi_match_result_winner_idTobi_user")
+  bi_match_request_bi_match_request_recipient_idTobi_user       bi_match_request[]              @relation("bi_match_request_recipient_idTobi_user")
+  bi_match_request_bi_match_request_requester_idTobi_user       bi_match_request[]              @relation("bi_match_request_requester_idTobi_user")
+  bi_match_result_bi_match_result_loser_idTobi_user             bi_match_result[]               @relation("bi_match_result_loser_idTobi_user")
+  bi_match_result_bi_match_result_owner_idTobi_user             bi_match_result[]               @relation("bi_match_result_owner_idTobi_user")
+  bi_match_result_bi_match_result_winner_idTobi_user            bi_match_result[]               @relation("bi_match_result_winner_idTobi_user")
+  bi_message                                                    bi_message[]
+  bi_message_read                                               bi_message_read[]
+  bi_message_read_by                                            bi_message_read_by[]
 
   @@unique([social_id, provider], map: "unique_social_id_provider")
   @@map("bi_user")
@@ -89,29 +96,32 @@ model Game {
 }
 
 model Club {
-  id          Int          @id @default(autoincrement())
-  name        String       @db.VarChar(100)
-  description String?
-  userId      Int
-  isPossible  Boolean
-  createdAt   DateTime     @default(now())
-  endAt       DateTime     @default(now())
-  user        User         @relation(fields: [userId], references: [id])
-  members     ClubMember[]
+  club_contact_email   String?                @db.VarChar(100)
+  club_contact_phone   String?                @db.VarChar(20)
+  club_created_at      DateTime               @default(now()) @db.Timestamp(6)
+  club_description     String?
+  club_founding_date   DateTime?              @default(now()) @db.Timestamp(6)
+  club_id              Int                    @id @default(autoincrement())
+  club_location        String                 @db.VarChar(100)
+  club_max_members     Int?                   @default(50)
+  club_name            String                 @db.VarChar(100)
+  club_now_members     Int?                   @default(1)
+  club_owner_id        String                 @db.VarChar
+  club_place_address   String?
+  club_place_name      String?                @db.VarChar(100)
+  club_regular_day     String?                @db.VarChar(50)
+  club_rules           String[]
+  club_type            String?                @db.VarChar
+  club_updated_at      DateTime               @default(now()) @db.Timestamp(6)
+  bi_user              User                   @relation(fields: [club_owner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
+  bi_club_announcement bi_club_announcement[]
+  bi_club_gallery      bi_club_gallery[]
+  bi_club_join_request bi_club_join_request[]
+  bi_club_member       bi_club_member[]
+  bi_club_schedule     bi_club_schedule[]
+  bi_club_tag          bi_club_tag[]
 
   @@map("bi_club")
-  @@schema("public")
-}
-
-model ClubMember {
-  clubId   Int
-  userId   Int
-  joinedAt DateTime @default(now())
-  club     Club     @relation(fields: [clubId], references: [id])
-  user     User     @relation(fields: [userId], references: [id])
-
-  @@id([clubId, userId])
-  @@map("bi_clubmember")
   @@schema("public")
 }
 
@@ -243,6 +253,9 @@ model bi_store {
   register_id      String?                  @db.VarChar
   geom             Unsupported("geometry")?
   bi_reservations  bi_reservations[]
+  bi_favorites     bi_favorites[]
+  bi_recent_search bi_recent_search[]
+  bi_recent_visit  bi_recent_visit[]
 
   @@index([geom], map: "idx_bi_store_geom", type: Gist)
   @@map("bi_store")
@@ -474,6 +487,200 @@ model bi_match_participant {
   bi_user      User         @relation(fields: [user_id], references: [id])
 
   @@unique([match_id, user_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_favorites {
+  id         Int       @id @default(autoincrement())
+  user_id    String    @db.VarChar(255)
+  place_id   Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  bi_store   bi_store  @relation(fields: [place_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bi_favorites_store")
+
+  @@unique([user_id, place_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_recent_search {
+  id          Int       @id @default(autoincrement())
+  user_id     String    @db.VarChar(255)
+  search_term String    @db.VarChar(255)
+  place_id    Int?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  bi_store    bi_store? @relation(fields: [place_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bi_recent_search_store")
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_recent_visit {
+  id         Int       @id @default(autoincrement())
+  user_id    String    @db.VarChar(255)
+  place_id   Int
+  visit_date DateTime? @default(now()) @db.Timestamp(6)
+  bi_store   bi_store  @relation(fields: [place_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_bi_recent_visit_store")
+
+  @@index([user_id, visit_date(sort: Desc)], map: "idx_user_visited")
+  @@schema("public")
+}
+
+model bi_chat_room {
+  id                        String                      @id
+  name                      String
+  group_id                  String
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime
+  bi_chat_room_participants bi_chat_room_participants[]
+  bi_message                bi_message[]
+
+  @@schema("public")
+}
+
+model bi_message {
+  id                 String               @id
+  content            String
+  sender_id          String
+  chat_room_id       String
+  created_at         DateTime             @default(now())
+  bi_chat_room       bi_chat_room         @relation(fields: [chat_room_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user            User                 @relation(fields: [sender_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_message_read    bi_message_read[]
+  bi_message_read_by bi_message_read_by[]
+
+  @@schema("public")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model bi_chat_room_participants {
+  A            String
+  B            String
+  bi_chat_room bi_chat_room @relation(fields: [A], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user      User         @relation(fields: [B], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([A, B])
+  @@index([B], map: "bi_chat_room_participants_B_index")
+  @@schema("public")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model bi_message_read_by {
+  A          String
+  B          String
+  bi_message bi_message @relation(fields: [A], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user    User       @relation(fields: [B], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([A, B])
+  @@index([B], map: "bi_message_read_by_B_index")
+  @@schema("public")
+}
+
+model bi_message_read {
+  id           String     @id
+  message_id   String
+  user_id      String
+  read_at      DateTime   @default(now()) @db.Timestamp(6)
+  chat_room_id String     @db.VarChar
+  bi_message   bi_message @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user      User       @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([message_id, user_id], map: "bi_message_read_message_user_unique")
+  @@index([user_id], map: "bi_message_read_user_idx")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_announcement {
+  club_announcement_id Int      @id @default(autoincrement())
+  club_id              Int
+  title                String   @db.VarChar(200)
+  content              String
+  created_at           DateTime @default(now()) @db.Timestamp(6)
+  created_by           String   @db.VarChar
+  bi_club              Club     @relation(fields: [club_id], references: [club_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user              User     @relation(fields: [created_by], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_gallery {
+  club_gallery_id          Int      @id @default(autoincrement())
+  club_id                  Int
+  club_gallery_image_url   String
+  club_gallery_description String?  @db.VarChar(200)
+  uploaded_at              DateTime @default(now()) @db.Timestamp(6)
+  uploaded_by              String   @db.VarChar
+  bi_club                  Club     @relation(fields: [club_id], references: [club_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user                  User     @relation(fields: [uploaded_by], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_join_request {
+  request_id   Int      @id @default(autoincrement())
+  club_id      Int
+  user_id      String   @db.VarChar
+  status       String?  @default("pending") @db.VarChar(20)
+  requested_at DateTime @default(now()) @db.Timestamp(6)
+  bi_club      Club     @relation(fields: [club_id], references: [club_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user      User     @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_member {
+  club_id                 Int
+  user_id                 String   @db.VarChar
+  is_staff                Boolean? @default(false)
+  staff_role              String?  @db.VarChar(50)
+  joined_at               DateTime @default(now()) @db.Timestamp(6)
+  member_permission_level String?  @default("member") @db.VarChar(20)
+  bi_club                 Club     @relation(fields: [club_id], references: [club_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user                 User     @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([club_id, user_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_schedule {
+  club_schedule_id              Int                             @id @default(autoincrement())
+  club_id                       Int
+  club_schedule_title           String                          @db.VarChar(100)
+  club_schedule_description     String?
+  club_schedule_location        String?                         @db.VarChar(100)
+  club_schedule_start_time      DateTime                        @db.Timestamp(6)
+  club_schedule_end_time        DateTime?                       @db.Timestamp(6)
+  club_schedule_is_competition  Boolean?                        @default(false)
+  bi_club                       Club                            @relation(fields: [club_id], references: [club_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_club_schedule_participants bi_club_schedule_participants[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_schedule_participants {
+  club_schedule_id Int
+  user_id          String           @db.VarChar
+  status           String?          @default("pending") @db.VarChar(20)
+  bi_club_schedule bi_club_schedule @relation(fields: [club_schedule_id], references: [club_schedule_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user          User             @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([club_schedule_id, user_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_club_tag {
+  club_tag_id Int    @id @default(autoincrement())
+  club_id     Int
+  name        String @db.VarChar(50)
+  bi_club     Club   @relation(fields: [club_id], references: [club_id], onDelete: Cascade, onUpdate: NoAction)
+
   @@schema("public")
 }
 

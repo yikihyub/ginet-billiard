@@ -129,7 +129,7 @@ export default function QuickMenu() {
 
   return (
     <>
-      <div className="m-auto flex max-w-1024px justify-between pl-4 pr-4 pt-4">
+      <div className="m-auto flex max-w-1024px justify-between p-4">
         {buttons.map((button) => (
           <button
             key={button.id}

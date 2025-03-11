@@ -1,92 +1,125 @@
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ChevronDown } from "lucide-react";
+import React, { useState } from 'react';
+import { MapPin, Tag } from 'lucide-react';
 
-const FilterSection = () => {
+interface FilterSectionProps {
+  onFilterChange: (filters: {
+    location?: string;
+    type?: string;
+    query?: string;
+  }) => void;
+}
+
+export default function FilterSection({ onFilterChange }: FilterSectionProps) {
+  const [searchInput, setSearchInput] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onFilterChange({ query: searchInput });
+  };
+
+  const handleLocationSelect = (location: string) => {
+    const newLocation = location === '전체' ? undefined : location;
+    setSelectedLocation(newLocation || null);
+
+    // 기존 필터 값 유지 + location 업데이트
+    onFilterChange({ location: newLocation, type: selectedType || undefined });
+  };
+
+  const handleTypeSelect = (type: string) => {
+    const newType = type === '전체' ? undefined : type;
+    setSelectedType(newType || null);
+
+    // 기존 필터 값 유지 + type 업데이트
+    onFilterChange({ location: selectedLocation || undefined, type: newType });
+  };
+
   return (
-    <div className="flex flex-col gap-4 mb-6">
-      {/* 상세 필터 Collapsible */}
-      <Collapsible className="w-full bg-white rounded-lg border border-gray-200">
-        <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-50">
-          <span className="text-sm font-medium">상세 필터</span>
-          <ChevronDown className="h-4 w-4 text-gray-500 transition-transform duration-200" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="px-4 pb-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            {/* 게임 종류 선택 */}
-            <div className="space-y-2">
-              <label className="text-sm text-gray-600">게임 종류</label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="게임을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="4구">4구</SelectItem>
-                  <SelectItem value="3구">3구</SelectItem>
-                  <SelectItem value="포켓볼">포켓볼</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+    <div className="mb-6 space-y-4">
+      {/* 검색 바 */}
+      <form onSubmit={handleSubmit} className="relative">
+        <input
+          type="text"
+          placeholder="동호회 검색..."
+          className="w-full rounded-full border border-gray-300 bg-gray-50 py-2 pl-10 pr-4 focus:border-blue-500 focus:outline-none"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-green-600 px-3 py-1 text-xs text-white"
+        >
+          검색
+        </button>
+      </form>
 
-            {/* 실력 수준 선택 */}
-            <div className="space-y-2">
-              <label className="text-sm text-gray-600">실력 수준</label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="실력을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="beginner">초보자</SelectItem>
-                  <SelectItem value="intermediate">중급자</SelectItem>
-                  <SelectItem value="advanced">고급자</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      {/* 지역 필터 */}
+      <div className="space-y-2">
+        <h3 className="flex items-center text-sm font-medium text-gray-700">
+          <MapPin className="mr-1 h-4 w-4" />
+          지역
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {[
+            '전체',
+            '서울',
+            '경기',
+            '인천',
+            '부산',
+            '대구',
+            '대전',
+            '광주',
+            '울산',
+            '세종',
+            '강원',
+            '충북',
+            '충남',
+            '전북',
+            '전남',
+            '경북',
+            '경남',
+            '제주',
+          ].map((location) => (
+            <button
+              key={location}
+              className={`rounded-full px-3 py-1 text-xs ${
+                selectedLocation === location ||
+                (selectedLocation === null && location === '전체')
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 hover:bg-blue-100'
+              }`}
+              onClick={() => handleLocationSelect(location)}
+            >
+              {location}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            {/* 지역 선택 */}
-            <div className="space-y-2">
-              <label className="text-sm text-gray-600">지역</label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="지역을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="서울">서울</SelectItem>
-                  <SelectItem value="경기">경기</SelectItem>
-                  <SelectItem value="인천">인천</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* 인원 수 선택 */}
-            <div className="space-y-2">
-              <label className="text-sm text-gray-600">인원 수</label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="인원을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="2-4">2-4명</SelectItem>
-                  <SelectItem value="5-8">5-8명</SelectItem>
-                  <SelectItem value="9+">9명 이상</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      {/* 당구 유형 필터 */}
+      <div className="space-y-2">
+        <h3 className="flex items-center text-sm font-medium text-gray-700">
+          <Tag className="mr-1 h-4 w-4" />
+          당구 유형
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {['전체', '3구', '4구', '포켓볼', '종합'].map((type) => (
+            <button
+              key={type}
+              className={`rounded-full px-3 py-1 text-xs ${
+                selectedType === type ||
+                (selectedType === null && type === '전체')
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 hover:bg-blue-100'
+              }`}
+              onClick={() => handleTypeSelect(type)}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
-};
-
-export default FilterSection;
+}

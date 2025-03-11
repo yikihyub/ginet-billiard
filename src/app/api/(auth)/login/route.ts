@@ -17,6 +17,7 @@ export async function POST(request: Request) {
       },
       select: {
         id: true,
+        name: true,
         mb_id: true,
         password: true,
         phonenum: true,
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
       // 세션에는 IP 제외하고 필수 정보만 포함
       const sessionData = {
         id: userWithoutPass.id,
+        name: userWithoutPass.name,
         mb_id: userWithoutPass.mb_id,
         phonenum: userWithoutPass.phonenum,
       };
