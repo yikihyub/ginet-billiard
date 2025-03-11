@@ -15,9 +15,8 @@ async function sendWebPushNotification(
   userId: number,
   title: string,
   message: string,
-  data: any = {}
+  // data: any = {}
 ) {
-  console.log(data);
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -64,8 +63,22 @@ async function sendWebPushNotification(
     );
 
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
+    if (error.statusCode === 410 || error.statusCode === 404) {
+      // 구독이 만료되었거나 찾을 수 없는 경우, 해당 구독 정보 삭제
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          push_enabled: false,
+          push_endpoint: null,
+          push_p256dh: null,
+          push_auth: null,
+        },
+      });
+      console.log(`사용자 ${userId}의 만료된 구독 정보를 삭제했습니다.`);
+    }
     console.error('웹 푸시 알림 전송 실패:', error);
+
     return { success: false, error };
   }
 }
@@ -241,10 +254,10 @@ export async function POST(request: NextRequest) {
         recipient.id, // 수신자 ID
         title, // 기존에 정의한 알림 제목
         fullAlertMessage, // 기존에 정의한 알림 내용
-        {
-          url: '/notifications', // 알림 클릭 시 이동할 URL
-          matchId: match.match_id,
-        }
+        // {
+        //   url: '/notifications', // 알림 클릭 시 이동할 URL
+        //   matchId: match.match_id,
+        // }
       ).catch((error) => {
         console.error('웹 푸시 알림 전송 중 오류 발생:', error);
         // 푸시 알림 실패는 API 응답에 영향을 주지 않습니다

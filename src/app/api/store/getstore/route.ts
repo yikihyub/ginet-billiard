@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/config/authOptions';
 
 interface Store {
   id: number;
@@ -19,6 +21,21 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
+
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new Response(
+        JSON.stringify({ message: '인증되지 않은 사용자입니다' }),
+        {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 세션에서 userId 가져오기
+    const userId = session.user.mb_id;
 
     let stores;
 
@@ -85,11 +102,25 @@ export async function GET(request: NextRequest) {
       `;
     }
 
+    // 사용자가 즐겨찾기한 당구장 ID 목록 가져오기
+    const favorites = await prisma.bi_favorites.findMany({
+      where: {
+        user_id: userId as string,
+      },
+      select: {
+        place_id: true,
+      },
+    });
+
+    // 즐겨찾기한 당구장 ID를 Set으로 변환하여 검색 효율성 향상
+    const favoriteIds = new Set(favorites.map((fav) => fav.place_id));
+
     // 응답 데이터 포맷 변환
     const formattedStores = stores.map((store: any) => ({
       ...store,
       latitude: parseFloat(store.coord_y || '0'),
       longitude: parseFloat(store.coord_x || '0'),
+      is_favorite: favoriteIds.has(store.id),
     }));
 
     return NextResponse.json(formattedStores);

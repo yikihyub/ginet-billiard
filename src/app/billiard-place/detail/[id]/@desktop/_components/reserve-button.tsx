@@ -26,6 +26,7 @@ const ReserveButton = ({ store }: ReserveButtonProps) => {
   const [selectedType, setSelectedType] = useState('4구');
 
   const { data: session } = useSession();
+  const userId = session?.user.mb_id;
   const phoneNum = session?.user.phonenum;
 
   // 운영 시간 내의 시간 슬롯 생성
@@ -52,6 +53,7 @@ const ReserveButton = ({ store }: ReserveButtonProps) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          bi_id: userId,
           store_id: store.id,
           table_number: selectedTable,
           customer_name: formData.customer_name,

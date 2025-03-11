@@ -446,7 +446,7 @@ export default function MainMatch() {
             )}
 
             {matches.length === 0 && (
-              <div className="py-10 text-center">
+              <div className="min-h-[50vh] py-10 text-center">
                 <p>표시할 매치가 없습니다.</p>
               </div>
             )}

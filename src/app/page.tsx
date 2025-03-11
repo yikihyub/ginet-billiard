@@ -1,7 +1,9 @@
-import QuickMenu from "@/components/(main)/quick-menu";
-import MainImageSlider from "@/components/(main)/main-image-slider";
-import MainMatch from "@/components/(main)/main-match";
-import MainNav from "@/components/(main)/main-nav";
+import QuickMenu from '@/components/(main)/quick-menu';
+import MainImageSlider from '@/components/(main)/main-image-slider';
+import MainMatch from '@/components/(main)/main-match';
+import MainNav from '@/components/(main)/main-nav';
+import PopularPosts from '@/components/(main)/main-post';
+import ClubsSection from '@/components/(main)/main-club';
 
 export default function Home() {
   return (
@@ -13,6 +15,12 @@ export default function Home() {
 
       {/* quick-menu */}
       <QuickMenu />
+
+      {/* popular-post */}
+      <PopularPosts />
+
+      {/* main-club */}
+      <ClubsSection />
 
       {/* main-match-container */}
       <MainMatch />

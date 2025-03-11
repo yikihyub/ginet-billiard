@@ -8,17 +8,23 @@ interface BilliardGroupProps {
   id: string;
   title: string;
   location: string;
+  description?: string;
   currentMembers: number;
   maxMembers: number;
+  // tags?: string[];
+  type: string;
 }
 
-export function BilliardGroup({
+export const BilliardGroup: React.FC<BilliardGroupProps> = ({
   id,
   title,
   location,
+  description,
   currentMembers,
   maxMembers,
-}: BilliardGroupProps) {
+  // tags,
+  type,
+}) => {
   return (
     <Link href={`/club/search/${id}`}>
       <div className="cursor-pointer rounded-lg border bg-white p-3 transition-shadow hover:shadow-lg md:p-4">
@@ -56,18 +62,13 @@ export function BilliardGroup({
                     </div>
                   </div>
                 </div>
+                <div>{description}</div>
               </div>
             </div>
 
             <div className="flex space-x-2">
               <span className="rounded-full bg-gray-100 px-2 py-1 text-xs md:text-sm">
-                4구 중대
-              </span>
-              <span className="rounded-full bg-gray-100 px-2 py-1 text-xs md:text-sm">
-                3구 중대
-              </span>
-              <span className="rounded-full bg-gray-100 px-2 py-1 text-xs md:text-sm">
-                포켓볼
+                {type}
               </span>
             </div>
           </div>
@@ -75,4 +76,4 @@ export function BilliardGroup({
       </div>
     </Link>
   );
-}
+};

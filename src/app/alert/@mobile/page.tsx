@@ -151,6 +151,8 @@ export default function AlertPage() {
 
   return (
     <div className="mx-auto max-w-2xl rounded-lg bg-white shadow-sm">
+      <PushNotificationButton />
+
       {/* 탭 메뉴 */}
       <div className="flex items-center justify-between border-b px-4">
         <div className="no-scrollbar flex overflow-x-auto">
@@ -178,8 +180,6 @@ export default function AlertPage() {
           <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
         </Button>
       </div>
-
-      <PushNotificationButton />
 
       {/* 알림 목록 */}
       <ScrollArea className="h-[600px]">

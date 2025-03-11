@@ -44,9 +44,9 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col p-4">
       {/* 로고 */}
-      <div className="mb-12 mt-16 flex justify-center">
+      <div className="mb-8 mt-16 flex justify-center">
         <div className="relative">
-          <Image src="/logo/logo.png" alt="로고" width={160} height={100} />
+          <Image src="/logo/logo3.png" alt="로고" width={160} height={100} />
         </div>
       </div>
 

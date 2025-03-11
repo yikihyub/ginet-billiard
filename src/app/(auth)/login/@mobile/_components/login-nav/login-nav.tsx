@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import React from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { ChevronLeft } from 'lucide-react';
 
 export default function LoginNav() {
   const router = useRouter();
@@ -10,16 +10,16 @@ export default function LoginNav() {
 
   // pathname이 signup을 포함하는지 확인하고 제목 설정
   const getTitle = () => {
-    if (pathname?.includes("signup")) {
-      return "회원가입";
+    if (pathname?.includes('signin')) {
+      return '회원가입';
     }
-    return "";
+    return '';
   };
 
   return (
     <>
       <nav className="bg-white text-black">
-        <div className="absolute w-full top-0 mx-auto max-w-screen-lg px-4 py-3">
+        <div className="absolute top-0 mx-auto w-full max-w-screen-lg px-4 py-3">
           <div className="grid grid-cols-3 items-center">
             {/* 왼쪽 영역 */}
             <div className="flex items-center">
@@ -32,7 +32,7 @@ export default function LoginNav() {
             </div>
 
             {/* 중앙 영역 - 타이틀 */}
-            <div className="text-center text-xl font-bold flex justify-center">
+            <div className="flex justify-center text-center text-xl font-bold">
               {getTitle()}
             </div>
 
