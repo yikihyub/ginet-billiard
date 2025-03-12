@@ -23,6 +23,10 @@ export interface ClubInfo {
   placeAddress: string;
   contactPhone: string;
   contactEmail: string;
+  profileImage: File | null;
+  bannerImage: File | null;
+  profileImageId: number | null;
+  bannerImageId: number | null;
 }
 
 // /types/club.ts
