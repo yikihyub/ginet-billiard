@@ -53,33 +53,32 @@ export default function MobilePage() {
   return (
     <>
       {/* Tab Buttons */}
-      <div className="fixed top-28 z-40 max-w-[270px] overflow-x-auto px-4">
-        <div className="px-4">
-          <div className="mx-auto flex justify-between rounded-full bg-white p-1 shadow-md">
-            <button
-              className={`flex items-center justify-center rounded-full px-4 py-2 ${activeTab === 'favorites' ? 'bg-yellow-50 text-yellow-500' : 'text-gray-500'}`}
-              onClick={() => setActiveTab('favorites')}
-            >
-              <Star className="mr-1 h-4 w-4" />
-              <span className="whitespace-nowrap text-sm">즐겨찾기</span>
-            </button>
-            <button
-              className={`flex items-center justify-center rounded-full px-4 py-2 ${activeTab === 'recent' ? 'bg-blue-50 text-blue-500' : 'text-gray-500'}`}
-              onClick={() => setActiveTab('recent')}
-            >
-              <Clock className="mr-1 h-4 w-4" />
-              <span className="whitespace-nowrap text-sm">최근이용</span>
-            </button>
-            <button
-              className={`flex items-center justify-center rounded-full px-4 py-2 ${activeTab === 'searches' ? 'bg-blue-50 text-blue-500' : 'text-gray-500'}`}
-              onClick={() => setActiveTab('searches')}
-            >
-              <Search className="mr-1 h-4 w-4" />
-              <span className="whitespace-nowrap text-sm">최근검색</span>
-            </button>
-          </div>
+      <div className="top-27 no-scrollbar fixed z-40 max-w-[250px] overflow-x-auto px-4">
+        <div className="mt-[3px] flex gap-1">
+          <button
+            className={`flex h-9 items-center justify-center rounded-full border px-4 py-2 ${activeTab === 'favorites' ? 'bg-yellow-50 text-yellow-500' : 'bg-white text-gray-500'}`}
+            onClick={() => setActiveTab('favorites')}
+          >
+            <Star className="mr-1 h-4 w-4" />
+            <span className="whitespace-nowrap text-sm">즐겨찾기</span>
+          </button>
+          <button
+            className={`flex h-9 items-center justify-center rounded-full border px-4 py-2 ${activeTab === 'recent' ? 'bg-blue-50 text-blue-500' : 'bg-white text-gray-500'}`}
+            onClick={() => setActiveTab('recent')}
+          >
+            <Clock className="mr-1 h-4 w-4" />
+            <span className="whitespace-nowrap text-sm">최근이용</span>
+          </button>
+          <button
+            className={`flex h-9 items-center justify-center rounded-full border bg-white px-4 py-2 ${activeTab === 'searches' ? 'bg-blue-50 text-blue-500' : 'text-gray-500'}`}
+            onClick={() => setActiveTab('searches')}
+          >
+            <Search className="mr-1 h-4 w-4" />
+            <span className="whitespace-nowrap text-sm">최근검색</span>
+          </button>
         </div>
       </div>
+
       <div className="fixed top-4 z-50">
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
           <DrawerTrigger className="fixed bottom-0 w-full rounded-t-xl bg-white p-4 shadow-lg">
