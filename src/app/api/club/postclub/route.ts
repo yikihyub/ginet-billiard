@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
       placeAddress,
       contactPhone,
       contactEmail,
+      profileImageId,
+      bannerImageId,
     } = body;
 
     // 필수 필드 검증
@@ -57,6 +59,8 @@ export async function POST(request: NextRequest) {
           club_contact_phone: contactPhone || null,
           club_contact_email: contactEmail || null,
           club_owner_id: userId,
+          profile_image_id: profileImageId,
+          banner_image_id: bannerImageId,
         },
       });
 

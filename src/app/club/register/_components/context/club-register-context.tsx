@@ -34,6 +34,12 @@ interface ClubRegisterContextProps {
   handleAgreeAll: () => void;
   handleChange: (key: 'terms' | 'privacy' | 'marketing') => void;
   isLoading: boolean;
+  handleProfileImageUpload: (file: File) => void;
+  handleBannerImageUpload: (file: File) => void;
+  profileImagePreview: string | null;
+  bannerImagePreview: string | null;
+  removeProfileImage: () => void;
+  removeBannerImage: () => void;
 }
 
 const defaultClubInfo: ClubInfo = {
@@ -49,6 +55,10 @@ const defaultClubInfo: ClubInfo = {
   placeAddress: '',
   contactPhone: '',
   contactEmail: '',
+  profileImage: null,
+  bannerImage: null,
+  profileImageId: null,
+  bannerImageId: null,
 };
 
 const ClubRegisterContext = createContext<ClubRegisterContextProps | undefined>(
@@ -61,6 +71,12 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
   const [clubInfo, setClubInfo] = useState<ClubInfo>(defaultClubInfo);
   const [currentStep, setCurrentStep] = useState<FormStep>('agreement');
   const [isLoading, setIsLoading] = useState(false);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null
+  );
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
+    null
+  );
   const [isAgreed, setIsAgreed] = useState({
     terms: false, // 이용약관 동의 (필수)
     privacy: false, // 개인정보 수집 및 이용 동의 (필수)
@@ -134,7 +150,50 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
     setClubInfo({ ...clubInfo, rules: newRules });
   };
 
+  // 이미지 업로드 처리 함수
+  const handleProfileImageUpload = (file: File) => {
+    // 1. 미리보기 URL 생성
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImagePreview(previewUrl);
+
+    // 2. 상태 업데이트
+    updateClubInfo('profileImage', file);
+  };
+
+  const handleBannerImageUpload = (file: File) => {
+    // 1. 미리보기 URL 생성
+    const previewUrl = URL.createObjectURL(file);
+    setBannerImagePreview(previewUrl);
+
+    // 2. 상태 업데이트
+    updateClubInfo('bannerImage', file);
+  };
+
+  const removeProfileImage = () => {
+    if (profileImagePreview) {
+      URL.revokeObjectURL(profileImagePreview);
+      setProfileImagePreview(null);
+    }
+    updateClubInfo('profileImage', null);
+    updateClubInfo('profileImageId', null);
+  };
+
+  const removeBannerImage = () => {
+    if (bannerImagePreview) {
+      URL.revokeObjectURL(bannerImagePreview);
+      setBannerImagePreview(null);
+    }
+    updateClubInfo('bannerImage', null);
+    updateClubInfo('bannerImageId', null);
+  };
+
   const resetForm = () => {
+    // 이미지 미리보기 URL 해제
+    if (profileImagePreview) URL.revokeObjectURL(profileImagePreview);
+    if (bannerImagePreview) URL.revokeObjectURL(bannerImagePreview);
+
+    setProfileImagePreview(null);
+    setBannerImagePreview(null);
     setClubInfo(defaultClubInfo);
     setCurrentStep('type');
   };
@@ -194,6 +253,49 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
     try {
       setIsLoading(true);
 
+      // 이미지 업로드 처리
+      let profileImageId = clubInfo.profileImageId;
+      let bannerImageId = clubInfo.bannerImageId;
+
+      // 프로필 이미지 업로드 (파일이 있고 아직 업로드되지 않은 경우)
+      if (clubInfo.profileImage && !profileImageId) {
+        const formData = new FormData();
+        formData.append('file', clubInfo.profileImage);
+        formData.append('entityType', 'club');
+
+        const imageResponse = await fetch('/api/image/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (imageResponse.ok) {
+          const imageData = await imageResponse.json();
+          profileImageId = imageData.id;
+        } else {
+          throw new Error('프로필 이미지 업로드에 실패했습니다');
+        }
+      }
+
+      // 배너 이미지 업로드 (파일이 있고 아직 업로드되지 않은 경우)
+      if (clubInfo.bannerImage && !bannerImageId) {
+        const formData = new FormData();
+        formData.append('file', clubInfo.bannerImage);
+        formData.append('entityType', 'club');
+
+        const imageResponse = await fetch('/api/image/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (imageResponse.ok) {
+          const imageData = await imageResponse.json();
+          bannerImageId = imageData.id;
+        } else {
+          throw new Error('배너 이미지 업로드에 실패했습니다');
+        }
+      }
+
+      // 동호회 정보 제출 (이미지 ID 포함)
       const response = await fetch('/api/club/postclub', {
         method: 'POST',
         headers: {
@@ -212,6 +314,8 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
           placeAddress: clubInfo.placeAddress,
           contactPhone: clubInfo.contactPhone,
           contactEmail: clubInfo.contactEmail,
+          profileImageId,
+          bannerImageId,
         }),
       });
 
@@ -226,7 +330,7 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
       alert('동호회가 성공적으로 등록되었습니다!');
 
       // 등록된 동호회 페이지로 이동
-      window.location.href = `/clubs/${result.club.club_id}`;
+      window.location.href = `/club/search/${result.club.club_id}`;
     } catch (error: any) {
       console.error('동호회 등록 중 오류 발생:', error);
       alert(
@@ -263,6 +367,12 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
         handleChange,
         isLoading,
         isAgreed,
+        handleProfileImageUpload,
+        handleBannerImageUpload,
+        profileImagePreview,
+        bannerImagePreview,
+        removeProfileImage,
+        removeBannerImage,
       }}
     >
       {children}
