@@ -148,7 +148,7 @@ export default function KakaoMap() {
         onClick={() =>
           getCurrentLocation(mapInstance.current!, currentMarker.current)
         }
-        className="absolute right-2 top-[232px] z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded bg-white shadow-sm"
+        className="absolute right-1 top-[232px] z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded bg-white shadow-sm"
         aria-label="Get current location"
       >
         <svg

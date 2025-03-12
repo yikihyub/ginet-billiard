@@ -59,7 +59,7 @@ export function StoreList({ onCloseDrawer }: StoreListProps) {
       )}
       {filteredRooms.map((room) => (
         <div key={room.id} onClick={() => handleRoomClick(room.id)}>
-          <div className="border border-[#eee]"></div>
+          {/* <div className="border-b border-[#eee]"></div> */}
           <BilliardRoomCard room={room} onCloseDrawer={onCloseDrawer} />
         </div>
       ))}

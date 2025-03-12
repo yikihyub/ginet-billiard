@@ -46,8 +46,6 @@ export default function BilliardSelect({
         setIsMapLoading(true);
         await loadKakaoMapsScript();
 
-        console.log('Kakao maps script loaded:', window.kakao);
-
         if (!window.kakao?.maps) {
           console.error('Kakao maps not loaded properly');
           return;
@@ -70,7 +68,6 @@ export default function BilliardSelect({
         };
 
         const newMap = new window.kakao.maps.Map(mapRef.current, options);
-        console.log('Map created:', newMap);
         setMap(newMap);
 
         const newMarker = new window.kakao.maps.Marker();

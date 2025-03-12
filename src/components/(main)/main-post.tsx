@@ -60,7 +60,7 @@ const PopularPosts = () => {
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">커뮤니티 인기글</h2>
         <Link
-          href="/community"
+          href="/billiard-commu"
           className="text-sm text-blue-600 hover:underline"
         >
           더보기

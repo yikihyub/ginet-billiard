@@ -16,56 +16,107 @@ export default function Step2() {
   const [verificationCode, setVerificationCode] = useState('');
   const [verificationId, setVerificationId] = useState('');
   const [isSent, setIsSent] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(180);
   const [isVerified, setIsVerified] = useState(false);
   const recaptchaVerifier = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const timerRef = useRef(null);
+  console.log(error);
 
+  if (loading) {
+    <div>loading...</div>;
+  }
+
+  // 컴포넌트가 언마운트될 때 reCAPTCHA 정리
   useEffect(() => {
+    return () => {
+      if (recaptchaVerifier.current) {
+        recaptchaVerifier.current.clear();
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  // 인증번호 발송 전 reCAPTCHA 초기화
+  const initializeRecaptcha = () => {
     // 기존 verifier가 있다면 clear
     if (recaptchaVerifier.current) {
       recaptchaVerifier.current.clear();
+      recaptchaVerifier.current = null;
     }
 
-    try {
-      recaptchaVerifier.current = new RecaptchaVerifier(
-        auth,
-        'recaptcha-container',
-        {
-          size: 'invisible',
-          callback: () => {
-            console.log('reCAPTCHA resolved');
-          },
-        }
-      );
-
-      // 명시적으로 render 호출
-      recaptchaVerifier.current.render();
-    } catch (error) {
-      console.error('RecaptchaVerifier error:', error);
-    }
-  }, []);
+    // 새로운 reCAPTCHA verifier 생성
+    recaptchaVerifier.current = new RecaptchaVerifier(
+      auth,
+      'recaptcha-container',
+      {
+        size: 'invisible',
+        callback: () => {
+          console.log('reCAPTCHA resolved');
+        },
+        'expired-callback': () => {
+          console.log('reCAPTCHA expired');
+          setError('reCAPTCHA가 만료되었습니다. 다시 시도해주세요.');
+          setLoading(false);
+        },
+      }
+    );
+  };
 
   // 인증번호 발송
   const handleSendVerification = async () => {
     try {
+      setLoading(true);
+      setError('');
+
+      // 전화번호 유효성 검사
+      if (!phoneNumber || phoneNumber.length < 10) {
+        setError('유효한 전화번호를 입력해주세요.');
+        setLoading(false);
+        return;
+      }
+
+      // reCAPTCHA 초기화
+      initializeRecaptcha();
+
       // 전화번호 형식 수정
       const formattedNumber = phoneNumber.startsWith('+82')
         ? phoneNumber
         : `+82${phoneNumber.replace(/^0/, '')}`;
+
+      console.log('Sending verification to:', formattedNumber);
 
       const confirmationResult = await signInWithPhoneNumber(
         auth,
         formattedNumber,
         recaptchaVerifier.current
       );
+
       setVerificationId(confirmationResult.verificationId);
       setIsSent(true);
       startTimer();
+      setLoading(false);
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.error('Error details:', error.code, error.message);
-      alert(error.message || '인증번호 발송에 실패했습니다.');
+      console.error('Error sending verification:', error);
+      let errorMessage = '인증번호 발송에 실패했습니다.';
+
+      // Firebase 오류 코드에 따른 메시지 설정
+      if (error.code === 'auth/invalid-phone-number') {
+        errorMessage = '유효하지 않은 전화번호 형식입니다.';
+      } else if (error.code === 'auth/quota-exceeded') {
+        errorMessage =
+          '인증 시도 횟수가 초과되었습니다. 나중에 다시 시도해주세요.';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage =
+          '너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요.';
+      }
+
+      setError(errorMessage);
+      setLoading(false);
     }
   };
 

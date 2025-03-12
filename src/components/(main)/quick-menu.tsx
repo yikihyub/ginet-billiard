@@ -75,8 +75,8 @@ export default function QuickMenu() {
     },
     {
       id: 4,
-      text: '당구용어',
-      url: '/term',
+      text: '커뮤니티',
+      url: '/billiard-commu',
       icon: (
         <Image
           src="/main/icons8-이야기-책-70.png"
