@@ -14,6 +14,12 @@ const protectedPaths = [
   '/billiard-place',
   '/match',
   '/team-match',
+  '/club',
+  '/billiard-commu',
+  '/notice',
+  '/record',
+  '/reservation',
+  '/term',
 ];
 
 // API 경로 체크 함수
@@ -42,14 +48,14 @@ export default withAuth(
   async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "Unknown IP";
-  console.log("접속 시도 IP:", ip);
+  // const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "Unknown IP";
+  // console.log("접속 시도 IP:", ip);
 
-  const allowedIPs = ['118.235.88.178', '192.168.0.155', '192.168.0.154'];
+  // const allowedIPs = ['172.19.160.1', '118.235.88.178', '192.168.0.155', '192.168.0.154'];
 
-  if (!allowedIPs.includes(ip)) {
-    return new NextResponse("🚫 접근 불가: 허용된 사용자만 접근 가능합니다.", { status: 403 });
-  }
+  // if (!allowedIPs.includes(ip)) {
+  //   return new NextResponse("🚫 접근 불가: 허용된 사용자만 접근 가능합니다.", { status: 403 });
+  // }
 
     // API 경로 처리
     if (pathname.startsWith('/api')) {
