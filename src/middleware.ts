@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from 'next-auth/middleware';
 
+
+
 // 로그인 없이 접근 가능한 공개 경로 정의
 const publicPaths = ['/', '/api/auth', '/api/login', '/login', '/signin'];
 
@@ -39,6 +41,15 @@ const isPublicPath = (pathname: string) => {
 export default withAuth(
   async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "Unknown IP";
+  console.log("접속 시도 IP:", ip);
+
+  const allowedIPs = ['118.235.88.178', '192.168.0.155', '192.168.0.154'];
+
+  if (!allowedIPs.includes(ip)) {
+    return new NextResponse("🚫 접근 불가: 허용된 사용자만 접근 가능합니다.", { status: 403 });
+  }
 
     // API 경로 처리
     if (pathname.startsWith('/api')) {
