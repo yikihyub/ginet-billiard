@@ -53,6 +53,7 @@ export interface OptionType {
   value: string;
   title: string;
   description: string;
+  srcUrl: string;
 }
 
 export interface MatchStatus {

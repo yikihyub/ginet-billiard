@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import BilliardSelect from '@/app/team-match/_components/select/billiard-select';
+import BilliardSelect from '@/app/team-match/@desktop/_components/select/billiard-select';
 import { useClubRegister } from '../../../_components/context/club-register-context';
 
 interface Store {

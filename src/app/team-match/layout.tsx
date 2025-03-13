@@ -1,15 +1,19 @@
-import Navigation from '@/components/(main)/main-nav';
-import React, { ReactNode } from 'react';
+import React from 'react';
 
-interface TeamMatchLayoutProps {
-  children: ReactNode;
-}
-
-export default function TeamMatchLayout({ children }: TeamMatchLayoutProps) {
+export default function RootLayout({
+  mobile,
+  desktop,
+}: {
+  mobile: React.ReactNode;
+  desktop: React.ReactNode;
+}) {
   return (
-    <>
-      <Navigation />
-      <div className="m-auto max-w-[1024px] p-4">{children}</div>
-    </>
+    <div className="m-auto max-w-[1024px] p-4">
+      {/* 모바일 */}
+      <div className="md:hidden">{mobile}</div>
+
+      {/* 데스크톱 */}
+      <div className="hidden md:block">{desktop}</div>
+    </div>
   );
 }
