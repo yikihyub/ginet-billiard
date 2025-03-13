@@ -3,5 +3,5 @@ export default function MobileLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="flex flex-col gap-2 bg-gray-50">{children}</div>;
+  return <>{children}</>;
 }

@@ -22,9 +22,9 @@ export default function PushNotificationButton() {
 
   useEffect(() => {
     // 알림 권한 상태 확인
-    if (typeof window !== 'undefined') {
-      setPermission(Notification.permission);
-    }
+    // if (typeof window !== 'undefined') {
+    //   setPermission(Notification.permission);
+    // }
 
     // 사용자의 푸시 알림 활성화 상태 확인 (API 호출하여 확인 가능)
     const checkPushStatus = async () => {

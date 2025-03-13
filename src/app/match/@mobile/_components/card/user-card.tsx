@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Star, User, Clock } from 'lucide-react';
 import { MatchStatus, MatchUser } from '@/types/(match)';
 import MatchResultForm from '../modal/match-result';
-import MatchRequest from '../modal/match-modal';
 
 export default function UserCard({ user }: { user: MatchUser }) {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user.mb_id;
   const [matchStatus, setMatchStatus] = useState<MatchStatus>({
@@ -73,20 +74,22 @@ export default function UserCard({ user }: { user: MatchUser }) {
 
       default:
         return matchStatus.canRequest ? (
-          <MatchRequest
-            userId={userId!}
-            opponentId={user.mb_id}
-            opponentName={user.name}
-            onRequestSent={() => {
-              checkMatchStatus();
-            }}
-          />
+          <Button
+            onClick={() =>
+              router.push(
+                `/match/request?opponent=${user.mb_id}&name=${encodeURIComponent(user.name)}`
+              )
+            }
+            className="rounded-full bg-green-600 px-3 py-1 text-xs font-medium text-white hover:bg-green-700"
+          >
+            매칭신청
+          </Button>
         ) : null;
     }
   };
 
   return (
-    <div className="mb-4 max-w-md rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md">
+    <div className="mb-4 max-w-md rounded-xl border bg-white p-4 transition-all">
       <div className="flex items-start gap-3">
         {/* 아바타 - 크기 축소 */}
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
@@ -105,7 +108,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
               </div>
             </div>
             <div className="text-right">
-              <span className="block text-sm font-medium text-blue-600">
+              <span className="block text-sm font-medium text-green-600">
                 {user.distance.toFixed(1)}km
               </span>
               <span className="text-xs text-gray-500">{user.lastActive}</span>
@@ -144,7 +147,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
 
       {/* 하단: 태그와 버튼을 한 줄에 배치 */}
       <div className="mt-3 flex items-center justify-between">
-        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600">
+        <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-600">
           {user.preferGame === 'THREE_BALL' ? '3구' : '4구'}
         </span>
 
