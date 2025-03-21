@@ -30,7 +30,7 @@ model User {
   latitude                                                      Float?                          @db.Real
   location                                                      String?
   longitude                                                     Float?                          @db.Real
-  mb_id                                                         String?                         @unique(map: "bi_user_mb_id_unique") @db.VarChar
+  mb_id                                                         String?                         @unique(map: "bi_user_mb_id_unique") @db.VarChar(255)
   mb_login_ip                                                   String?                         @db.VarChar
   mb_memo_cnt                                                   Int?
   mb_today_login                                                DateTime?                       @db.Date
@@ -48,8 +48,15 @@ model User {
   social_id                                                     String?                         @db.VarChar(100)
   user_four_ability                                             Int?
   user_three_ability                                            Int
+  bi_level                                                      bi_user_level?                  @default(MEMBER)
+  is_banned                                                     Boolean                         @default(false)
+  ban_reason                                                    String?
+  ban_expires_at                                                DateTime?                       @db.Timestamptz(6)
+  warning_count                                                 Int                             @default(0)
+  trust_score                                                   Float                           @default(100.0)
   bi_alert                                                      bi_alert[]
   bi_alert_log                                                  bi_alert_log[]
+  bi_bookmark                                                   bi_bookmark[]
   bi_chat_room_participants                                     bi_chat_room_participants[]
   bi_club                                                       Club[]
   bi_club_announcement                                          bi_club_announcement[]
@@ -57,6 +64,10 @@ model User {
   bi_club_join_request                                          bi_club_join_request[]
   bi_club_member                                                bi_club_member[]
   bi_club_schedule_participants                                 bi_club_schedule_participants[]
+  bi_comment                                                    bi_comment[]
+  bi_comment_like                                               bi_comment_like[]
+  bi_comment_like_log                                           bi_comment_like_log[]
+  bi_comment_log                                                bi_comment_log[]
   bi_match_bi_match_loser_idTobi_user                           bi_match[]                      @relation("bi_match_loser_idTobi_user")
   bi_match_bi_match_player1_idTobi_user                         bi_match[]                      @relation("bi_match_player1_idTobi_user")
   bi_match_bi_match_player2_idTobi_user                         bi_match[]                      @relation("bi_match_player2_idTobi_user")
@@ -75,6 +86,14 @@ model User {
   bi_message                                                    bi_message[]
   bi_message_read                                               bi_message_read[]
   bi_message_read_by                                            bi_message_read_by[]
+  bi_post                                                       bi_post[]
+  bi_post_like                                                  bi_post_like[]
+  bi_post_log_bi_post_log_author_idTobi_user                    bi_post_log[]                   @relation("bi_post_log_author_idTobi_user")
+  bi_post_log_bi_post_log_user_idTobi_user                      bi_post_log[]                   @relation("bi_post_log_user_idTobi_user")
+  bi_report_bi_report_reported_user_idTobi_user                 bi_report[]                     @relation("bi_report_reported_user_idTobi_user")
+  bi_report_bi_report_reporter_idTobi_user                      bi_report[]                     @relation("bi_report_reporter_idTobi_user")
+  bi_report_review                                              bi_report_review[]
+  bi_view_log                                                   bi_view_log[]
 
   @@unique([social_id, provider], map: "unique_social_id_provider")
   @@map("bi_user")
@@ -689,7 +708,7 @@ model bi_club_tag {
 }
 
 model bi_image {
-  id                                         Int       @id @default(autoincrement())
+  id                                         Int             @id @default(autoincrement())
   url                                        String
   public_id                                  String?
   file_name                                  String
@@ -702,11 +721,321 @@ model bi_image {
   user_id                                    String?
   entity_type                                String?
   entity_id                                  String?
-  created_at                                 DateTime  @default(now()) @db.Timestamp(6)
-  updated_at                                 DateTime? @default(now()) @db.Timestamp(6)
-  bi_club_bi_club_banner_image_idTobi_image  Club[]    @relation("bi_club_banner_image_idTobi_image")
-  bi_club_bi_club_profile_image_idTobi_image Club[]    @relation("bi_club_profile_image_idTobi_image")
+  created_at                                 DateTime        @default(now()) @db.Timestamp(6)
+  updated_at                                 DateTime?       @default(now()) @db.Timestamp(6)
+  bi_club_bi_club_banner_image_idTobi_image  Club[]          @relation("bi_club_banner_image_idTobi_image")
+  bi_club_bi_club_profile_image_idTobi_image Club[]          @relation("bi_club_profile_image_idTobi_image")
+  bi_post_image                              bi_post_image[]
 
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_bookmark {
+  id         Int       @id @default(autoincrement())
+  post_id    Int
+  user_id    Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  bi_post    bi_post   @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user    User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([post_id, user_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_category {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(50)
+  description String?
+  order       Int?          @default(0)
+  is_active   Boolean?      @default(true)
+  created_at  DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at  DateTime?     @default(now()) @db.Timestamp(6)
+  bi_post     bi_post[]
+  bi_post_log bi_post_log[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_comment {
+  id                  Int                   @id @default(autoincrement())
+  content             String
+  post_id             Int
+  author_id           String                @db.VarChar
+  parent_id           Int?
+  is_deleted          Boolean?              @default(false)
+  created_at          DateTime?             @default(now()) @db.Timestamp(6)
+  updated_at          DateTime?             @default(now()) @db.Timestamp(6)
+  bi_user             User                  @relation(fields: [author_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_comment          bi_comment?           @relation("bi_commentTobi_comment", fields: [parent_id], references: [id], onUpdate: NoAction)
+  other_bi_comment    bi_comment[]          @relation("bi_commentTobi_comment")
+  bi_post             bi_post               @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_comment_like     bi_comment_like[]
+  bi_comment_like_log bi_comment_like_log[]
+  bi_comment_log      bi_comment_log[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_comment_like {
+  id         Int        @id @default(autoincrement())
+  comment_id Int
+  user_id    String     @db.VarChar
+  created_at DateTime?  @default(now()) @db.Timestamp(6)
+  bi_comment bi_comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user    User       @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([comment_id, user_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_post {
+  id                  Int                   @id @default(autoincrement())
+  title               String                @db.VarChar(200)
+  content             String
+  category_id         Int
+  view_count          Int?                  @default(0)
+  is_hot              Boolean?              @default(false)
+  is_pinned           Boolean?              @default(false)
+  is_deleted          Boolean?              @default(false)
+  location            String?
+  latitude            Float?                @db.Real
+  longitude           Float?                @db.Real
+  created_at          DateTime?             @default(now()) @db.Timestamp(6)
+  updated_at          DateTime?             @default(now()) @db.Timestamp(6)
+  author_id           String?               @db.VarChar
+  bi_bookmark         bi_bookmark[]
+  bi_comment          bi_comment[]
+  bi_comment_log      bi_comment_log[]
+  bi_user             User?                 @relation(fields: [author_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+  bi_category         bi_category           @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  bi_post_image       bi_post_image[]
+  bi_post_like        bi_post_like[]
+  bi_post_log         bi_post_log[]
+  bi_post_tag         bi_post_tag[]
+  bi_view_log         bi_view_log[]
+  bi_view_stats_daily bi_view_stats_daily[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_post_image {
+  id         Int       @id @default(autoincrement())
+  post_id    Int
+  image_id   Int
+  order      Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  bi_image   bi_image  @relation(fields: [image_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_post    bi_post   @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([post_id, image_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_post_like {
+  id         Int       @id @default(autoincrement())
+  post_id    Int
+  user_id    Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  bi_post    bi_post   @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user    User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([post_id, user_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_post_tag {
+  id         Int       @id @default(autoincrement())
+  post_id    Int
+  tag_id     Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  bi_post    bi_post   @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_tag     bi_tag    @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([post_id, tag_id])
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_tag {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique @db.VarChar(50)
+  created_at  DateTime?     @default(now()) @db.Timestamp(6)
+  bi_post_tag bi_post_tag[]
+
+  @@schema("public")
+}
+
+model bi_view_log {
+  id         Int      @id @default(autoincrement())
+  post_id    Int
+  user_id    String?  @db.VarChar
+  ip_address String?  @db.VarChar(45)
+  user_agent String?  @db.VarChar(255)
+  viewed_at  DateTime @default(now()) @db.Timestamp(6)
+  bi_post    bi_post  @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_view_log_post")
+  bi_user    User?    @relation(fields: [user_id], references: [mb_id], onUpdate: NoAction, map: "fk_view_log_user")
+
+  @@index([viewed_at], map: "idx_view_log_viewed_at")
+  @@schema("public")
+}
+
+model bi_view_stats_daily {
+  id            Int      @id @default(autoincrement())
+  post_id       Int
+  view_date     DateTime @db.Date
+  view_count    Int      @default(0)
+  unique_users  Int      @default(0)
+  like_count    Int      @default(0)
+  comment_count Int      @default(0)
+  bi_post       bi_post  @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_view_stats_post")
+
+  @@unique([post_id, view_date], map: "uq_post_date")
+  @@index([view_date], map: "idx_view_stats_view_date")
+  @@index([like_count], map: "idx_view_stats_like_count")
+  @@schema("public")
+}
+
+model bi_comment_like_log {
+  id         Int        @id @default(autoincrement())
+  comment_id Int
+  user_id    String     @db.VarChar
+  ip_address String?    @db.VarChar(45)
+  user_agent String?    @db.VarChar(255)
+  action     String     @db.VarChar(20)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  bi_comment bi_comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_comment_like_log_comment")
+  bi_user    User       @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_comment_like_log_user")
+
+  @@index([action], map: "idx_comment_like_log_action")
+  @@index([comment_id], map: "idx_comment_like_log_comment_id")
+  @@index([created_at], map: "idx_comment_like_log_created_at")
+  @@index([user_id], map: "idx_comment_like_log_user_id")
+  @@schema("public")
+}
+
+model bi_comment_log {
+  id          Int        @id @default(autoincrement())
+  comment_id  Int
+  post_id     Int
+  user_id     String     @db.VarChar
+  ip_address  String?    @db.VarChar(45)
+  user_agent  String?    @db.VarChar(255)
+  action      String     @db.VarChar(20)
+  created_at  DateTime   @default(now()) @db.Timestamp(6)
+  bak_content String?
+  bi_comment  bi_comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_comment_log_comment")
+  bi_post     bi_post    @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_comment_log_post")
+  bi_user     User       @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_comment_log_user")
+
+  @@index([action], map: "idx_comment_log_action")
+  @@index([created_at], map: "idx_comment_log_created_at")
+  @@index([post_id], map: "idx_comment_log_post_id")
+  @@index([user_id], map: "idx_comment_log_user_id")
+  @@schema("public")
+}
+
+model bi_post_log {
+  id                                     Int         @id @default(autoincrement())
+  post_id                                Int
+  author_id                              String      @db.VarChar(200)
+  title                                  String      @db.VarChar(200)
+  content                                String
+  category_id                            Int
+  action                                 String      @db.VarChar(20)
+  user_id                                String      @db.VarChar(200)
+  ip_address                             String?     @db.VarChar(45)
+  user_agent                             String?     @db.VarChar(255)
+  created_at                             DateTime    @default(now()) @db.Timestamp(6)
+  original_created_at                    DateTime?   @db.Timestamp(6)
+  original_updated_at                    DateTime?   @db.Timestamp(6)
+  bi_user_bi_post_log_author_idTobi_user User        @relation("bi_post_log_author_idTobi_user", fields: [author_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_author")
+  bi_category                            bi_category @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_post_log_category")
+  bi_post                                bi_post     @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_post")
+  bi_user_bi_post_log_user_idTobi_user   User        @relation("bi_post_log_user_idTobi_user", fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_user")
+
+  @@index([action], map: "idx_post_log_action")
+  @@index([author_id], map: "idx_post_log_author_id")
+  @@index([created_at], map: "idx_post_log_created_at")
+  @@index([post_id], map: "idx_post_log_post_id")
+  @@index([user_id], map: "idx_post_log_user_id")
+  @@schema("public")
+}
+
+model bi_report {
+  id                                          String             @id(map: "Report_pkey")
+  created_at                                  DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at                                  DateTime           @default(now()) @db.Timestamptz(6)
+  reporter_id                                 String
+  reported_user_id                            String
+  content_id                                  String?
+  content_type                                String?
+  type                                        report_type
+  description                                 String?
+  status                                      report_status      @default(PENDING)
+  ip_address                                  String?
+  action_taken                                action_type?
+  bi_user_bi_report_reported_user_idTobi_user User               @relation("bi_report_reported_user_idTobi_user", fields: [reported_user_id], references: [mb_id], map: "Report_reportedUserId_fkey")
+  bi_user_bi_report_reporter_idTobi_user      User               @relation("bi_report_reporter_idTobi_user", fields: [reporter_id], references: [mb_id], map: "Report_reporterId_fkey")
+  bi_report_review                            bi_report_review[]
+
+  @@index([created_at], map: "Report_createdAt_idx")
+  @@index([reported_user_id], map: "Report_reportedUserId_idx")
+  @@index([reporter_id], map: "Report_reporterId_idx")
+  @@index([status], map: "Report_status_idx")
+  @@schema("public")
+}
+
+model bi_report_limit {
+  id             String   @id(map: "ReportLimit_pkey")
+  user_id        String?  @unique(map: "ReportLimit_userId_key")
+  ip_address     String?  @unique(map: "ReportLimit_ipAddress_key")
+  report_count   Int      @default(0)
+  last_report_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([ip_address], map: "ReportLimit_ipAddress_idx")
+  @@index([user_id], map: "ReportLimit_userId_idx")
+  @@schema("public")
+}
+
+model bi_report_metrics {
+  id                    String   @id(map: "ReportMetrics_pkey")
+  date                  DateTime @unique(map: "ReportMetrics_date_key") @default(now()) @db.Timestamptz(6)
+  total_reports         Int      @default(0)
+  resolved_reports      Int      @default(0)
+  pending_reports       Int      @default(0)
+  false_reports         Int      @default(0)
+  harassment_reports    Int      @default(0)
+  spam_reports          Int      @default(0)
+  inappropriate_reports Int      @default(0)
+  hate_speech_reports   Int      @default(0)
+  threat_reports        Int      @default(0)
+  personal_info_reports Int      @default(0)
+  other_reports         Int      @default(0)
+
+  @@index([date], map: "ReportMetrics_date_idx")
+  @@schema("public")
+}
+
+model bi_report_review {
+  id           String      @id(map: "ReportReview_pkey")
+  created_at   DateTime    @default(now()) @db.Timestamptz(6)
+  moderator_id String
+  report_id    String
+  decision     action_type
+  comment      String?
+  bi_user      User        @relation(fields: [moderator_id], references: [mb_id], map: "ReportReview_moderatorId_fkey")
+  bi_report    bi_report   @relation(fields: [report_id], references: [id], map: "ReportReview_reportId_fkey")
+
+  @@index([moderator_id], map: "ReportReview_moderatorId_idx")
+  @@index([report_id], map: "ReportReview_reportId_idx")
   @@schema("public")
 }
 
@@ -766,6 +1095,46 @@ enum request_status {
 enum MatchType {
   ONE_VS_ONE
   TWO_VS_TWO
+
+  @@schema("public")
+}
+
+enum bi_user_level {
+  ADMIN
+  BOSS
+  MEMBER
+
+  @@schema("public")
+}
+
+enum action_type {
+  NONE
+  WARNING
+  TEMPORARY_BAN
+  PERMANENT_BAN
+  CONTENT_REMOVAL
+  FEATURE_RESTRICTION
+
+  @@schema("public")
+}
+
+enum report_status {
+  PENDING
+  REVIEWING
+  RESOLVED
+  REJECTED
+
+  @@schema("public")
+}
+
+enum report_type {
+  HARASSMENT
+  SPAM
+  INAPPROPRIATE_CONTENT
+  HATE_SPEECH
+  THREAT
+  PERSONAL_INFO
+  OTHER
 
   @@schema("public")
 }

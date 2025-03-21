@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Store } from '@/types/(reserve)';
-import { useLocation } from '@/app/billiard-place/reserve/_components/context/location-context';
+import { useLocation } from '@/app/desktop/billiard-place/reserve/_components/context/location-context';
 
 interface MapBounds {
   swLat: number;

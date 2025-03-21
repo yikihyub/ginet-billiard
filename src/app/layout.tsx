@@ -1,6 +1,4 @@
 import localFont from 'next/font/local';
-import Nav from '@/components/(layout)/nav';
-import Footer from '@/components/(layout)/footer';
 
 import { Providers } from './providers';
 
@@ -36,9 +34,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <Nav />
           <main>{children}</main>
-          <Footer />
           <ServiceWorkerRegistration />
         </body>
       </Providers>
