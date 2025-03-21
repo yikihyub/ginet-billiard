@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from '@/app/(auth)/signin/_components/(desktop)/context/sign-in-context';
+import { useForm } from '@/app/mobile/(auth)/signin/_components/context/sign-in-context';
 import { FormData, FormErrors } from '@/types/(login)/user-preference-info';
 
 export function usePreference(onNext: () => void) {

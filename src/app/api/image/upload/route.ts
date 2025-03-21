@@ -6,8 +6,9 @@ import { prisma } from '@/lib/prisma';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
+
 // 이미지 스토리지 버킷 이름
-    const BUCKET_NAME = 'images';
+const BUCKET_NAME = 'images';
 
 // 버킷이 존재하는지 확인하고 없으면 생성하는 함수
 async function ensureFolderExists(bucketName: string, folder: string) {

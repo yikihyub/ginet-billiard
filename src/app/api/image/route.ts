@@ -1,4 +1,3 @@
-// app/api/images/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getImagesByEntity } from './service';
 

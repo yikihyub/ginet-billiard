@@ -17,24 +17,23 @@ export async function uploadImage(params: ImageUploadParams): Promise<BiImage | 
       throw error;
     }
 
-    // 2. 업로드된 이미지 정보를 DB에 저장 - 스네이크 케이스 사용
-const image = await prisma.bi_image.create({
-  data: {
-    url,
-    public_id: publicId ?? null, // null 허용
-    file_name: fileMetadata.fileName,
-    file_size: fileMetadata.fileSize,
-    file_type: fileMetadata.fileType,
-    width: fileMetadata.width ?? null, // Int? → null 허용
-    height: fileMetadata.height ?? null, // Int? → null 허용
-    alt: alt ?? null, // String? → null 허용
-    description: description ?? null, // String? → null 허용
-    user_id: userId ?? null, // String? → null 허용
-    entity_type: entityType ?? null, // String? → null 허용
-    entity_id: entityId ?? null, // String? → null 허용
-  },
-});
-
+  // 2. 업로드된 이미지 정보를 DB에 저장 - 스네이크 케이스 사용
+  const image = await prisma.bi_image.create({
+    data: {
+      url,
+      public_id: publicId ?? null, // null 허용
+      file_name: fileMetadata.fileName,
+      file_size: fileMetadata.fileSize,
+      file_type: fileMetadata.fileType,
+      width: fileMetadata.width ?? null, // Int? → null 허용
+      height: fileMetadata.height ?? null, // Int? → null 허용
+      alt: alt ?? null, // String? → null 허용
+      description: description ?? null, // String? → null 허용
+      user_id: userId ?? null, // String? → null 허용
+      entity_type: entityType ?? null, // String? → null 허용
+      entity_id: entityId ?? null, // String? → null 허용
+    },
+  });
 
     return image; // 타입 BiImage와 일치함
   } catch (error) {

@@ -21,6 +21,7 @@ export async function POST(request: Request) {
         mb_id: true,
         password: true,
         phonenum: true,
+        bi_level: true,
       },
     });
 
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
         name: userWithoutPass.name,
         mb_id: userWithoutPass.mb_id,
         phonenum: userWithoutPass.phonenum,
+        bi_level: userWithoutPass.bi_level,
       };
 
       const accessToken = signJwtAccessToken(sessionData);
