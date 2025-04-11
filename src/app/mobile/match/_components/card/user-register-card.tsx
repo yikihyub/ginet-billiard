@@ -11,6 +11,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { RegisteredPlayer } from '@/types/(match)';
 
+import { Search, TrendingUp, Calendar, Users } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+
 import {
   CalendarIcon,
   MapPinIcon,
@@ -29,6 +32,14 @@ export default function UserRegisterCard() {
   const [processingMatchId, setProcessingMatchId] = useState<string | null>(
     null
   );
+
+  // const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const activeMatches = players.filter(
+    (player) => player.status === 'active'
+  ).length;
+  const totalPlayers = 0;
 
   const userId = session?.user.mb_id;
 
@@ -93,7 +104,7 @@ export default function UserRegisterCard() {
     };
 
     return (
-      <Badge variant={variants[status] || 'default'}>
+      <Badge className="bg-green-700" variant={variants[status] || 'default'}>
         {labels[status as keyof typeof labels] || '알 수 없음'}
       </Badge>
     );
@@ -180,15 +191,54 @@ export default function UserRegisterCard() {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <div>매치 등록 현황</div>
+        <div className="text-lg font-semibold">매치 등록 현황</div>
+      </div>
+
+      {/* 통계 정보 배너 */}
+      <div className="grid grid-cols-3 gap-2 rounded-lg bg-gray-50 p-3">
+        <div className="flex flex-col items-center justify-center p-2 text-center">
+          <div className="mb-1 flex items-center gap-1 text-gray-600">
+            <Calendar className="h-4 w-4" />
+            <span className="text-xs">활성 매치</span>
+          </div>
+          <span className="font-semibold">{activeMatches}개</span>
+        </div>
+        <div className="flex flex-col items-center justify-center p-2 text-center">
+          <div className="mb-1 flex items-center gap-1 text-gray-600">
+            <Users className="h-4 w-4" />
+            <span className="text-xs">총 경기</span>
+          </div>
+          <span className="font-semibold">{totalPlayers}명</span>
+        </div>
+        <div className="flex flex-col items-center justify-center p-2 text-center">
+          <div className="mb-1 flex items-center gap-1 text-gray-600">
+            <TrendingUp className="h-4 w-4" />
+            <span className="text-xs">인기 종목</span>
+          </div>
+          <span className="font-semibold">4구</span>
+        </div>
+      </div>
+
+      {/* 검색 및 필터 */}
+      <div className="flex items-center space-x-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+          <Input
+            placeholder="매치 검색..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" onClick={fetchPlayers}>
+          <Button variant="ghost" size="sm" onClick={fetchPlayers}>
             <RefreshCcw />
           </Button>
         </div>
       </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {players.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-4 text-center">
@@ -199,22 +249,22 @@ export default function UserRegisterCard() {
               등록된 경기가 없습니다.
             </h3>
             <p className="mb-6 text-sm text-gray-500">
-              첫 번째로 선수로 등록해보세요.
+              첫 번째로 경기를 등록해보세요.
             </p>
             <Link href="/mobile/team-match">
               <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600">
                 <Plus size={16} />
-                <span>선수 등록하기</span>
+                <span>경기 등록하기</span>
               </Button>
             </Link>
           </div>
         ) : (
           players.map((player) => (
-            <Card key={player.id} className="overflow-hidden">
+            <Card key={player.id} className="overflow-hidden shadow-none">
               <div className="p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-10 w-10">
+                    <Avatar className="h-12 w-12">
                       <AvatarImage
                         src={
                           '/logo/billiard-ball.png'
@@ -231,42 +281,76 @@ export default function UserRegisterCard() {
                       <div className="font-semibold">
                         {player.bi_user?.name || '이름 없음'}
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        다마: {player.handicap}
-                      </div>
                     </div>
                   </div>
                   <div>{getStatusBadge(player.status)}</div>
                 </div>
 
                 <div className="mt-2 space-y-2 text-sm">
-                  <div className="grid grid-cols-2 gap-2">
+                  {/* <div className="grid grid-cols-2 gap-2">
                     <div className="font-medium">게임 유형:</div>
                     <div>{getGameTypeLabel(player.game_type)}</div>
 
                     <div className="font-medium">매치 유형:</div>
                     <div>{getMatchTypeLabel(player.match_type)}</div>
+                  </div> */}
+
+                  <div className="flex divide-x divide-border text-center text-sm">
+                    {/* 왼쪽 박스 */}
+                    <div className="flex-1 px-4">
+                      <div className="font-medium text-muted-foreground">
+                        게임 유형
+                      </div>
+                      <div className="mt-1 text-black">
+                        {getGameTypeLabel(player.game_type)}
+                      </div>
+                    </div>
+
+                    {/* 오른쪽 박스 */}
+                    <div className="flex-1 px-4">
+                      <div className="font-medium text-muted-foreground">
+                        매치 유형
+                      </div>
+                      <div className="mt-1 text-black">
+                        {getMatchTypeLabel(player.match_type)}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex-1 px-4">
+                        <div className="font-medium text-muted-foreground">
+                          당구 수지
+                        </div>
+                        <div className="mt-1 text-black">{player.handicap}</div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center text-muted-foreground">
-                    <MapPinIcon className="mr-1 h-4 w-4" />
-                    <span
-                      className="truncate"
-                      title={player.billiard_place || ''}
-                    >
-                      {player.billiard_place || '장소 미정'}
-                    </span>
-                  </div>
+                  <div className="flex flex-col gap-2 bg-gray-50 p-4">
+                    <div className="flex items-center text-muted-foreground">
+                      <MapPinIcon className="mr-1 h-4 w-4" />
+                      <span
+                        className="truncate"
+                        title={player.billiard_place || ''}
+                      >
+                        매칭장소 : {player.billiard_place || '장소 미정'}
+                      </span>
+                    </div>
 
-                  <div className="flex items-center text-muted-foreground">
-                    <CalendarIcon className="mr-1 h-4 w-4" />
-                    <span>
-                      {new Date(player.created_at).toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </span>
+                    <div className="flex items-center text-muted-foreground">
+                      <CalendarIcon className="mr-1 h-4 w-4" />
+                      <span>
+                        등록날짜 :&nbsp;
+                        {new Date(player.created_at).toLocaleDateString(
+                          'ko-KR',
+                          {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          }
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -277,8 +361,8 @@ export default function UserRegisterCard() {
                         onClick={() => handleMatchRequest(player)}
                         disabled={processingMatchId === player.bi_user.mb_id}
                         variant="default"
-                        size="sm"
-                        className="w-full"
+                        size="lg"
+                        className="h-12 w-full bg-green-600 text-white"
                       >
                         {processingMatchId === player.bi_user.mb_id
                           ? '처리중...'
@@ -291,6 +375,6 @@ export default function UserRegisterCard() {
           ))
         )}
       </div>
-    </>
+    </div>
   );
 }

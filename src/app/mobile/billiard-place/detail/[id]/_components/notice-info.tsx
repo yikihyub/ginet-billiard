@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function NoticeInfoPage() {
   return (
-    <div className="bg-white p-4">
+    <div className="mb-20 bg-white p-4">
       {/* 타이틀 */}
       <h2 className="mb-4 text-lg font-bold">
         📌 당구장 예약 및 취소 규정 안내

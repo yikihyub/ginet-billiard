@@ -7,8 +7,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight } from 'lucide-react';
 import { useLocation } from '../context/location-context';
-
-import { MBilliardRoomCardProps } from '@/types/(reserve)';
+import { MBilliardRoomCardProps } from '../../../_types';
 
 export function BilliardRoomCard({
   room,
@@ -20,22 +19,17 @@ export function BilliardRoomCard({
     if (!room.address) return;
 
     try {
-      // 카카오 지도 서비스 초기화
       const geocoder = new window.kakao.maps.services.Geocoder();
 
       // 주소로 좌표 검색
       geocoder.addressSearch(room.address, (result: any, status: any) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (status === window.kakao.maps.services.Status.OK) {
           const coords = {
             lat: Number(result[0].y),
             lng: Number(result[0].x),
           };
 
-          // Context를 통해 위치 업데이트
-          setLocation(coords.lat, coords.lng, 3);
-
-          // Drawer 닫기
+          setLocation(coords.lat, coords.lng, 1);
           onCloseDrawer();
         }
       });

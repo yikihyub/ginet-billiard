@@ -1,6 +1,6 @@
-// src/app/api/match/response/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { randomUUID } from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,6 +16,14 @@ export async function POST(request: NextRequest) {
     // 매치 정보 조회
     const match = await prisma.bi_match.findUnique({
       where: { match_id: matchId },
+      select: {
+        match_id: true,
+        match_uid: true, // ✅ 추가
+        player1_id: true,
+        player2_id: true,
+        game_type: true,
+        preferred_date: true,
+      },
     });
 
     if (!match) {
@@ -45,6 +53,53 @@ export async function POST(request: NextRequest) {
         },
       });
 
+     // 매치가 수락된 경우에만 채팅방 생성
+      let chatRoom = null;
+      if (response === 'ACCEPT') {
+        // 2. 채팅방 생성
+        const player1 = await tx.user.findUnique({
+          where: { mb_id: match.player1_id },
+          select: { name: true },
+        });
+
+        const player2 = await tx.user.findUnique({
+          where: { mb_id: match.player2_id },
+          select: { name: true },
+        });
+        
+        // 채팅방 이름 생성 (두 사용자 이름 조합)
+        const roomName = `${player1?.name || '사용자'} & ${player2?.name || '사용자'} 매치 채팅`;
+
+        // 채팅방 생성
+        chatRoom = await tx.bi_chat_room.create({
+          data: {
+            id: randomUUID(),
+            name: roomName,
+            group_id: `group-${match.match_uid}`,
+            created_at: new Date(),
+            updated_at: new Date(),
+          },
+        });
+
+        // 3. 채팅방 참가자 추가 (player1)
+        await tx.bi_chat_room_participants.create({
+          data: {
+            chat_room_id: `group-${match.match_uid}`,
+            user_id: match.player1_id,
+            is_admin: false,
+          },
+        });
+        
+        // 4. 채팅방 참가자 추가 (player2)
+        await tx.bi_chat_room_participants.create({
+          data: {
+            chat_room_id: `group-${match.match_uid}`,
+            user_id: match.player2_id,
+            is_admin: false,
+          },
+        });
+      }
+
       // 2. 요청자의 user.id 조회
       const requester = await tx.user.findUnique({
         where: { mb_id: match.player1_id || '' },
@@ -69,13 +124,15 @@ export async function POST(request: NextRequest) {
           category: 'match',
           data: {
             matchId: matchId,
+            matchUid: match.match_uid,
             gameType: match.game_type,
             opponentId: userId,
+            chatRoomId: chatRoom?.id, // 채팅방 ID도 포함
           },
         },
       });
 
-      return { match: updatedMatch, alert };
+      return { match: updatedMatch, alert, chatRoom };
     });
 
     return NextResponse.json(result.match);

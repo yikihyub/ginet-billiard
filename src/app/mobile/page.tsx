@@ -6,10 +6,12 @@ import ClubsSection from './_components/(main)/main-club';
 import MainMatch from './_components/(main)/main-match';
 import SwiperComponent from './_components/(swiper)/ad-swiper';
 import Footer from './_components/(layout)/footer';
+import Nav from './_components/(layout)/nav';
 
 export default function MobileHome() {
   return (
     <>
+      <Nav />
       {/* main-navigation */}
       <MainNav />
 

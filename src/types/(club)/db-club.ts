@@ -75,9 +75,7 @@ export interface ClubScheduleParticipantModel {
 
 export interface ClubTagModel {
   tag_id: number;
-  club_id: number;
   tag_name: string;
-  tag_type: string;
 }
 
 // User 관련
@@ -101,11 +99,10 @@ export interface ClubData {
   rating?: number;
   description: string;
   isAdmin: boolean;
-  //   tags: {
-  //     id: number;
-  //     name: string;
-  //     type: string;
-  //   }[];
+  tags: {
+    id: number;
+    name: string;
+  }[];
   rules: string[];
   venue: {
     name: string;
@@ -166,7 +163,7 @@ export interface DBResponse {
   gallery: ClubGalleryModel[];
   members: ClubMemberModel[];
   schedules: ClubScheduleModel[];
-  //   tags: ClubTagModel[];
+  tags: ClubTagModel[];
   users: { [userId: string]: UserModel }; // 관련 사용자 데이터
 }
 

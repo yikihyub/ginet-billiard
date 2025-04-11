@@ -11,7 +11,7 @@ import IntroInfo from './_components/intro-info';
 import { TimeTable } from './_components/timetable';
 import NoticeInfoPage from './_components/notice-info';
 
-import { Store } from '@/types/(reserve)';
+import { Store } from '../../_types';
 
 export default function MobileDetailPage() {
   const { id } = useParams();

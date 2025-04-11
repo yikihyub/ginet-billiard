@@ -1,4 +1,3 @@
-// app/api/club/membership-status/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/config/authOptions';
@@ -57,6 +56,8 @@ export async function GET(request: NextRequest) {
         },
       },
     });
+
+    console.log(existingMember)
 
     if (existingMember) {
       return NextResponse.json({ status: 'member' });

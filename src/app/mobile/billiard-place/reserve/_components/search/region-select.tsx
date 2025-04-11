@@ -13,7 +13,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocation } from '../context/location-context';
 import coordinates from '@/data/region_coordinates.json';
-import { RegionData } from '@/types/(reserve)';
+import { RegionData } from '../../../_types';
 
 const regionData = coordinates as RegionData[];
 

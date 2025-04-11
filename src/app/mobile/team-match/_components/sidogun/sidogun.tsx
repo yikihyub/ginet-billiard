@@ -1,16 +1,7 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
-
-interface AdminDistrict {
-  administrative: string[];
-}
-
-interface SidoData {
-  [key: string]: {
-    [key: string]: AdminDistrict;
-  };
-}
+import { SidoData } from '../../_types';
 
 export default function LocationSelector() {
   const [data, setData] = useState<SidoData>({});
@@ -20,15 +11,14 @@ export default function LocationSelector() {
   const [guList, setGuList] = useState<string[]>([]);
   const [dongList, setDongList] = useState<string[]>([]);
 
-
   useEffect(() => {
     // JSON 파일 불러오기
     fetch('/legal_dong.json')
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setData(data);
       })
-      .catch(error => console.error('Error:', error));
+      .catch((error) => console.error('Error:', error));
   }, []);
 
   const handleSidoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -58,7 +48,7 @@ export default function LocationSelector() {
         <select
           value={selectedSido}
           onChange={handleSidoChange}
-          className="w-full p-2 border rounded-lg shadow-sm"
+          className="w-full rounded-lg border p-2 shadow-sm"
         >
           <option value="">시/도 선택</option>
           {Object.keys(data).map((sido) => (
@@ -72,7 +62,7 @@ export default function LocationSelector() {
         <select
           value={selectedGu}
           onChange={handleGuChange}
-          className="w-full p-2 border rounded-lg shadow-sm"
+          className="w-full rounded-lg border p-2 shadow-sm"
           disabled={!selectedSido}
         >
           <option value="">구/군 선택</option>
@@ -87,7 +77,7 @@ export default function LocationSelector() {
         <select
           value={selectedDong}
           onChange={handleDongChange}
-          className="w-full p-2 border rounded-lg shadow-sm"
+          className="w-full rounded-lg border p-2 shadow-sm"
           disabled={!selectedGu}
         >
           <option value="">동/읍/면 선택</option>
@@ -101,7 +91,7 @@ export default function LocationSelector() {
 
       {/* 선택된 값 표시 */}
       {selectedSido && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+        <div className="mt-4 rounded-lg bg-gray-50 p-4">
           <h3 className="font-medium">선택된 주소:</h3>
           <p>
             {selectedSido} {selectedGu} {selectedDong}

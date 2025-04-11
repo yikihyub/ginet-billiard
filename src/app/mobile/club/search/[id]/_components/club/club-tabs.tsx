@@ -18,7 +18,7 @@ export default function ClubTabs({ activeTab, setActiveTab }: ClubTabsProps) {
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 border-b-2 py-3 font-medium ${
               activeTab === tab.id
-                ? 'border-blue-500 text-blue-500'
+                ? 'border-green-700 font-semibold text-green-700'
                 : 'border-transparent text-gray-500'
             }`}
           >

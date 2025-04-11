@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 
-import FilterSection from '../filter/filter-section';
-import UserCard from '../card/user-card';
+import FilterSection from '../../around/_components/filter/filter-section';
+import UserCard from '../../around/_components/card/user-card';
 import UserRegisterCard from '../card/user-register-card';
 
 import { User } from '@/types/(match)';
@@ -13,7 +13,7 @@ import { User } from '@/types/(match)';
 export default function TabList() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [maxDistance, setMaxDistance] = useState(50);
+  const [maxDistance] = useState(50);
 
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -81,10 +81,7 @@ export default function TabList() {
         <div className="bg-white p-4">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold">주변회원 목록</div>
-            <FilterSection
-              maxDistance={maxDistance}
-              onMaxDistanceChange={setMaxDistance}
-            />
+            <FilterSection />
           </div>
           <div className="space-y-4">
             {users.length === 0 ? (

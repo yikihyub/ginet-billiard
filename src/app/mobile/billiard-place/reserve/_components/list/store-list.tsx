@@ -1,11 +1,9 @@
 'use client';
+import React from 'react';
 
 import { BilliardRoomCard } from '../card/billiard-roomcard';
+import { StoreListProps } from '../../../_types';
 import { useSearch } from '../provider/search-provider';
-
-interface StoreListProps {
-  onCloseDrawer: () => void;
-}
 
 export function StoreList({ onCloseDrawer }: StoreListProps) {
   const { filteredRooms, isLoading, error, searchQuery } = useSearch();
@@ -44,8 +42,8 @@ export function StoreList({ onCloseDrawer }: StoreListProps) {
   }
 
   const handleRoomClick = (roomId: number) => {
+    console.log('선택한 당구장 ID:', roomId);
     if (onCloseDrawer) {
-      console.log(roomId);
       onCloseDrawer();
     }
   };

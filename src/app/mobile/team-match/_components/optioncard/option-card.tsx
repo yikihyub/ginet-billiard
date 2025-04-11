@@ -1,19 +1,11 @@
 import React from 'react';
+
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { RadioGroupItem } from '@/components/ui/radio-group';
-import Image from 'next/image';
 
-interface OptionCardProps {
-  id: string;
-  value: string;
-  title: string;
-  description: string;
-  selectedValue: string;
-  srcUrl: string;
-  onValueChange: (value: string) => void;
-  imagePosition?: 'left' | 'right'; // Control image position
-}
+import { UserRound, UsersRound } from 'lucide-react';
+import { OptionCardProps } from '../../_types';
 
 const OptionCard = ({
   id,
@@ -21,7 +13,6 @@ const OptionCard = ({
   selectedValue,
   title,
   description,
-  srcUrl,
   onValueChange,
   imagePosition = 'left',
 }: OptionCardProps) => (
@@ -29,7 +20,7 @@ const OptionCard = ({
     <Card
       className={`relative flex cursor-pointer items-center p-4 transition-all ${
         selectedValue === value
-          ? 'border-2 border-[#171717]'
+          ? 'border-2 border-green-800'
           : 'border border-gray-200'
       }`}
     >
@@ -44,13 +35,14 @@ const OptionCard = ({
       {imagePosition === 'left' && (
         <>
           <div className="mr-4 flex-shrink-0">
-            <Image
+            {/* <Image
               width={90}
               height={90}
               src={srcUrl}
               alt={title}
               className="object-contain"
-            />
+            /> */}
+            <UserRound className="h-14 w-14" />
           </div>
           <div className="flex-grow"></div>
           <div className="mr-6 flex flex-col">
@@ -69,13 +61,14 @@ const OptionCard = ({
           </div>
           <div className="flex-grow"></div>
           <div className="flex-shrink-0">
-            <Image
+            {/* <Image
               width={90}
               height={90}
               src={srcUrl}
               alt={title}
               className="ml-4 mr-4 object-contain"
-            />
+            /> */}
+            <UsersRound className="ml-4 mr-4 h-14 w-14" />
           </div>
         </>
       )}

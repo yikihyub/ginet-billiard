@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
     // URL에서 쿼리 파라미터 추출
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = parseInt(searchParams.get('offset') || '0');
-    const status = searchParams.get('status'); // 'read', 'unread', null (모두)
-    const category = searchParams.get('category'); // '매칭', '활동・소식', '혜택・이벤트'
+    const status = searchParams.get('status');
+    const category = searchParams.get('category');
 
     // 카테고리에 따른 타입 매핑
     let typeCondition = {};
@@ -59,6 +59,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
+
+
     // 알림 목록 조회 (최신순)
     const alerts = await prisma.bi_alert.findMany({
       where: {
@@ -72,7 +74,7 @@ export async function GET(request: NextRequest) {
       skip: offset,
       take: limit,
     });
-
+    
     // 안읽은 알림 수 조회
     const unreadCount = await prisma.bi_alert.count({
       where: {

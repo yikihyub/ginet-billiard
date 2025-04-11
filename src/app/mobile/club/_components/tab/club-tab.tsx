@@ -12,6 +12,10 @@ const ClubTab = () => {
     { name: '동호회 등록', path: '/mobile/club/register', enabled: true },
   ];
 
+  if (pathname.includes('chat')) {
+    return null;
+  }
+
   return (
     <div className="m-auto max-w-1024px">
       <ul className="flex border-b">

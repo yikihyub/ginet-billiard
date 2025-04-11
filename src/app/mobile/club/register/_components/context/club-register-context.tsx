@@ -330,7 +330,7 @@ export const ClubRegisterProvider: React.FC<{ children: ReactNode }> = ({
       alert('동호회가 성공적으로 등록되었습니다!');
 
       // 등록된 동호회 페이지로 이동
-      window.location.href = `/club/search/${result.club.club_id}`;
+      window.location.href = `/mobile/club/search/${result.club.club_id}`;
     } catch (error: any) {
       console.error('동호회 등록 중 오류 발생:', error);
       alert(

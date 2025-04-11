@@ -4,6 +4,9 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 @layer base {
@@ -80,8 +83,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-
 
 @layer base {
   * {

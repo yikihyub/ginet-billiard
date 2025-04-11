@@ -2,6 +2,7 @@ import webpush from 'web-push';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import cuid from 'cuid';
 
 // web-push 설정정
 webpush.setVapidDetails(
@@ -100,7 +101,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    const matchUid = cuid();
     const {
       player1_id, // 본인 아이디
       player2_id, // 상대방 아이디
@@ -135,6 +136,7 @@ export async function POST(request: NextRequest) {
       // 3. bi_match 테이블에 매치 생성
       const match = await tx.bi_match.create({
         data: {
+              match_uid: matchUid,
           player1_id: player1_id,
           player2_id: player2_id,
           preferred_date: new Date(preferred_date).toISOString(),
@@ -147,6 +149,7 @@ export async function POST(request: NextRequest) {
       // 4. bi_match_request 테이블에 요청 생성
       const matchRequest = await tx.bi_match_request.create({
         data: {
+              match_uid: matchUid,
           match_id: match.match_id,
           requester_id: player1_id,
           recipient_id: player2_id,
@@ -162,7 +165,7 @@ export async function POST(request: NextRequest) {
 
       // 5. 알림 메시지 생성
       const requesterName = requester.name || '알 수 없음';
-      const recipientName = recipient.name || '알 수 없음음';
+      const recipientName = recipient.name || '알 수 없음';
       const title = `새로운 매치 신청이 도착했습니다`;
       const alertMessage = message
         ? `${requesterName}님이 매치를 신청했습니다: "${message}"`

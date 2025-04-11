@@ -8,32 +8,6 @@ export default function QuickMenu() {
   const router = useRouter();
 
   const buttons = [
-    // {
-    //   id: 2,
-    //   text: "4구",
-    //   url: "/four-ball",
-    //   icon: (
-    //     <Image
-    //       src="/main/icons8-billiard-70.png"
-    //       alt="트로피"
-    //       width={46}
-    //       height={46}
-    //     />
-    //   ),
-    // },
-    // {
-    //   id: 3,
-    //   text: "포켓볼",
-    //   url: "/pocketball",
-    //   icon: (
-    //     <Image
-    //       src="/main/icons8-snooker-66.png"
-    //       alt="트로피"
-    //       width={46}
-    //       height={46}
-    //     />
-    //   ),
-    // },
     {
       id: 1,
       text: '매칭등록',
@@ -63,7 +37,7 @@ export default function QuickMenu() {
     {
       id: 3,
       text: '상대찾기',
-      url: '/mobile/match',
+      url: '/mobile/match/around',
       icon: (
         <Image
           src="/main/icons8-사람-피부-유형-7-70.png"
@@ -75,6 +49,19 @@ export default function QuickMenu() {
     },
     {
       id: 4,
+      text: '매칭찾기',
+      url: '/mobile/match/registered',
+      icon: (
+        <Image
+          src="/main/icons8-사람-피부-유형-7-70.png"
+          alt="트로피"
+          width={46}
+          height={46}
+        />
+      ),
+    },
+    {
+      id: 5,
       text: '커뮤니티',
       url: '/mobile/billiard-commu/main',
       icon: (
@@ -87,7 +74,7 @@ export default function QuickMenu() {
       ),
     },
     {
-      id: 5,
+      id: 6,
       text: '동호회',
       url: '/mobile/club/search',
       icon: (
@@ -100,36 +87,23 @@ export default function QuickMenu() {
       ),
     },
     {
-      id: 6,
-      text: '당구레슨',
-      url: '/mobile/lesson',
+      id: 7,
+      text: '채팅방',
+      url: '/mobile/message',
       icon: (
         <Image
-          src="/main/icons8-billiard-53.png"
+          src="/main/icons8-snooker-66.png"
           alt="트로피"
           width={46}
           height={46}
         />
       ),
     },
-    // {
-    //   id: 5,
-    //   text: "당구용품",
-    //   url: "/shop",
-    //   icon: (
-    //     <Image
-    //       src="/main/icons8-billiard-53.png"
-    //       alt="트로피"
-    //       width={46}
-    //       height={46}
-    //     />
-    //   ),
-    // },
   ];
 
   return (
     <>
-      <div className="m-auto grid grid-cols-4 gap-2 p-4">
+      <div className="m-auto grid grid-cols-4 gap-2 p-2 pb-4 pt-8">
         {buttons.map((button) => (
           <button
             key={button.id}

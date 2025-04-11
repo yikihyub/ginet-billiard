@@ -68,21 +68,18 @@ model User {
   bi_comment_like                                               bi_comment_like[]
   bi_comment_like_log                                           bi_comment_like_log[]
   bi_comment_log                                                bi_comment_log[]
+  bi_inquiry                                                    bi_inquiry[]
   bi_match_bi_match_loser_idTobi_user                           bi_match[]                      @relation("bi_match_loser_idTobi_user")
   bi_match_bi_match_player1_idTobi_user                         bi_match[]                      @relation("bi_match_player1_idTobi_user")
   bi_match_bi_match_player2_idTobi_user                         bi_match[]                      @relation("bi_match_player2_idTobi_user")
   bi_match_bi_match_winner_idTobi_user                          bi_match[]                      @relation("bi_match_winner_idTobi_user")
-  bi_match_dispute_bi_match_dispute_reporter_idTobi_user        bi_match_dispute[]              @relation("bi_match_dispute_reporter_idTobi_user")
-  bi_match_dispute_bi_match_dispute_resolved_byTobi_user        bi_match_dispute[]              @relation("bi_match_dispute_resolved_byTobi_user")
   bi_match_evaluation_bi_match_evaluation_evaluator_idTobi_user bi_match_evaluation[]           @relation("bi_match_evaluation_evaluator_idTobi_user")
   bi_match_evaluation_bi_match_evaluation_target_idTobi_user    bi_match_evaluation[]           @relation("bi_match_evaluation_target_idTobi_user")
+  bi_match_evaluation_bi_match_evaluation_winner_idTobi_user    bi_match_evaluation[]           @relation("bi_match_evaluation_winner_idTobi_user")
   bi_match_participant                                          bi_match_participant[]
   bi_match_reg                                                  bi_match_reg[]
   bi_match_request_bi_match_request_recipient_idTobi_user       bi_match_request[]              @relation("bi_match_request_recipient_idTobi_user")
   bi_match_request_bi_match_request_requester_idTobi_user       bi_match_request[]              @relation("bi_match_request_requester_idTobi_user")
-  bi_match_result_bi_match_result_loser_idTobi_user             bi_match_result[]               @relation("bi_match_result_loser_idTobi_user")
-  bi_match_result_bi_match_result_owner_idTobi_user             bi_match_result[]               @relation("bi_match_result_owner_idTobi_user")
-  bi_match_result_bi_match_result_winner_idTobi_user            bi_match_result[]               @relation("bi_match_result_winner_idTobi_user")
   bi_message                                                    bi_message[]
   bi_message_read                                               bi_message_read[]
   bi_message_read_by                                            bi_message_read_by[]
@@ -94,6 +91,8 @@ model User {
   bi_report_bi_report_reporter_idTobi_user                      bi_report[]                     @relation("bi_report_reporter_idTobi_user")
   bi_report_review                                              bi_report_review[]
   bi_view_log                                                   bi_view_log[]
+  user_sessions                                                 user_sessions[]
+  visit_logs                                                    visit_logs[]
 
   @@unique([social_id, provider], map: "unique_social_id_provider")
   @@map("bi_user")
@@ -145,25 +144,6 @@ model Club {
   bi_club_tag                                 bi_club_tag[]
 
   @@map("bi_club")
-  @@schema("public")
-}
-
-model Location {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(100)
-  description String   @db.VarChar(100)
-  address     String   @db.VarChar(255)
-  latitude    Float
-  longitude   Float
-  phone       String?  @db.VarChar(20)
-  timeStart   DateTime
-  timeEnd     DateTime
-  threeBall   Int
-  fourBall    Int
-  tableType   Int
-  createdAt   DateTime @default(now())
-
-  @@map("bi_location")
   @@schema("public")
 }
 
@@ -356,14 +336,13 @@ model bi_match {
   notification_date                    DateTime?             @db.Timestamp(6)
   match_status                         match_status?         @default(PENDING)
   game_type                            game_type_enum?
+  match_uid                            String?               @unique(map: "match_uid_unique") @db.VarChar(255)
   bi_user_bi_match_loser_idTobi_user   User?                 @relation("bi_match_loser_idTobi_user", fields: [loser_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_loser_id_fkey")
   bi_user_bi_match_player1_idTobi_user User?                 @relation("bi_match_player1_idTobi_user", fields: [player1_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player1_id_fkey")
   bi_user_bi_match_player2_idTobi_user User?                 @relation("bi_match_player2_idTobi_user", fields: [player2_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player2_id_fkey")
   bi_user_bi_match_winner_idTobi_user  User?                 @relation("bi_match_winner_idTobi_user", fields: [winner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_winner_id_fkey")
-  bi_match_dispute                     bi_match_dispute[]
   bi_match_evaluation                  bi_match_evaluation[]
   bi_match_request                     bi_match_request[]
-  bi_match_result                      bi_match_result[]
 
   @@schema("public")
 }
@@ -381,28 +360,10 @@ model bi_match_request {
   game_type                                      String?   @db.VarChar(10)
   location                                       String?   @db.VarChar(255)
   is_notified                                    Boolean?  @default(false)
+  match_uid                                      String?
   bi_match                                       bi_match  @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction)
   bi_user_bi_match_request_recipient_idTobi_user User      @relation("bi_match_request_recipient_idTobi_user", fields: [recipient_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
   bi_user_bi_match_request_requester_idTobi_user User      @relation("bi_match_request_requester_idTobi_user", fields: [requester_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@schema("public")
-}
-
-model bi_match_dispute {
-  dispute_id                                    Int       @id @default(autoincrement())
-  match_id                                      Int
-  reporter_id                                   String    @db.VarChar
-  dispute_type                                  String?   @db.VarChar(50)
-  description                                   String?
-  evidence_urls                                 String[]
-  status                                        String?   @default("PENDING") @db.VarChar(20)
-  resolved_by                                   String?   @db.VarChar
-  resolved_at                                   DateTime? @db.Timestamp(6)
-  resolution_note                               String?
-  created_at                                    DateTime? @default(now()) @db.Timestamp(6)
-  bi_match                                      bi_match  @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction)
-  bi_user_bi_match_dispute_reporter_idTobi_user User      @relation("bi_match_dispute_reporter_idTobi_user", fields: [reporter_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
-  bi_user_bi_match_dispute_resolved_byTobi_user User?     @relation("bi_match_dispute_resolved_byTobi_user", fields: [resolved_by], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
@@ -413,41 +374,26 @@ model bi_match_evaluation {
   match_id                                          Int
   evaluator_id                                      String    @db.VarChar
   target_id                                         String    @db.VarChar
-  manner_rating                                     Int?
-  skill_rating                                      Int?
-  skill_accuracy_rating                             Int?
   comment                                           String?
   created_at                                        DateTime? @default(now()) @db.Timestamp(6)
   is_anonymous                                      Boolean?  @default(false)
   reported                                          Boolean?  @default(false)
+  skill_level_category                              String?   @db.VarChar(50)
+  time_category                                     String?   @db.VarChar(50)
+  rules_category                                    String?   @db.VarChar(50)
+  manner_category                                   String?   @db.VarChar(50)
+  high_run                                          Int?
+  game_type                                         String?   @db.VarChar(20)
+  play_time                                         String?   @db.VarChar(20)
+  overall_satisfaction                              String?   @db.VarChar(20)
+  winner_id                                         String?   @db.VarChar(255)
+  match_uid                                         String?
   bi_user_bi_match_evaluation_evaluator_idTobi_user User      @relation("bi_match_evaluation_evaluator_idTobi_user", fields: [evaluator_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
   bi_match                                          bi_match  @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction)
   bi_user_bi_match_evaluation_target_idTobi_user    User      @relation("bi_match_evaluation_target_idTobi_user", fields: [target_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
+  bi_user_bi_match_evaluation_winner_idTobi_user    User?     @relation("bi_match_evaluation_winner_idTobi_user", fields: [winner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_winner_id")
 
-  @@schema("public")
-}
-
-model bi_match_result {
-  result_id                                  Int       @id @default(autoincrement())
-  match_id                                   Int
-  winner_id                                  String    @db.VarChar
-  loser_id                                   String    @db.VarChar
-  winner_score                               Int
-  loser_score                                Int
-  game_duration                              Int?
-  verified_by                                String?   @default("PENDING") @db.VarChar(20)
-  verified_at                                DateTime? @db.Timestamp(6)
-  owner_id                                   String?   @db.VarChar
-  player1_confirm                            Boolean?  @default(false)
-  player2_confirm                            Boolean?  @default(false)
-  created_at                                 DateTime? @default(now()) @db.Timestamp(6)
-  updated_at                                 DateTime? @default(now()) @db.Timestamp(6)
-  status                                     String?   @default("PENDING") @db.VarChar(20)
-  bi_user_bi_match_result_loser_idTobi_user  User      @relation("bi_match_result_loser_idTobi_user", fields: [loser_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
-  bi_match                                   bi_match  @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction)
-  bi_user_bi_match_result_owner_idTobi_user  User?     @relation("bi_match_result_owner_idTobi_user", fields: [owner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
-  bi_user_bi_match_result_winner_idTobi_user User      @relation("bi_match_result_winner_idTobi_user", fields: [winner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
-
+  @@index([winner_id], map: "idx_winner_id")
   @@schema("public")
 }
 
@@ -577,39 +523,42 @@ model bi_message {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model bi_chat_room_participants {
-  A            String
-  B            String
-  bi_chat_room bi_chat_room @relation(fields: [A], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  bi_user      User         @relation(fields: [B], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+  chat_room_id         String
+  user_id              String
+  created_at           DateTime?    @default(now()) @db.Timestamp(6)
+  is_admin             Boolean?     @default(false)
+  last_read_message_id String?
+  bi_chat_room         bi_chat_room @relation(fields: [chat_room_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user              User         @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([A, B])
-  @@index([B], map: "bi_chat_room_participants_B_index")
+  @@id([chat_room_id, user_id])
+  @@index([user_id])
   @@schema("public")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model bi_message_read_by {
-  A          String
-  B          String
-  bi_message bi_message @relation(fields: [A], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  bi_user    User       @relation(fields: [B], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
+  message_id String
+  user_id    String
+  read_at    DateTime?  @default(now()) @db.Timestamp(6)
+  bi_message bi_message @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bi_user    User       @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([A, B])
-  @@index([B], map: "bi_message_read_by_B_index")
+  @@id([message_id, user_id])
+  @@index([user_id])
   @@schema("public")
 }
 
 model bi_message_read {
-  id           String     @id
   message_id   String
   user_id      String
-  read_at      DateTime   @default(now()) @db.Timestamp(6)
-  chat_room_id String     @db.VarChar
+  read_at      DateTime?  @default(now()) @db.Timestamp(6)
+  chat_room_id String
   bi_message   bi_message @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   bi_user      User       @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@unique([message_id, user_id], map: "bi_message_read_message_user_unique")
-  @@index([user_id], map: "bi_message_read_user_idx")
+  @@id([message_id, user_id])
+  @@index([chat_room_id])
   @@schema("public")
 }
 
@@ -1036,6 +985,128 @@ model bi_report_review {
 
   @@index([moderator_id], map: "ReportReview_moderatorId_idx")
   @@index([report_id], map: "ReportReview_reportId_idx")
+  @@schema("public")
+}
+
+model user_sessions {
+  id            Int       @id @default(autoincrement())
+  user_id       Int?
+  session_id    String?   @unique @db.VarChar(100)
+  ip_address    String?   @db.VarChar(45)
+  user_agent    String?
+  device_type   String?   @db.VarChar(20)
+  start_time    DateTime? @default(now()) @db.Timestamp(6)
+  last_activity DateTime? @default(now()) @db.Timestamp(6)
+  is_active     Boolean?  @default(true)
+  bi_user       User?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model visit_logs {
+  id          Int       @id @default(autoincrement())
+  user_id     Int?
+  session_id  String?   @db.VarChar(100)
+  ip_address  String?   @db.VarChar(45)
+  user_agent  String?
+  device_type String?   @db.VarChar(20)
+  browser     String?   @db.VarChar(50)
+  os          String?   @db.VarChar(50)
+  referer_url String?
+  page_url    String?
+  visit_time  DateTime? @default(now()) @db.Timestamp(6)
+  exit_time   DateTime? @db.Timestamp(6)
+  time_spent  Int?
+  bi_user     User?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model bi_notice {
+  id        Int      @id(map: "Notice_pkey") @default(autoincrement())
+  title     String
+  content   String
+  date      DateTime @default(now())
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  category  String?  @db.VarChar
+
+  @@schema("ownerdb")
+}
+
+model bi_popup {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  title      String
+  content    String
+  image_url  String?
+  link_url   String?
+  start_date DateTime  @db.Timestamp(6)
+  end_date   DateTime  @db.Timestamp(6)
+  is_active  Boolean?  @default(true)
+  width      Int?      @default(400)
+  height     Int?      @default(300)
+  position   String?   @default("center")
+  show_once  Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  display_on String?   @default("client")
+  order      Int?      @default(0)
+
+  @@schema("public")
+}
+
+model bi_inquiry {
+  id          String    @id(map: "Inquiry_pkey")
+  name        String
+  email       String
+  subject     String
+  message     String
+  status      String    @default("pending")
+  user_id     String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  answer      String?
+  answered_at DateTime?
+  answered_by String?
+  bi_user     User?     @relation(fields: [user_id], references: [mb_id], map: "Inquiry_userId_fkey")
+
+  @@index([created_at], map: "Inquiry_createdAt_idx")
+  @@index([status], map: "Inquiry_status_idx")
+  @@index([user_id], map: "Inquiry_userId_idx")
+  @@schema("public")
+}
+
+model bi_faq {
+  id              Int              @id @default(autoincrement())
+  question        String
+  answer          String
+  category_id     Int?
+  is_active       Boolean?         @default(true)
+  display_order   Int?             @default(0)
+  created_at      DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?        @default(now()) @db.Timestamptz(6)
+  created_by      String?          @db.VarChar(50)
+  updated_by      String?          @db.VarChar(50)
+  bi_faq_category bi_faq_category? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "fk_bi_faq_category")
+
+  @@index([category_id], map: "idx_bi_faq_category_id")
+  @@index([is_active], map: "idx_bi_faq_is_active")
+  @@schema("public")
+}
+
+model bi_faq_category {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(100)
+  display_order Int?      @default(0)
+  is_active     Boolean?  @default(true)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+  created_by    String?   @db.VarChar(50)
+  updated_by    String?   @db.VarChar(50)
+  bi_faq        bi_faq[]
+
+  @@index([is_active], map: "idx_bi_faq_category_is_active")
   @@schema("public")
 }
 

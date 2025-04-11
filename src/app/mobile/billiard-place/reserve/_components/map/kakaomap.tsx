@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation } from '../context/location-context';
-import { Store } from '@/types/(reserve)';
 import debounce from 'lodash/debounce';
+import { Store } from '../../../_types';
 import { MapBounds } from '@/types/(kakaomap)/kakao';
 import {
   loadKakaoMapsScript,
@@ -13,8 +13,10 @@ import {
   getCurrentLocation,
 } from '@/lib/kakaomap';
 
+import { SearchInput } from '../search/search-input';
+
 export default function KakaoMap() {
-  const { location, setLocation, setBounds } = useLocation();
+  const { location, setBounds } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<typeof window.kakao.maps.Map | null>(null);
@@ -52,6 +54,7 @@ export default function KakaoMap() {
           <div class="relative p-4 w-64">
             <h3 class="text-base font-bold">${store.name}</h3>
             <p class="text-sm text-gray-600">${store.address}</p>
+            <a href ="/mobile/billiard-place/detail/${store.id}" class="text-sm text-gray-600">자세히 보기</p>
           </div>
         `,
         removable: true,
@@ -85,28 +88,17 @@ export default function KakaoMap() {
 
         const options = {
           center: new window.kakao.maps.LatLng(location.lat, location.lng),
-          level: 3,
+          level: 2,
         };
 
         const map = new window.kakao.maps.Map(mapRef.current, options);
         mapInstance.current = map;
 
-        map.addControl(
-          new window.kakao.maps.MapTypeControl(),
-          window.kakao.maps.ControlPosition.TOPRIGHT
-        );
-        map.addControl(
-          new window.kakao.maps.ZoomControl(),
-          window.kakao.maps.ControlPosition.RIGHT
-        );
-
         const handleMapChange = () => {
           if (!map) return;
-          setLocation(
-            map.getCenter().getLat(),
-            map.getCenter().getLng(),
-            map.getLevel()
-          );
+
+          // const center = mapInstance.current.getCenter();
+
           const bounds = getMapBounds(map);
           setBounds(bounds);
           debouncedFetchStores(bounds);
@@ -137,19 +129,23 @@ export default function KakaoMap() {
       new window.kakao.maps.LatLng(location.lat, location.lng)
     );
 
+    // ✅ 확대 레벨도 location.level에 맞게 설정
+    mapInstance.current.setLevel(location.level);
+
     const bounds = getMapBounds(mapInstance.current);
     debouncedFetchStores(bounds);
   }, [location, debouncedFetchStores]);
 
   return (
-    <div className="relative h-screen w-full">
-      <div ref={mapRef} className="h-full w-[100%]" />
+    <div className="relative h-[100vh] overflow-hidden">
+      <SearchInput />
+      <div ref={mapRef} className="h-full w-full overflow-hidden" />
       <button
         onClick={() =>
           getCurrentLocation(mapInstance.current!, currentMarker.current)
         }
-        className="absolute right-1 top-[232px] z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded bg-white shadow-sm"
-        aria-label="Get current location"
+        className="fixed bottom-[92px] right-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded bg-white shadow-sm"
+        aria-label="현재 나의 위치"
       >
         <svg
           width="20"

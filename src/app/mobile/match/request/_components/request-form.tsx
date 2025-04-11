@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { Calendar } from '@/components/ui/calendar_custom';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -12,11 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import BilliardSelect from '@/app/mobile/team-match/_components/select/billiard-select';
 import { timeOptions } from '@/lib/utils';
 import { ko } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
 import { useSession } from 'next-auth/react';
 import { Label } from '@/components/ui/label';
+
+import { ChevronLeft } from 'lucide-react';
+import { Store } from '@/types/(match)';
 
 export default function MatchRequest() {
   const router = useRouter();
@@ -33,7 +37,7 @@ export default function MatchRequest() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [gameType, setGameType] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
+  const [location, setLocation] = useState<Store | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -75,7 +79,7 @@ export default function MatchRequest() {
           player2_id: opponentId,
           preferred_date: preferredDate,
           game_type: gameType,
-          location: location,
+          location: location.name,
           message: message,
           request_status: '대기중',
         }),
@@ -92,7 +96,7 @@ export default function MatchRequest() {
       });
 
       // 매칭 목록 페이지나 이전 페이지로 이동
-      router.push('/alert');
+      router.push('/mobile/alert');
     } catch (error) {
       console.error('매칭 신청 오류:', error);
       toast({
@@ -115,6 +119,9 @@ export default function MatchRequest() {
       {/* 헤더 */}
       <div className="sticky top-0 z-10 bg-white">
         <div className="flex items-center p-4">
+          <div className="mr-2" onClick={() => router.back()}>
+            <ChevronLeft className="text-black" />
+          </div>
           <h1 className="text-lg font-semibold">
             {opponentName}님에게 매칭 신청
           </h1>
@@ -124,20 +131,6 @@ export default function MatchRequest() {
       {/* 본문 */}
       <div className="flex-1 p-4">
         <div className="mx-auto mb-4 max-w-md space-y-6">
-          <div>
-            <Label className="mb-2 block text-sm font-semibold text-gray-700">
-              매칭 날짜 <span className="text-red-500">*</span>
-            </Label>
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              locale={ko}
-              className="mx-auto rounded-md border"
-              disabled={(date) => date < new Date()}
-            />
-          </div>
-
           <div>
             <Label className="mb-2 block text-sm font-semibold text-gray-700">
               매칭 시간 <span className="text-red-500">*</span>
@@ -167,6 +160,7 @@ export default function MatchRequest() {
               <SelectContent>
                 <SelectItem value="THREE_BALL">3구</SelectItem>
                 <SelectItem value="FOUR_BALL">4구</SelectItem>
+                <SelectItem value="POCKET_BALL">포켓볼</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -175,25 +169,8 @@ export default function MatchRequest() {
             <Label className="mb-2 block text-sm font-semibold text-gray-700">
               매칭 장소 <span className="text-red-500">*</span>
             </Label>
-            <Select value={location} onValueChange={setLocation}>
-              <SelectTrigger className="mt-2 h-14 border-none bg-gray-100 text-lg">
-                <SelectValue placeholder="매칭 장소를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="서울 남녀나눔 당구장">
-                  서울 남녀나눔 당구장
-                </SelectItem>
-                <SelectItem value="서울 두꺼비 당구장">
-                  서울 두꺼비 당구장
-                </SelectItem>
-                <SelectItem value="당진 에이스 당구장">
-                  당진 에이스 당구장
-                </SelectItem>
-                <SelectItem value="당진 노블레스 당구장">
-                  당진 노블레스 당구장
-                </SelectItem>
-              </SelectContent>
-            </Select>
+
+            <BilliardSelect onSelect={setLocation} value={location} />
           </div>
 
           <div>
@@ -205,6 +182,24 @@ export default function MatchRequest() {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="상대방에게 전달할 메시지를 입력해주세요."
               className="mt-2 h-32 border-none bg-gray-100 text-lg"
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2 block text-sm font-semibold text-gray-700">
+              매칭 날짜 <span className="text-red-500">*</span>
+            </Label>
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              locale={ko}
+              className="mx-auto rounded-md border"
+              disabled={(date) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // 오늘 자정
+                return date < today;
+              }}
             />
           </div>
         </div>
