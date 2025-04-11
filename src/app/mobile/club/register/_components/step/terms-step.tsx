@@ -18,7 +18,7 @@ export const TermsAgreement = () => {
           모두가 즐거운 당구장 동호회가 될 수 있도록 함께 지켜주세요
         </div>
       </div>
-      <div className="space-y-5 rounded-xl bg-white shadow-sm">
+      <div className="space-y-5 rounded-xl bg-white">
         {/* 전체 동의 섹션 */}
         <button
           type="button"

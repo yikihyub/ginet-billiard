@@ -1,5 +1,7 @@
 import React from 'react';
-import KakaoMap from './_components/map/kakaomap';
+
+import { LocationProvider } from './_components/context/location-context';
+import { SearchProvider } from './_components/provider/search-provider';
 
 export default function RootLayout({
   children,
@@ -7,11 +9,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <article className="flex h-screen w-full">
-      <>{children}</>
-      <div className="w-full">
-        <KakaoMap />
-      </div>
-    </article>
+    <LocationProvider>
+      <SearchProvider>
+        <div className="w-full overflow-hidden">
+          <div>{children}</div>
+        </div>
+      </SearchProvider>
+    </LocationProvider>
   );
 }

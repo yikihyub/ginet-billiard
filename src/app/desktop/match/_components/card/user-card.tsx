@@ -1,209 +1,359 @@
-'use client';
+// 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+// import React, { useEffect, useState } from 'react';
+// import { useRouter } from 'next/navigation';
+// import { useSession } from 'next-auth/react';
+// import { useToast } from '@/hooks/use-toast';
+// import { useUserContext } from '@/app/mobile/match/around/_components/context/match-context';
+// import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+// import { EllipsisVertical } from 'lucide-react';
+// import { Button } from '@/components/ui/button';
 
-import { Button } from '@/components/ui/button';
-import { Avatar } from '@/components/ui/avatar';
-import { MapPin, Star, User, Clock } from 'lucide-react';
+// import { MatchStatus, MatchUser } from '@/types/(match)';
 
-import MatchRequest from '../modal/match-modal';
-import MatchResultForm from '../modal/match-result';
+// export default function UserCard({ user }: { user: MatchUser }) {
+//   const router = useRouter();
+//   const { toast } = useToast();
+//   const { data: session } = useSession();
+//   const userId = session?.user.mb_id;
+//   const [loading, setLoading] = useState(true);
+//   const [matchStatus, setMatchStatus] = useState<MatchStatus>({
+//     canRequest: true,
+//     isRequester: false,
+//     status: undefined,
+//     matchId: null,
+//     matchRole: 'NONE',
+//     hasPendingMatches: false,
+//     hasUnratedMatches: false,
+//     hasRated: false,
+//     existingMatch: null,
+//   });
+//   // 모달 상태 관리
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   console.log(isModalOpen);
 
-import { MatchStatus, MatchUser } from '@/types/(match)';
+//   // 컨텍스트에서 gameType 가져오기
+//   const { gameType } = useUserContext();
 
-export default function UserCard({ user }: { user: MatchUser }) {
-  const { data: session } = useSession();
-  const userId = session?.user.mb_id;
-  const [matchStatus, setMatchStatus] = useState<MatchStatus>({
-    canRequest: true,
-    isRequester: false,
-  });
-  const [loading, setLoading] = useState(true);
+//   useEffect(() => {
+//     checkMatchStatus();
+//   }, [userId, user.mb_id]);
 
-  const checkMatchStatus = async () => {
-    if (!userId) return;
+//   const checkMatchStatus = async () => {
+//     if (!userId) return;
 
-    try {
-      const response = await fetch(
-        `/api/match/status?currentUserId=${userId}&otherUserId=${user.mb_id}`
-      );
-      const data = await response.json();
+//     try {
+//       const response = await fetch(
+//         `/api/match/status?currentUserId=${userId}&otherUserId=${user.mb_id}`
+//       );
+//       const data = await response.json();
 
-      setMatchStatus({
-        canRequest: !data.existingMatch,
-        status: data.existingMatch?.match_status,
-        matchId: data.existingMatch?.match_id,
-        isRequester: data.isRequester, // API에서 받은 역할 정보 저장
-      });
-    } catch (error) {
-      console.error('매치 상태 확인 오류:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+//       setMatchStatus({
+//         canRequest: data.canRequest,
+//         status: data.matchStatus,
+//         matchId: data.matchId,
+//         isRequester: data.isRequester,
+//         matchRole: data.matchRole,
+//         hasPendingMatches: data.hasPendingMatches,
+//         hasUnratedMatches: data.hasUnratedMatches,
+//         hasRated: data.hasRated,
+//         existingMatch: data.existingMatch,
+//       });
+//     } catch (error) {
+//       console.error('매치 상태 확인 오류:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  const handleMatchResponse = async (
-    matchId: number,
-    response: 'ACCEPT' | 'REJECT'
-  ) => {
-    if (!userId) return;
+//   const handleMatchResponse = async (
+//     matchId: string,
+//     response: 'ACCEPT' | 'REJECT'
+//   ) => {
+//     if (!userId) return;
 
-    try {
-      setLoading(true);
+//     try {
+//       setLoading(true);
 
-      const apiResponse = await fetch(`/api/match/response`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          matchId,
-          response,
-          userId,
-        }),
-      });
+//       const apiResponse = await fetch(`/api/match/response`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           matchId,
+//           response,
+//           userId,
+//         }),
+//       });
 
-      if (!apiResponse.ok) {
-        throw new Error('매치 응답 처리 중 오류가 발생했습니다.');
-      }
-      // const matchData = await apiResponse.json();
-      checkMatchStatus();
-    } catch (error) {
-      console.error('매치 응답 처리 오류:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+//       if (!apiResponse.ok) {
+//         throw new Error('매치 응답 처리 중 오류가 발생했습니다.');
+//       }
+//       // const matchData = await apiResponse.json();
+//       checkMatchStatus();
+//     } catch (error) {
+//       console.error('매치 응답 처리 오류:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  useEffect(() => {
-    checkMatchStatus();
-  }, [userId, user.mb_id]);
+//   const handleCompleteMatch = async (matchId: string) => {
+//     if (!confirm('경기를 종료하시겠습니까?')) return;
 
-  const renderMatchButton = () => {
-    if (loading) {
-      return <Button disabled>로딩중...</Button>;
-    }
+//     try {
+//       setLoading(true);
+//       const response = await fetch('/api/match/complete', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//           matchId,
+//           userId,
+//         }),
+//       });
 
-    switch (matchStatus.status) {
-      case 'PENDING':
-        // 내가 요청자인지 수신자인지에 따라 다른 UI 표시
-        if (matchStatus.isRequester) {
-          // 내가 요청자라면 대기중 버튼 표시
-          return <Button variant="outline">매칭 대기중</Button>;
-        } else {
-          // 내가 수신자라면 수락/거절 버튼 표시
-          return (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() =>
-                  handleMatchResponse(matchStatus.matchId!, 'ACCEPT')
-                }
-              >
-                수락
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() =>
-                  handleMatchResponse(matchStatus.matchId!, 'REJECT')
-                }
-              >
-                거절
-              </Button>
-            </div>
-          );
-        }
+//       if (!response.ok) {
+//         const errorData = await response.json();
+//         throw new Error(errorData.error || '경기 종료 처리에 실패했습니다.');
+//       }
 
-      case 'ACCEPTED':
-        return <Button variant="outline">매칭 성사됨</Button>;
+//       // 상태 업데이트
+//       setMatchStatus((prev) => ({ ...prev, status: 'COMPLETED' }));
+//       toast({ title: '경기가 종료되었습니다. 상대방을 평가해주세요!' });
 
-      case 'IN_PROGRESS':
-        return <Button variant="outline">경기 진행 중</Button>;
+//       // 필요하다면 평가 페이지로 리디렉션
+//       router.push(`/mobile/match/rate/${matchId}`);
+//     } catch (error) {
+//       console.error('경기 종료 오류:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-      case 'COMPLETED':
-        return (
-          <MatchResultForm
-            matchId={matchStatus.matchId!}
-            player1Id={userId!}
-            player2Id={user.mb_id}
-            onResultSubmitted={() => {
-              checkMatchStatus();
-            }}
-          />
-        );
+//   // 모달 열기 함수
+//   const openMatchModal = () => {
+//     setIsModalOpen(true);
+//   };
 
-      default:
-        return matchStatus.canRequest ? (
-          <MatchRequest
-            userId={userId!}
-            opponentId={user.mb_id}
-            opponentName={user.name}
-            onRequestSent={() => {
-              checkMatchStatus();
-            }}
-          />
-        ) : null;
-    }
-  };
+//   // 모달 닫기 함수
+//   const closeMatchModal = () => {
+//     setIsModalOpen(false);
+//   };
 
-  return (
-    <div className="mb-4 rounded-xl bg-white p-6 shadow-sm transition-all hover:shadow-md">
-      <div className="flex items-center gap-4">
-        <Avatar className="h-24 w-24">
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-100">
-            <User className="h-18 w-18 text-gray-400" />
-          </div>
-        </Avatar>
+//   const renderMatchButton = () => {
+//     if (loading) {
+//       return <Button disabled>로딩중...</Button>;
+//     }
 
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold">{user.name}</h3>
-            </div>
-            <div className="text-right">
-              <span className="block text-sm font-medium text-blue-600">
-                {user.distance.toFixed(1)}km
-              </span>
-            </div>
-          </div>
+//     // 매치 상태 기반 렌더링
+//     switch (matchStatus.status) {
+//       case 'PENDING':
+//         if (matchStatus.matchRole === 'REQUESTER') {
+//           // 내가 요청자라면 대기중 버튼 표시
+//           return (
+//             <Button
+//               variant="outline"
+//               className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+//             >
+//               매칭 대기중
+//             </Button>
+//           );
+//         } else if (matchStatus.matchRole === 'RECEIVER') {
+//           // 내가 수신자라면 상세보기 버튼 표시 - 모달을 열기 위한 버튼으로 변경
+//           return (
+//             <Button
+//               onClick={openMatchModal}
+//               className="w-full rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white hover:bg-green-700"
+//             >
+//               매치 상세 보기
+//             </Button>
+//           );
+//         } else {
+//           // 다른 사람들에게는 대기중 버튼 표시 (비활성화 상태)
+//           return (
+//             <Button
+//               variant="outline"
+//               disabled
+//               className="focus:none w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-bold text-gray-400 shadow-none"
+//             >
+//               매칭 대기중
+//             </Button>
+//           );
+//         }
 
-          <div className="mt-2 flex items-center gap-2 text-sm text-gray-600">
-            <MapPin size={16} />
-            <span>{user.location}</span>
-          </div>
+//       case 'ACCEPTED':
+//         return (
+//           <Button
+//             variant="outline"
+//             className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+//           >
+//             매칭 성사됨
+//           </Button>
+//         );
 
-          <div className="mt-3 grid grid-cols-2 gap-4">
-            <div className="rounded-lg bg-gray-50 p-2">
-              <div className="flex items-center gap-1">
-                <Star size={14} className="text-yellow-500" />
-                <span className="text-sm font-medium">
-                  4구: {user.user_four_ability || '-'}점
-                </span>
-              </div>
-              <div className="mt-1 flex items-center gap-1">
-                <Star size={14} className="text-yellow-500" />
-                <span className="text-sm font-medium">
-                  3구: {user.user_three_ability || '-'}점
-                </span>
-              </div>
-            </div>
-            <div className="rounded-lg bg-gray-50 p-2">
-              <div className="text-sm">
-                <Clock size={14} className="mb-1 mr-1 inline-block" />
-                {user.preferred_time || '시간 미설정'}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+//       case 'IN_PROGRESS':
+//         return (
+//           <div className="flex w-full flex-col gap-2">
+//             <Button
+//               variant="outline"
+//               className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+//             >
+//               경기 진행 중
+//             </Button>
+//             {(matchStatus.matchRole === 'REQUESTER' ||
+//               matchStatus.matchRole === 'RECEIVER') && (
+//               <Button
+//                 variant="default"
+//                 onClick={() => handleCompleteMatch(matchStatus.matchId!)}
+//                 className="w-full rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700"
+//               >
+//                 경기 종료하기
+//               </Button>
+//             )}
+//           </div>
+//         );
 
-      <div className="mt-4 flex justify-end gap-2">
-        <Button variant="outline" className="text-sm">
-          프로필 보기
-        </Button>
-        {renderMatchButton()}
-      </div>
-    </div>
-  );
+//       case 'COMPLETED':
+//         return (
+//           <div className="flex w-full gap-2">
+//             <Button
+//               variant="outline"
+//               className="focus:none w-full flex-1 rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+//             >
+//               경기 종료
+//             </Button>
+//             {!matchStatus.hasRated &&
+//               (matchStatus.matchRole === 'REQUESTER' ||
+//                 matchStatus.matchRole === 'RECEIVER') && (
+//                 <Button
+//                   variant="default"
+//                   onClick={() =>
+//                     router.push(`/mobile/management/eva/${matchStatus.matchId}`)
+//                   }
+//                   className="w-full flex-1 rounded-md bg-yellow-600 px-3 py-1 text-xs font-medium text-white hover:bg-yellow-700"
+//                 >
+//                   평가하기
+//                 </Button>
+//               )}
+//           </div>
+//         );
+
+//       default:
+//         // 매치가 없는 경우
+//         return matchStatus.canRequest ? (
+//           <Button
+//             onClick={() =>
+//               router.push(
+//                 `/mobile/match/request?opponent=${user.mb_id}&name=${encodeURIComponent(user.name)}`
+//               )
+//             }
+//             className="w-full rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white hover:bg-green-700"
+//           >
+//             경기신청
+//           </Button>
+//         ) : matchStatus.hasPendingMatches ? (
+//           <Button
+//             disabled
+//             className="w-full rounded-md bg-gray-400 px-3 py-1 text-xs font-medium text-white"
+//             title="이미 진행 중인 매칭이 있습니다"
+//           >
+//             경기신청 불가
+//           </Button>
+//         ) : matchStatus.hasUnratedMatches ? (
+//           <Button
+//             onClick={() => router.push('/mobile/match/pending-ratings')}
+//             className="w-full rounded-md bg-yellow-600 px-3 py-1 text-xs font-medium text-white hover:bg-yellow-700"
+//           >
+//             평가 필요
+//           </Button>
+//         ) : null;
+//     }
+//   };
+
+//   const moveUrl = () => {
+//     router.push(`/mobile/match/around/profile?userName=${user.name}`);
+//   };
+
+//   return (
+//     <>
+//       <li className="py-3">
+//         <div className="mb-3 flex flex-col">
+//           <div className="mb-2 flex justify-between">
+//             <div className="flex items-center gap-2">
+//               <Avatar className="h-12 w-12">
+//                 <AvatarImage
+//                   src={'/logo/billiard-ball.png'}
+//                   alt={user.name || '사용자'}
+//                 />
+//                 <AvatarFallback>
+//                   {user.name ? user.name.slice(0, 2) : '?'}
+//                 </AvatarFallback>
+//               </Avatar>
+//               <div>
+//                 <div className="font-semibold">{user.name || '이름 없음'}</div>
+//                 <div className="flex items-center text-xs text-gray-500">
+//                   <span>{user.level}</span>
+//                   <span className="mx-1">·</span>
+//                   <span>0 경기</span>
+//                   {/* {user.matchCount} */}
+//                   <span className="mx-1">·</span>
+//                   <span>{user.distance.toFixed(1)}km</span>
+//                 </div>
+//               </div>
+//             </div>
+//             <div className="flex items-center gap-1">
+//               <div className="rounded-full bg-green-700 px-2 py-0.5 text-xs font-medium text-white">
+//                 {user.preferGame === 'THREE_BALL'
+//                   ? '3구'
+//                   : user.preferGame === 'FOUR_BALL'
+//                     ? '4구'
+//                     : gameType}
+//               </div>
+//               <div>
+//                 <EllipsisVertical className="h-4 w-4" />
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* 왼쪽 개인정보 */}
+//           <div className="rounded-lg bg-gray-50 p-4">
+//             <div className="flex divide-x divide-border text-center text-sm">
+//               {/* 왼쪽 박스 */}
+//               <div className="flex-1 px-4">
+//                 <div className="font-medium text-muted-foreground">3구</div>
+//                 <div className="mt-1 text-black">
+//                   {user.user_four_ability || 0}
+//                 </div>
+//               </div>
+
+//               {/* 가운데 박스 */}
+//               <div className="flex-1 px-4">
+//                 <div className="font-medium text-muted-foreground">4구</div>
+//                 <div className="mt-1 text-black">
+//                   {user.user_three_ability || 0}
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//         {/* 하단 버튼 */}
+//         <div className="mt-1 flex justify-end gap-2">
+//           <div className="flex-1">
+//             <Button
+//               onClick={moveUrl}
+//               className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+//             >
+//               프로필
+//             </Button>
+//           </div>
+//           <div className="flex-1">{renderMatchButton()}</div>
+//         </div>
+//       </li>
+//     </>
+//   );
+// }
+
+export default function UserCard() {
+  return <div>123</div>;
 }

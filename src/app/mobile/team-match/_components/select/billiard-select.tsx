@@ -1,20 +1,11 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+
 import { Input } from '@/components/ui/input';
+import { Store, BilliardSelectProps } from '../../_types';
+
 import { loadKakaoMapsScript } from '@/lib/kakaomap';
-
-interface Store {
-  id: number;
-  name: string;
-  owner_name: string | null;
-  address: string;
-}
-
-interface BilliardSelectProps {
-  onSelect: (store: Store | null) => void;
-  value?: Store | null;
-}
 
 export default function BilliardSelect({
   onSelect,

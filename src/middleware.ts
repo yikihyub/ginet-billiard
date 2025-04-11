@@ -55,6 +55,10 @@ const removePrefixes = (pathname: string) => {
   return pathname.replace(/^\/mobile|^\/desktop/, "");
 };
 
+const isSuperGinetPath = (pathname: string) => {
+  return pathname.startsWith("/superginet");
+};
+
 // 미들웨어
 export default withAuth(
   async function middleware(req: NextRequest) {
@@ -88,22 +92,22 @@ export default withAuth(
       return NextResponse.redirect(new URL(correctPrefix, req.url));
     }
 
-    // 잘못된 접두사를 가진 경로 처리
-    if (!hasCorrectPrefix && (hasDesktopPrefix || hasMobilePrefix)) {
-      // 현재 접두사 제거 후 올바른 접두사 추가
-      const cleanPath = removePrefixes(pathname);
-      return NextResponse.redirect(new URL(`${correctPrefix}${cleanPath}`, req.url));
-    }
-    
-    // 접두사가 없는 경로 처리 (로그인 경로 제외)
-    if (!hasCorrectPrefix && !hasDesktopPrefix && !hasMobilePrefix) {
-      // 로그인 경로는 디바이스 타입에 맞게 리다이렉트
-      if (loginPaths.some(path => pathname.startsWith(path))) {
+    // ✅ superginet은 접두사 검사 제외
+    if (!isSuperGinetPath(pathname)) {
+      // 잘못된 접두사를 가진 경로 처리
+      if (!hasCorrectPrefix && (hasDesktopPrefix || hasMobilePrefix)) {
+        const cleanPath = removePrefixes(pathname);
+        return NextResponse.redirect(new URL(`${correctPrefix}${cleanPath}`, req.url));
+      }
+
+      // 접두사가 없는 경로 처리 (로그인 경로 제외)
+      if (!hasCorrectPrefix && !hasDesktopPrefix && !hasMobilePrefix) {
+        if (loginPaths.some(path => pathname.startsWith(path))) {
+          return NextResponse.redirect(new URL(`${correctPrefix}${pathname}`, req.url));
+        }
+
         return NextResponse.redirect(new URL(`${correctPrefix}${pathname}`, req.url));
       }
-      
-      // 그 외 경로도 디바이스 타입에 맞게 리다이렉트
-      return NextResponse.redirect(new URL(`${correctPrefix}${pathname}`, req.url));
     }
 
     // 나머지 권한 관련 로직

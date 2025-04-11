@@ -75,7 +75,7 @@ export function useNotificationsPolling() {
     fetchNotifications();
 
     // 30초마다 새 알림 체크
-    const intervalId = setInterval(fetchNotifications, 30000);
+    const intervalId = setInterval(fetchNotifications, 300000);
 
     return () => clearInterval(intervalId);
   }, [fetchNotifications]);

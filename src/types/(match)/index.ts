@@ -1,3 +1,6 @@
+export type GameType = '3ball' | '4ball' | 'pocket';
+export type PlayTime = 'under20min' | '20to30min' | '30to1hours' | 'over1hours';
+
 export interface CreateMatchDTO {
   userId: string;
   matchType: 'ONE_VS_ONE' | 'TWO_VS_TWO';
@@ -58,9 +61,14 @@ export interface OptionType {
 
 export interface MatchStatus {
   canRequest: boolean;
+  status: 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'NONE' | undefined;
+  matchId: string | null;
   isRequester: boolean;
-  status?: 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  matchId?: number;
+  matchRole: 'REQUESTER' | 'RECEIVER' | 'OBSERVER' | 'NONE';
+  hasPendingMatches: boolean;
+  hasUnratedMatches: boolean;
+  hasRated: boolean;
+  existingMatch: any | null; // 또는 구체적인 매치 타입으로 정의
 }
 
 export interface MatchUser {
@@ -123,4 +131,24 @@ export interface User {
   user_three_ability: number;
   preferred_time: string;
   preferGame: string;
+}
+
+export interface MemberReview {
+  id: number;
+  author: string;
+  date: string;
+  comment?: string;
+  game_type?: string;
+  play_time?: string;
+  highRun?: number;
+  mannerCategory?: string;
+  rulesCategory?: string;
+  timeCategory?: string;
+  skillLevelCategory?: string;
+  likes?: number;
+  winner_id?: string; // 승자 ID 추가
+  player1_name : string;
+  player2_name: string;
+  match_id: number;
+  match_date: string | undefined;
 }

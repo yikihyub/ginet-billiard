@@ -1,44 +1,21 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useStores } from '@/app/mobile/_hooks/reserve/useStores';
 import { useLocation } from '../context/location-context';
-import { Store } from '@/types/(reserve)';
-
-// 컨텍스트 타입 정의
-interface SearchContextType {
-  searchQuery: string;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  filteredRooms: Store[] | undefined;
-  isLoading: boolean;
-  error: Error | null;
-}
-
-// 초기 상태 정의
-const initialSearchContext: SearchContextType = {
-  searchQuery: '',
-  setSearchQuery: () => {},
-  filteredRooms: undefined,
-  isLoading: false,
-  error: null,
-};
+import {
+  initialSearchContext,
+  SearchContextType,
+  SearchProviderProps,
+  Store,
+} from '../../../_types';
 
 // 타입을 지정하여 컨텍스트 생성
 const SearchContext = createContext<SearchContextType>(initialSearchContext);
 
-interface SearchProviderProps {
-  children: ReactNode;
-}
-
 // 검색 Provider 컴포넌트
 export function SearchProvider({ children }: SearchProviderProps) {
-  const { bounds } = useLocation();
+  const { bounds, setLocation } = useLocation();
   const { rooms, isLoading, error } = useStores(bounds || undefined);
 
   // 검색어 상태 관리
@@ -74,6 +51,7 @@ export function SearchProvider({ children }: SearchProviderProps) {
     filteredRooms,
     isLoading,
     error,
+    setLocation,
   };
 
   return (

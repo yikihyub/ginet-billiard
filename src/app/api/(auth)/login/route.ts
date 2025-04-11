@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       select: {
         id: true,
         name: true,
+        email:true,
         mb_id: true,
         password: true,
         phonenum: true,
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
       const sessionData = {
         id: userWithoutPass.id,
         name: userWithoutPass.name,
+        email: userWithoutPass.email,
         mb_id: userWithoutPass.mb_id,
         phonenum: userWithoutPass.phonenum,
         bi_level: userWithoutPass.bi_level,

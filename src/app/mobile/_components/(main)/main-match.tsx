@@ -6,16 +6,9 @@ import { Label } from '@/components/ui/label';
 
 import DateSelector from '@/components/date-selector';
 import { Lock } from 'lucide-react';
-
+import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-// interface MatchPlayer {
-//   name?: string;
-//   user_three_ability?: number;
-//   user_four_ability?: number;
-//   profile_image?: string;
-// }
 
 interface Match {
   match_id: number;
@@ -54,7 +47,6 @@ export default function MainMatch() {
   const fetchMatches = async () => {
     try {
       setLoading(true);
-      // 날짜 형식으로 변환 (YYYY-MM-DD)
       const dateString = selectedDate.toISOString().split('T')[0];
 
       const response = await fetch(`/api/match/play?date=${dateString}`);
@@ -108,8 +100,7 @@ export default function MainMatch() {
   };
 
   // 매치 카드 렌더링 함수
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderMatchCard = (match: any) => {
+  const renderMatchCard = (match: Match) => {
     const statusDisplay = getStatusDisplay(match.match_status);
     const matchTime = new Date(match.match_date).toLocaleTimeString('ko-KR', {
       hour: '2-digit',
@@ -177,18 +168,17 @@ export default function MainMatch() {
     <div className="m-auto max-w-1024px space-y-4 p-4">
       <div className="mb-4 flex items-center justify-between pr-4 pt-2">
         <div className="text-md font-bold">경기</div>
-        {/* <Link href="/club/search" className="text-xs text-gray-400">
+        <Link href="/mobile/match-result" className="text-xs text-gray-400">
           <div className="flex items-center">
             전체 보기 <ChevronRight className="h-4 w-4" />
           </div>
-        </Link> */}
+        </Link>
       </div>
 
       {/* 필터 버튼 */}
       <DateSelector
         selectedDate={selectedDate}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onDateChange={(date: any) => setSelectedDate(date)}
+        onDateChange={(date: Date) => setSelectedDate(date)}
       />
 
       {/* 필터 옵션 */}

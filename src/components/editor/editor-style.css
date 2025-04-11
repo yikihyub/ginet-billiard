@@ -1,0 +1,120 @@
+.editor-content .ProseMirror {
+  outline: none;
+  min-height: 300px;
+}
+
+.editor-content .ProseMirror p {
+  margin-bottom: 0.75em;
+}
+
+.editor-content .ProseMirror h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+  line-height: 1.2;
+}
+
+.editor-content .ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+  line-height: 1.3;
+}
+
+.editor-content .ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem;
+  line-height: 1.4;
+}
+
+.editor-content .ProseMirror ul,
+.editor-content .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75em;
+}
+
+.editor-content .ProseMirror ul {
+  list-style-type: disc;
+}
+
+.editor-content .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.editor-content .ProseMirror li {
+  margin-bottom: 0.25em;
+}
+
+.editor-content .ProseMirror a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.editor-content .ProseMirror a:hover {
+  color: #1d4ed8;
+}
+
+.editor-content .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+.editor-content .ProseMirror blockquote {
+  border-left: 3px solid #e5e7eb;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #4b5563;
+}
+
+.editor-content .ProseMirror code {
+  background-color: #f1f5f9;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+
+.editor-content .ProseMirror .text-left {
+  text-align: left;
+}
+
+.editor-content .ProseMirror .text-center {
+  text-align: center;
+}
+
+.editor-content .ProseMirror .text-right {
+  text-align: right;
+}
+
+/* 에디터 내용 프린트 스타일 */
+@media print {
+  .editor-content .ProseMirror {
+    font-size: 12pt;
+  }
+
+  .editor-content .ProseMirror h1 {
+    font-size: 18pt;
+  }
+
+  .editor-content .ProseMirror h2 {
+    font-size: 16pt;
+  }
+
+  .editor-content .ProseMirror h3 {
+    font-size: 14pt;
+  }
+}

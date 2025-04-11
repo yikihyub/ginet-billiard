@@ -8,7 +8,6 @@ import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useWebSocket } from '@/hooks/chat/useWebSocket';
 
 import { ko } from 'date-fns/locale';
 import { format } from 'date-fns';
@@ -16,6 +15,12 @@ import { Send, ArrowLeft } from 'lucide-react';
 import { DMessageGroup, MessageType } from '@/types/(chat)/chat';
 
 import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
+
+// Supabase 클라이언트 초기화
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl!, supabaseKey!);
 
 export default function ClubChatRoom() {
   // 채팅방 파라미터
@@ -34,32 +39,20 @@ export default function ClubChatRoom() {
     userid: string;
     username: string;
   } | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // WebSocket 훅 사용
-  const {
-    isConnected,
-    sendMessage: sendWebSocketMessage,
-    joinRoom,
-    messages: wsMessages,
-    connectionError,
-  } = useWebSocket({
-    userId: userId!,
-    username: userName!,
-  });
-
-  // 메시지 로드 함수 추가
+  // 메시지 로드 함수
   const fetchMessages = async (roomId: string) => {
     try {
-      const response = await fetch(
-        `/api/websocket/message/getmessage?roomId=${roomId}`
-      );
+      // Prisma API를 통해 기존 메시지 가져오기
+      const response = await fetch(`/api/chat/messages?roomId=${roomId}`);
       if (!response.ok) {
         throw new Error('메시지를 불러오는데 실패했습니다');
       }
       const data = await response.json();
-
       return data.messages;
     } catch (error) {
       console.error('메시지 로드 오류:', error);
@@ -71,78 +64,97 @@ export default function ClubChatRoom() {
   useEffect(() => {
     const fetchChatRoom = async () => {
       try {
-        // 채팅방 ID 구성
-        const chatRoomId = `room-${clubId}`;
-
-        // Get chat room data from the API
-        const response = await fetch(`/api/websocket/roominfo/room-${clubId}`);
+        // 채팅방 정보 가져오기
+        const response = await fetch(`/api/chat/room?groupId=${clubId}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch chat room');
         }
 
         const roomInfo = await response.json();
-
         setChatRoomInfo(roomInfo);
+
         setCurrentUser({
           userid: userId!,
           username: userName!,
         });
 
         // 채팅방 메시지 로드
-        const chatRoomMessages = await fetchMessages(chatRoomId);
+        const chatRoomMessages = await fetchMessages(roomInfo.id);
         if (chatRoomMessages && chatRoomMessages.length > 0) {
           setMessages(chatRoomMessages);
         }
       } catch (error) {
         console.error('Error fetching chat room:', error);
+        setConnectionError('Failed to fetch chat room');
       }
     };
 
-    fetchChatRoom();
+    if (userId && userName) {
+      fetchChatRoom();
+    }
   }, [clubId, userId, userName]);
 
-  // 채팅방 참여 (채팅방 정보와 연결 상태에 따라)
+  // Supabase Realtime 구독 설정
   useEffect(() => {
-    if (!isConnected || !chatRoomInfo) return;
-    // 채팅방 참여
-    joinRoom(chatRoomInfo.id);
-  }, [isConnected, chatRoomInfo, joinRoom]); // 의존성 배열 확인
+    if (!userId || !chatRoomInfo) return;
 
-  // WebSocket에서 받은 메시지를 로컬 상태로 변환
-  useEffect(() => {
-    if (!wsMessages || wsMessages.length === 0) return;
+    setIsConnected(true);
 
-    // WebSocket 메시지를 MessageType 형식으로 변환
-    const convertedMessages = wsMessages
-      .filter(
-        (msg) => msg.type === 'message' && msg.roomId === chatRoomInfo?.id
-      )
-      .map((msg) => ({
-        id: `${msg.timestamp}-${msg.senderId}`,
-        content: msg.content || '',
-        sender_id: msg.senderId,
-        chat_room_id: msg.roomId,
-        created_at: new Date(msg.timestamp || Date.now()).toISOString(),
-        sender: {
-          image: null,
-          id: msg.senderId,
-          username: msg.username || '알 수 없음',
-          mb_nick: msg.username || '알 수 없음',
+    // Supabase Realtime 채널 구독
+    const channel = supabase
+      .channel(`bi_chat_room_${chatRoomInfo.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'bi_message',
+          filter: `chat_room_id=eq.${chatRoomInfo.id}`,
         },
-      }));
+        (payload) => {
+          // 새 메시지가 데이터베이스에 추가될 때 호출됨
+          console.log('New message received:', payload);
 
-    setMessages((prevMessages) => {
-      // 이미 있는 메시지는 추가하지 않음
-      const newMessages = convertedMessages.filter(
-        (newMsg) =>
-          !prevMessages.some((existingMsg) => existingMsg.id === newMsg.id)
-      );
+          // 추가된 메시지 데이터 형식 맞추기
+          const fetchMessageDetails = async () => {
+            try {
+              const response = await fetch(
+                `/api/chat/message?messageId=${payload.new.id}`
+              );
+              if (response.ok) {
+                const messageData = await response.json();
 
-      if (newMessages.length === 0) return prevMessages;
-      return [...prevMessages, ...newMessages];
-    });
-  }, [wsMessages, chatRoomInfo]);
+                // 중복 메시지 방지 확인
+                if (!messages.some((msg) => msg.id === messageData.id)) {
+                  setMessages((prevMessages) => [...prevMessages, messageData]);
+                }
+              }
+            } catch (error) {
+              console.error('Error fetching message details:', error);
+            }
+          };
+
+          fetchMessageDetails();
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('Connected to Supabase Realtime!');
+          setIsConnected(true);
+          setConnectionError(null);
+        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+          console.error('Supabase Realtime connection closed or error');
+          setIsConnected(false);
+          setConnectionError('Connection error');
+        }
+      });
+
+    return () => {
+      // 컴포넌트 언마운트 시 구독 해제
+      supabase.removeChannel(channel);
+    };
+  }, [userId, chatRoomInfo, messages]);
 
   // 메시지 시간 포맷팅 함수
   const formatMessageTime = useCallback((dateStr: string) => {
@@ -203,18 +215,40 @@ export default function ClubChatRoom() {
 
   // 새 메시지 전송
   const handleSendMessage = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
 
-      if (!newMessage.trim() || !isConnected || !chatRoomInfo) return;
+      if (!newMessage.trim() || !isConnected || !chatRoomInfo || !userId)
+        return;
 
-      // WebSocket 메시지 형식으로 전송
-      sendWebSocketMessage(newMessage, chatRoomInfo.id);
+      try {
+        // 새 메시지 객체 생성
+        const messageData = {
+          content: newMessage,
+          sender_id: userId,
+          chat_room_id: chatRoomInfo.id,
+        };
 
-      // 입력창 초기화
-      setNewMessage('');
+        // API를 통해 메시지 저장 (Prisma)
+        const response = await fetch('/api/chat/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(messageData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+
+        // 입력창 초기화
+        setNewMessage('');
+      } catch (error) {
+        console.error('Message sending error:', error);
+      }
     },
-    [newMessage, isConnected, chatRoomInfo, sendWebSocketMessage]
+    [newMessage, isConnected, chatRoomInfo, userId]
   );
 
   // 새 메시지가 오면 스크롤 맨 아래로
@@ -238,11 +272,11 @@ export default function ClubChatRoom() {
   );
 
   return (
-    <div className="flex h-[100vh] flex-col bg-white">
+    <div className="h-[(100vh - 106px)] flex flex-col bg-white">
       {/* 상단 헤더 */}
       <div className="flex items-center justify-between border-b p-3">
         <div className="flex items-center">
-          <Link href={`/club/${clubId}`} className="mr-3">
+          <Link href={`/club/search/${clubId}`} className="mr-3">
             <ArrowLeft className="h-6 w-6" />
           </Link>
           <h1 className="text-lg font-semibold">
@@ -321,8 +355,8 @@ export default function ClubChatRoom() {
           <Button
             type="submit"
             size="icon"
-            className="h-10 w-10 rounded-full"
-            disabled={!newMessage.trim() || !isConnected}
+            className="h-10 w-10"
+            disabled={!newMessage.trim()}
           >
             <Send className="h-5 w-5" />
           </Button>

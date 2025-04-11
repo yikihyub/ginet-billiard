@@ -1,5 +1,5 @@
-import React from 'react';
-import Nav from './_components/(layout)/nav';
+import React, { Suspense } from 'react';
+import PopupManager from '@/components/popup/popup-manager';
 
 interface MobileRootLayoutProps {
   children: React.ReactNode;
@@ -9,8 +9,10 @@ export default function MobileRootLayout({ children }: MobileRootLayoutProps) {
   return (
     <>
       {' '}
-      <Nav />
       {children}
+      <Suspense fallback={null}>
+        <PopupManager location="client" />
+      </Suspense>
     </>
   );
 }

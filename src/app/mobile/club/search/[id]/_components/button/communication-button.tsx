@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { MessageCircle, CheckCircle, Clock, UserPlus } from 'lucide-react';
-import { ClubCommunicationButtonsProps } from '@/types/(club)/club';
 
-// 회원 상태 타입 정의
+import { ClubCommunicationButtonsProps } from '@/types/(club)/club';
+import { MessageCircle, CheckCircle, Clock, UserPlus } from 'lucide-react';
+
 type MembershipStatus = 'none' | 'pending' | 'member';
 
 export default function ClubCommunicationButtons({
@@ -18,6 +18,8 @@ export default function ClubCommunicationButtons({
     useState<MembershipStatus>('none');
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
+
+  console.log(membershipStatus);
 
   // 컴포넌트 마운트 시 회원 상태 확인
   useEffect(() => {
@@ -125,15 +127,25 @@ export default function ClubCommunicationButtons({
     switch (membershipStatus) {
       case 'member':
         return (
-          <button
-            disabled
-            className="flex-1 rounded-lg bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-lg"
-          >
-            <div className="flex items-center justify-center">
-              <CheckCircle className="mr-2 h-5 w-5" />
-              <span>회원</span>
-            </div>
-          </button>
+          <div className="flex w-full gap-2">
+            <button className="w-full flex-1 rounded-lg border border-gray-300 py-3 font-medium">
+              <Link href={`/mobile/message`}>
+                <div className="flex items-center justify-center">
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  <span>채팅방</span>
+                </div>
+              </Link>
+            </button>
+            <button
+              disabled
+              className="w-full flex-1 rounded-lg bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-lg"
+            >
+              <div className="flex items-center justify-center">
+                <CheckCircle className="mr-2 h-5 w-5" />
+                <span>회원</span>
+              </div>
+            </button>
+          </div>
         );
       case 'pending':
         return (
@@ -153,7 +165,7 @@ export default function ClubCommunicationButtons({
           <button
             onClick={handleJoinClick}
             disabled={isLoading}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold text-white shadow-lg transition-colors ${
+            className={`flex-1 rounded-lg p-4 text-sm font-semibold text-white shadow-lg transition-colors ${
               isLoading
                 ? 'cursor-not-allowed bg-green-300'
                 : 'bg-green-500 hover:bg-green-600'
@@ -170,18 +182,7 @@ export default function ClubCommunicationButtons({
 
   return (
     <div className="mt-2 bg-white p-4 shadow-sm">
-      <div className="flex space-x-2">
-        <button className="flex-1 rounded-lg border border-gray-300 py-3 font-medium">
-          <Link href={`/club/search/${id}/chat`}>
-            <div className="flex items-center justify-center">
-              <MessageCircle className="mr-2 h-5 w-5" />
-              <span>채팅방</span>
-            </div>
-          </Link>
-        </button>
-
-        {renderActionButton()}
-      </div>
+      <div className="flex space-x-2">{renderActionButton()}</div>
 
       {error && (
         <div className="mt-2 rounded-md bg-red-50 p-2 text-sm text-red-600">

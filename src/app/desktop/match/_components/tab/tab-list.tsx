@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { User } from '@/types/(match)';
 
 import FilterSection from '../filter/filter-section';
-import UserCard from '../card/user-card';
+// import UserCard from '../card/user-card';
 import UserRegisterCard from '../card/user-register-card';
 import MyMatchesCard from '../card/my-match-card';
 
@@ -93,9 +93,10 @@ export default function TabList() {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4">
-            {users.map((user) => (
+            {/* {users.map((user) => (
               <UserCard key={user.id} user={user} />
-            ))}
+            ))} */}
+            123
           </div>
         )}
       </TabsContent>

@@ -131,10 +131,10 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
   return (
     <>
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
-        <DrawerTrigger className="fixed bottom-0 w-full rounded-t-xl bg-white p-4 shadow-lg">
+        <DrawerTrigger className="fixed bottom-0 w-full bg-white p-4 shadow-lg">
           <div
             onClick={() => setIsOpen(true)}
-            className="w-full rounded-lg bg-blue-500 py-3 font-bold text-white"
+            className="w-full bg-blue-500 py-3 font-bold text-white"
           >
             예약하기
           </div>

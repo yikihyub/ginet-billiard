@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 
 import './globals.css';
 import ServiceWorkerRegistration from '@/components/(alert)/ServiceWorkerRegistration';
+import TrackingLayout from '@/components/(layout)/tracking-layout';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -29,15 +30,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Providers>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <main>{children}</main>
-          <ServiceWorkerRegistration />
-        </body>
-      </Providers>
-    </html>
+    <TrackingLayout>
+      <html lang="en">
+        <Providers>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <main>{children}</main>
+            <ServiceWorkerRegistration />
+          </body>
+        </Providers>
+      </html>
+    </TrackingLayout>
   );
 }

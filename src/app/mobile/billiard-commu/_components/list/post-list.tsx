@@ -27,9 +27,9 @@ export default function PostList({
   category,
   updateLikeStatus,
 }: PostListProps) {
-  const { data: session } = useSession();
   const router = useRouter();
   const { toast } = useToast();
+  const { data: session } = useSession();
 
   const handleLikeToggle = async (postId: number) => {
     if (!session) {

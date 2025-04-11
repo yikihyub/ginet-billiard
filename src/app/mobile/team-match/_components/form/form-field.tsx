@@ -3,15 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
-interface FormFieldProps {
-  label: string;
-  id: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  type?: string;
-  required?: boolean;
-}
+import { FormFieldProps } from '../../_types';
 
 export const FormField = ({
   label,

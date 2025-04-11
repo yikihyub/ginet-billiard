@@ -2,21 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-
-interface MapBounds {
-  swLat: number;
-  swLng: number;
-  neLat: number;
-  neLng: number;
-}
-
-interface LocationContextType {
-  location: { lat: number; lng: number };
-  bounds: MapBounds | null; // bounds 정보 추가
-  setLocation: (lat: number, lng: number, level: number) => void;
-  setBounds: (bounds: MapBounds) => void;
-  userId?: string | null;
-}
+import { MapBounds, LocationData, LocationContextType } from '../../../_types';
 
 const LocationContext = createContext<LocationContextType | undefined>(
   undefined
@@ -25,9 +11,10 @@ const LocationContext = createContext<LocationContextType | undefined>(
 export function LocationProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const userId = session?.user.mb_id;
-  const [location, setLocation] = useState({
+  const [location, setLocation] = useState<LocationData>({
     lat: 37.5665,
     lng: 126.978,
+    level: 5,
   });
   const [bounds, setBounds] = useState<MapBounds | null>(null); // bounds 상태 추가
 
@@ -48,6 +35,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
           setLocation({
             lat: locationData.latitude,
             lng: locationData.longitude,
+            level: 5,
           });
         }
       } catch (error) {
@@ -60,8 +48,8 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     }
   }, [userId]);
 
-  const handleSetLocation = (lat: number, lng: number) => {
-    setLocation({ lat, lng });
+  const handleSetLocation = (lat: number, lng: number, level: number) => {
+    setLocation({ lat, lng, level });
   };
 
   const handleSetBounds = (newBounds: MapBounds) => {
