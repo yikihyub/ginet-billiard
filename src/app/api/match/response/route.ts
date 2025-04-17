@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
         player2_id: true,
         game_type: true,
         preferred_date: true,
+        match_status: true,
       },
     });
 
@@ -41,21 +42,77 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 권한 확인 (요청받은 사용자만 응답 가능)
+    if (match.match_status !== 'PENDING') {
+      return NextResponse.json(
+        { error: '이미 다른 회원과 경기 일정이 잡혔습니다.' },
+        { status: 402 }
+      );
+    }
+
     // 트랜잭션으로 여러 테이블을 함께 업데이트
     const result = await prisma.$transaction(async (tx: any) => {
+      const alreadyAccepted = await tx.bi_match.findFirst({
+        where: {
+          player1_id: match.player1_id,
+          match_status: 'ACCEPTED',
+        },
+      });
+
+      // 2. 이미 다른 매치가 ACCEPTED 상태면 → 지금 요청된 매치를 CANCEL 처리
+      if (alreadyAccepted) {
+        const cancelledMatch = await tx.bi_match.update({
+          where: { match_id: matchId },
+          data: {
+            match_status: 'CANCELLED',
+            request_status: 'CANCELLED',
+            response_date: new Date(),
+            cancel_reason: '다른 회원과 매치가 이미 성사되었습니다.',
+            cancelled_by: userId,
+          },
+        });
+
+      return {
+          status: 'CANCELLED',
+          match: cancelledMatch,
+          message: '이미 다른 매치가 수락되어 자동 취소되었습니다.',
+        };
+      }
+
       // 1. bi_match 테이블 업데이트
       const updatedMatch = await tx.bi_match.update({
-        where: { match_id: matchId },
+        where: {
+          match_id: matchId,
+          match_status: 'PENDING',
+        },
         data: {
-          match_status: response === 'ACCEPT' ? 'ACCEPTED' : 'REJECTED',
-          request_status: response === 'ACCEPT' ? 'ACCEPTED' : 'REJECTED',
+          match_status: 'ACCEPTED',
+          request_status: 'ACCEPTED',
           response_date: new Date(),
+        },
+      });
+
+      // 2. 매치 참가자 등록 (player1 - 요청자)
+      await tx.bi_match_participant.create({
+        data: {
+          match_id: matchId,
+          user_id: match.player1_id,
+          team: 1,
+        },
+      });
+
+      // 3. 매치 참가자 등록 (player2 - 수락자)
+      await tx.bi_match_participant.create({
+        data: {
+          match_id: matchId,
+          user_id: match.player2_id,
+          team: 2,
         },
       });
 
      // 매치가 수락된 경우에만 채팅방 생성
       let chatRoom = null;
-      if (response === 'ACCEPT') {
+      if (response === 'ACCEPTED') {
         // 2. 채팅방 생성
         const player1 = await tx.user.findUnique({
           where: { mb_id: match.player1_id },
@@ -66,7 +123,7 @@ export async function POST(request: NextRequest) {
           where: { mb_id: match.player2_id },
           select: { name: true },
         });
-        
+
         // 채팅방 이름 생성 (두 사용자 이름 조합)
         const roomName = `${player1?.name || '사용자'} & ${player2?.name || '사용자'} 매치 채팅`;
 
@@ -84,20 +141,24 @@ export async function POST(request: NextRequest) {
         // 3. 채팅방 참가자 추가 (player1)
         await tx.bi_chat_room_participants.create({
           data: {
-            chat_room_id: `group-${match.match_uid}`,
+            chat_room_id: match.match_uid,
             user_id: match.player1_id,
             is_admin: false,
           },
         });
-        
+
         // 4. 채팅방 참가자 추가 (player2)
         await tx.bi_chat_room_participants.create({
           data: {
-            chat_room_id: `group-${match.match_uid}`,
+            chat_room_id: match.match_uid,
             user_id: match.player2_id,
             is_admin: false,
           },
         });
+      }
+
+      if (updatedMatch.count === 0) {
+        throw new Error('이 매치는 이미 처리되었습니다.');
       }
 
       // 2. 요청자의 user.id 조회

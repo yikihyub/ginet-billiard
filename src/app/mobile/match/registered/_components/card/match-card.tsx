@@ -18,6 +18,7 @@ export function MatchCard({
   isProcessing,
   onMatchRequest,
 }: MatchCardProps) {
+  console.log(player);
   return (
     <Card key={player.id} className="overflow-hidden border-none shadow-md">
       <div className="p-4">
@@ -95,7 +96,6 @@ export function MatchCard({
             <Button
               onClick={() => onMatchRequest(player)}
               disabled={isProcessing}
-              variant="default"
               size="lg"
               className="h-12 w-full bg-green-600 text-white"
             >

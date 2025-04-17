@@ -50,11 +50,10 @@ export default function MainBanner() {
       </div>
       <div className="bg-white py-2">
         <p className="max-h-[120px] overflow-y-auto text-xs text-gray-600">
-          * 최대 나의 주변 50km이내까지 Fluke회원에게 매칭 신청을 보낼 수
-          있습니다.
+          * 나의 주변 50km이내까지 Fluke 회원에게 경기 신청할 수 있습니다.
         </p>
         <p className="max-h-[120px] overflow-y-auto text-xs text-gray-600">
-          * 하루 최대 3회까지만 신청 할 수 있습니다.
+          * 한 번에 최대 3회까지만 신청 할 수 있습니다.
         </p>
       </div>
     </>

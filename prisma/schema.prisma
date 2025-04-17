@@ -90,6 +90,10 @@ model User {
   bi_report_bi_report_reported_user_idTobi_user                 bi_report[]                     @relation("bi_report_reported_user_idTobi_user")
   bi_report_bi_report_reporter_idTobi_user                      bi_report[]                     @relation("bi_report_reporter_idTobi_user")
   bi_report_review                                              bi_report_review[]
+  bi_user_block_bi_user_block_blocked_idTobi_user               bi_user_block[]                 @relation("bi_user_block_blocked_idTobi_user")
+  bi_user_block_bi_user_block_blocker_idTobi_user               bi_user_block[]                 @relation("bi_user_block_blocker_idTobi_user")
+  bi_user_penalty                                               bi_user_penalty[]
+  bi_user_suspension                                            bi_user_suspension[]
   bi_view_log                                                   bi_view_log[]
   user_sessions                                                 user_sessions[]
   visit_logs                                                    visit_logs[]
@@ -257,6 +261,8 @@ model bi_store {
   geom             Unsupported("geometry")?
   bi_reservations  bi_reservations[]
   bi_favorites     bi_favorites[]
+  bi_match         bi_match[]
+  bi_match_request bi_match_request[]
   bi_recent_search bi_recent_search[]
   bi_recent_visit  bi_recent_visit[]
 
@@ -313,36 +319,40 @@ model spatial_ref_sys {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model bi_match {
-  match_id                             Int                   @id(map: "matches_pkey") @default(autoincrement())
-  player1_id                           String?               @db.VarChar
-  player2_id                           String?               @db.VarChar
-  match_date                           DateTime?             @default(now()) @db.Timestamp(6)
-  location                             String?               @db.VarChar(255)
+  match_id                             Int                    @id(map: "matches_pkey") @default(autoincrement())
+  player1_id                           String?                @db.VarChar
+  player2_id                           String?                @db.VarChar
+  match_date                           DateTime?              @default(now()) @db.Timestamp(6)
+  location                             Int?
   player1_score                        Int?
   player2_score                        Int?
-  winner_id                            String?               @db.VarChar
-  loser_id                             String?               @db.VarChar
-  player1_dama                         Decimal?              @db.Decimal(5, 2)
-  player2_dama                         Decimal?              @db.Decimal(5, 2)
+  winner_id                            String?                @db.VarChar
+  loser_id                             String?                @db.VarChar
+  player1_dama                         Decimal?               @db.Decimal(5, 2)
+  player2_dama                         Decimal?               @db.Decimal(5, 2)
   match_duration                       Int?
   request_status                       request_status?
-  request_date                         DateTime?             @default(now()) @db.Timestamp(6)
-  response_date                        DateTime?             @db.Timestamp(6)
-  preferred_date                       DateTime?             @db.Timestamp(6)
-  message                              String?               @db.VarChar(500)
-  cancel_reason                        String?               @db.VarChar(200)
-  cancelled_by                         String?               @db.VarChar
-  is_notified                          Boolean?              @default(false)
-  notification_date                    DateTime?             @db.Timestamp(6)
-  match_status                         match_status?         @default(PENDING)
+  request_date                         DateTime?              @default(now()) @db.Timestamp(6)
+  response_date                        DateTime?              @db.Timestamp(6)
+  preferred_date                       DateTime?              @db.Timestamp(6)
+  message                              String?                @db.VarChar(500)
+  cancel_reason                        String?                @db.VarChar(200)
+  cancelled_by                         String?                @db.VarChar
+  is_notified                          Boolean?               @default(false)
+  notification_date                    DateTime?              @db.Timestamp(6)
+  match_status                         match_status?          @default(PENDING)
   game_type                            game_type_enum?
-  match_uid                            String?               @unique(map: "match_uid_unique") @db.VarChar(255)
-  bi_user_bi_match_loser_idTobi_user   User?                 @relation("bi_match_loser_idTobi_user", fields: [loser_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_loser_id_fkey")
-  bi_user_bi_match_player1_idTobi_user User?                 @relation("bi_match_player1_idTobi_user", fields: [player1_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player1_id_fkey")
-  bi_user_bi_match_player2_idTobi_user User?                 @relation("bi_match_player2_idTobi_user", fields: [player2_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player2_id_fkey")
-  bi_user_bi_match_winner_idTobi_user  User?                 @relation("bi_match_winner_idTobi_user", fields: [winner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_winner_id_fkey")
+  match_uid                            String?                @unique(map: "match_uid_unique") @db.VarChar(255)
+  bi_checkin                           bi_checkin?
+  bi_store                             bi_store?              @relation(fields: [location], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_location")
+  bi_user_bi_match_loser_idTobi_user   User?                  @relation("bi_match_loser_idTobi_user", fields: [loser_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_loser_id_fkey")
+  bi_user_bi_match_player1_idTobi_user User?                  @relation("bi_match_player1_idTobi_user", fields: [player1_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player1_id_fkey")
+  bi_user_bi_match_player2_idTobi_user User?                  @relation("bi_match_player2_idTobi_user", fields: [player2_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "matches_player2_id_fkey")
+  bi_user_bi_match_winner_idTobi_user  User?                  @relation("bi_match_winner_idTobi_user", fields: [winner_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_winner_id_fkey")
   bi_match_evaluation                  bi_match_evaluation[]
+  bi_match_participant                 bi_match_participant[]
   bi_match_request                     bi_match_request[]
+  bi_user_penalty                      bi_user_penalty[]
 
   @@schema("public")
 }
@@ -357,13 +367,14 @@ model bi_match_request {
   response_date                                  DateTime? @db.Timestamp(6)
   preferred_date                                 DateTime? @db.Timestamp(6)
   message                                        String?   @db.VarChar(500)
-  game_type                                      String?   @db.VarChar(10)
-  location                                       String?   @db.VarChar(255)
+  game_type                                      String?   @db.VarChar(255)
+  location                                       Int?
   is_notified                                    Boolean?  @default(false)
   match_uid                                      String?
   bi_match                                       bi_match  @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction)
   bi_user_bi_match_request_recipient_idTobi_user User      @relation("bi_match_request_recipient_idTobi_user", fields: [recipient_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
   bi_user_bi_match_request_requester_idTobi_user User      @relation("bi_match_request_requester_idTobi_user", fields: [requester_id], references: [mb_id], onDelete: NoAction, onUpdate: NoAction)
+  bi_store                                       bi_store? @relation(fields: [location], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_location_store")
 
   @@schema("public")
 }
@@ -429,31 +440,35 @@ model bi_alert_log {
 }
 
 model bi_match_reg {
-  id                   Int                    @id @default(autoincrement())
-  match_type           MatchType              @default(ONE_VS_ONE)
-  game_type            game_type_enum         @default(FOUR_BALL)
-  creator_id           Int
-  status               match_status           @default(PENDING)
-  player_count         Int
-  current_players      Int                    @default(1)
-  created_at           DateTime               @default(now()) @db.Timestamp(6)
-  updated_at           DateTime               @default(now()) @db.Timestamp(6)
-  billiard_place       String?                @db.VarChar
-  match_date           DateTime?              @db.Timestamp(6)
-  bi_match_participant bi_match_participant[]
-  bi_user              User                   @relation(fields: [creator_id], references: [id])
+  id              Int            @id @default(autoincrement())
+  match_type      MatchType      @default(ONE_VS_ONE)
+  game_type       game_type_enum @default(FOUR_BALL)
+  creator_id      Int
+  status          match_status   @default(PENDING)
+  player_count    Int
+  current_players Int            @default(1)
+  created_at      DateTime       @default(now()) @db.Timestamp(6)
+  updated_at      DateTime       @default(now()) @db.Timestamp(6)
+  billiard_place  Int?
+  match_date      DateTime?      @db.Timestamp(6)
+  bi_user         User           @relation(fields: [creator_id], references: [id])
 
   @@schema("public")
 }
 
 model bi_match_participant {
-  id           Int          @id @default(autoincrement())
-  match_id     Int
-  user_id      Int
-  team         Int
-  created_at   DateTime     @default(now()) @db.Timestamp(6)
-  bi_match_reg bi_match_reg @relation(fields: [match_id], references: [id])
-  bi_user      User         @relation(fields: [user_id], references: [id])
+  id             Int       @id @default(autoincrement())
+  match_id       Int
+  user_id        String    @db.VarChar(255)
+  team           Int
+  created_at     DateTime  @default(now()) @db.Timestamp(6)
+  checked_in     Boolean?  @default(false)
+  checked_in_at  DateTime? @db.Timestamp(6)
+  no_show        Boolean?  @default(false)
+  no_show_at     DateTime? @db.Timestamp(6)
+  no_show_reason String?   @db.VarChar(255)
+  bi_match_reg   bi_match  @relation(fields: [match_id], references: [match_id])
+  bi_user        User      @relation(fields: [user_id], references: [mb_id])
 
   @@unique([match_id, user_id])
   @@schema("public")
@@ -906,7 +921,7 @@ model bi_post_log {
   original_created_at                    DateTime?   @db.Timestamp(6)
   original_updated_at                    DateTime?   @db.Timestamp(6)
   bi_user_bi_post_log_author_idTobi_user User        @relation("bi_post_log_author_idTobi_user", fields: [author_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_author")
-  bi_category                            bi_category @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_post_log_category")
+  bi_category                            bi_category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_category")
   bi_post                                bi_post     @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_post")
   bi_user_bi_post_log_user_idTobi_user   User        @relation("bi_post_log_user_idTobi_user", fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_log_user")
 
@@ -1110,6 +1125,84 @@ model bi_faq_category {
   @@schema("public")
 }
 
+model bi_user_penalty {
+  penalty_id     Int       @id @default(autoincrement())
+  user_id        String    @db.VarChar(255)
+  penalty_type   String    @db.VarChar(50)
+  penalty_reason String?
+  penalty_count  Int?      @default(1)
+  penalty_level  Int?      @default(1)
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
+  expires_at     DateTime  @db.Timestamptz(6)
+  is_active      Boolean?  @default(true)
+  match_id       Int?
+  reported_by    String?   @db.VarChar(255)
+  confirmed_by   String?   @db.VarChar(255)
+  bi_match       bi_match? @relation(fields: [match_id], references: [match_id], onUpdate: NoAction, map: "fk_match")
+  bi_user        User      @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+
+  @@index([expires_at], map: "idx_user_penalty_expires_at")
+  @@index([is_active], map: "idx_user_penalty_is_active")
+  @@index([penalty_type], map: "idx_user_penalty_type")
+  @@index([user_id], map: "idx_user_penalty_user_id")
+  @@schema("public")
+}
+
+model bi_checkin {
+  checkin_id           Int            @id @default(autoincrement())
+  match_id             Int            @unique
+  player1_checkin      Boolean        @default(false)
+  player2_checkin      Boolean        @default(false)
+  player1_checkin_time DateTime?      @db.Timestamp(6)
+  player2_checkin_time DateTime?      @db.Timestamp(6)
+  player1_status       checkin_status @default(PENDING)
+  player2_status       checkin_status @default(PENDING)
+  location_verified    Boolean        @default(false)
+  created_at           DateTime       @default(now()) @db.Timestamp(6)
+  updated_at           DateTime       @default(now()) @db.Timestamp(6)
+  notes                String?        @db.VarChar(500)
+  bi_match             bi_match       @relation(fields: [match_id], references: [match_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_match_id")
+
+  @@schema("public")
+}
+
+model bi_user_suspension {
+  suspension_id     Int       @id @default(autoincrement())
+  user_id           String    @db.VarChar(255)
+  start_date        DateTime  @default(now()) @db.Timestamptz(6)
+  end_date          DateTime  @db.Timestamptz(6)
+  suspension_reason String    @db.VarChar(50)
+  description       String?
+  is_active         Boolean?  @default(true)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime? @default(now()) @db.Timestamptz(6)
+  bi_user           User      @relation(fields: [user_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+
+  @@index([end_date], map: "idx_user_suspension_end_date")
+  @@index([is_active], map: "idx_user_suspension_is_active")
+  @@index([user_id], map: "idx_user_suspension_user_id")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bi_user_block {
+  block_id                                  Int      @id @default(autoincrement())
+  blocker_id                                String   @db.VarChar
+  blocked_id                                String   @db.VarChar
+  block_date                                DateTime @default(now()) @db.Timestamp(6)
+  block_reason                              String?  @db.VarChar(200)
+  is_active                                 Boolean  @default(true)
+  bi_user_bi_user_block_blocked_idTobi_user User     @relation("bi_user_block_blocked_idTobi_user", fields: [blocked_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_blocked_id")
+  bi_user_bi_user_block_blocker_idTobi_user User     @relation("bi_user_block_blocker_idTobi_user", fields: [blocker_id], references: [mb_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_blocker_id")
+
+  @@unique([blocker_id, blocked_id], map: "unique_block")
+  @@index([is_active], map: "idx_block_active")
+  @@index([blocked_id], map: "idx_blocked_id")
+  @@index([blocker_id], map: "idx_blocker_id")
+  @@schema("public")
+}
+
 enum GameType {
   THREE_BALL @map("3구")
   FOUR_BALL  @map("4구")
@@ -1141,6 +1234,7 @@ enum match_status {
   COMPLETED
   EVALUATE
   REJECTED
+  CANCELLED
 
   @@schema("public")
 }
@@ -1206,6 +1300,15 @@ enum report_type {
   THREAT
   PERSONAL_INFO
   OTHER
+
+  @@schema("public")
+}
+
+enum checkin_status {
+  PENDING
+  ARRIVED
+  LATE
+  NO_SHOW
 
   @@schema("public")
 }

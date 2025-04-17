@@ -1,37 +1,42 @@
-'use client';
-
 import React from 'react';
+import Link from 'next/link';
 
-import { usePathname } from 'next/navigation';
+import { Home, MessageCircle, Bell, User, Search } from 'lucide-react';
 
 export default function Footer() {
-  const pathname = usePathname();
-
-  if (pathname.startsWith('/login')) {
-    return null;
-  }
-
-  if (pathname.startsWith('/billiard-place/reserve')) {
-    return null;
-  }
-
-  if (pathname.startsWith('/signin')) {
-    return null;
-  }
-
   return (
-    <footer className="bg-gray-900 py-6 text-gray-400">
-      <div className="container mx-auto text-center">
-        <p>&copy; 2024 My Website. All rights reserved.</p>
-        <p className="mt-2">
-          <a href="/privacy" className="hover:underline">
-            Privacy Policy
-          </a>{' '}
-          |{' '}
-          <a href="/terms" className="hover:underline">
-            Terms of Service
-          </a>
-        </p>
+    <footer className="fixed bottom-0 z-50 h-[60px] w-full bg-gray-50 shadow-md">
+      <div className="flex h-full items-center justify-around border-t px-4">
+        <Link href="/mobile/message">
+          <button className="flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-black">
+            <MessageCircle className="h-5 w-5" />
+            <span>채팅</span>
+          </button>
+        </Link>
+        <Link href="/mobile/billiard-place/reserve">
+          <button className="flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-black">
+            <Search className="h-5 w-5" />
+            <span>검색</span>
+          </button>
+        </Link>
+        <Link href="/">
+          <button className="flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-black">
+            <Home className="h-5 w-5" />
+            <span>홈</span>
+          </button>
+        </Link>
+        <Link href="/mobile/alert">
+          <button className="flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-black">
+            <Bell className="h-5 w-5" />
+            <span>알림</span>
+          </button>
+        </Link>
+        <Link href="/mobile/mypage">
+          <button className="flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-black">
+            <User className="h-5 w-5" />
+            <span>마이</span>
+          </button>
+        </Link>
       </div>
     </footer>
   );

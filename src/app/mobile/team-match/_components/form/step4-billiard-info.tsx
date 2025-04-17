@@ -52,7 +52,7 @@ export default function Step4BilliardInfo() {
             name: formData.name,
             phone: formData.phone,
             handicap: Number(formData.handicap),
-            storeAddress: formData.store?.address || '',
+            storeAddress: Number(formData.store?.id),
           },
         }),
       });
@@ -63,7 +63,6 @@ export default function Step4BilliardInfo() {
       }
 
       alert('등록이 완료되었습니다!');
-      // 이동할 페이지로 리디렉션
     } catch (error) {
       alert(
         `에러 발생: ${error instanceof Error ? error.message : '알 수 없는 에러'}`

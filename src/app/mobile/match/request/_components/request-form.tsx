@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar_custom';
-import { Textarea } from '@/components/ui/textarea';
+
 import {
   Select,
   SelectContent,
@@ -12,15 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import BilliardSelect from '@/app/mobile/team-match/_components/select/billiard-select';
-import { timeOptions } from '@/lib/utils';
-import { ko } from 'date-fns/locale';
-import { useToast } from '@/hooks/use-toast';
-import { useSession } from 'next-auth/react';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar_custom';
+
+import { ko } from 'date-fns/locale';
+import { Store } from '@/types/(match)';
+import { useToast } from '@/hooks/use-toast';
+import { timeOptions } from '@/lib/utils';
 
 import { ChevronLeft } from 'lucide-react';
-import { Store } from '@/types/(match)';
+import BilliardSelect from '@/app/mobile/team-match/_components/select/billiard-select';
 
 export default function MatchRequest() {
   const router = useRouter();
@@ -34,23 +36,12 @@ export default function MatchRequest() {
   const opponentId = searchParams.get('opponent') || '';
   const opponentName = searchParams.get('name') || '상대방';
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState<string>('');
-  const [gameType, setGameType] = useState<string>('');
-  const [location, setLocation] = useState<Store | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // 로그인 확인
-  useEffect(() => {
-    if (userId) {
-      toast({
-        title: '로그인이 필요합니다',
-        description: '매칭 신청을 위해 로그인해주세요.',
-        variant: 'destructive',
-      });
-    }
-  }, [session, router]);
+  const [gameType, setGameType] = useState<string>('');
+  const [location, setLocation] = useState<Store | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const handleSubmit = async () => {
     if (!selectedDate || !selectedTime || !gameType || !location) {
@@ -79,7 +70,7 @@ export default function MatchRequest() {
           player2_id: opponentId,
           preferred_date: preferredDate,
           game_type: gameType,
-          location: location.name,
+          location: location.id,
           message: message,
           request_status: '대기중',
         }),

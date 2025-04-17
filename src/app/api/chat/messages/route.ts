@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       content: message.content,
       sender_id: message.sender_id,
       chat_room_id: message.chat_room_id,
-      created_at: message.created_at.toISOString(),
+      created_at: message.created_at,
       sender: {
         id: message.bi_user.mb_id,
         username: message.bi_user.name,

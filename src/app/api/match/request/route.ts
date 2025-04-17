@@ -2,6 +2,7 @@ import webpush from 'web-push';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+
 import cuid from 'cuid';
 
 // web-push 설정정
@@ -48,7 +49,7 @@ async function sendWebPushNotification(
       title,
       message,
       url: '/alert',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     });
 
     // 웹 푸시 알림 전송
@@ -101,6 +102,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    
     const matchUid = cuid();
     const {
       player1_id, // 본인 아이디
@@ -136,10 +138,10 @@ export async function POST(request: NextRequest) {
       // 3. bi_match 테이블에 매치 생성
       const match = await tx.bi_match.create({
         data: {
-              match_uid: matchUid,
+          match_uid: matchUid,
           player1_id: player1_id,
           player2_id: player2_id,
-          preferred_date: new Date(preferred_date).toISOString(),
+          preferred_date: new Date(preferred_date),
           game_type: game_type || null,
           location: location || null,
           match_status: 'PENDING',
@@ -149,13 +151,13 @@ export async function POST(request: NextRequest) {
       // 4. bi_match_request 테이블에 요청 생성
       const matchRequest = await tx.bi_match_request.create({
         data: {
-              match_uid: matchUid,
+          match_uid: matchUid,
           match_id: match.match_id,
           requester_id: player1_id,
           recipient_id: player2_id,
           request_status: 'PENDING',
           request_date: new Date(),
-          preferred_date: new Date(preferred_date).toISOString(),
+          preferred_date: new Date(preferred_date),
           message: message || null,
           game_type: game_type || null,
           location: location || null,
@@ -185,7 +187,6 @@ export async function POST(request: NextRequest) {
         : alertMessage;
 
       // 6. 알림 저장
-
       // data 필드 준비
       const alertData = {
         matchId: match.match_id,
@@ -193,7 +194,6 @@ export async function POST(request: NextRequest) {
         requesterId: player1_id,
         recipient_id: player2_id,
       };
-
       // 상대방 알람
       const alert = await tx.bi_alert.create({
         data: {
@@ -263,7 +263,6 @@ export async function POST(request: NextRequest) {
         // }
       ).catch((error) => {
         console.error('웹 푸시 알림 전송 중 오류 발생:', error);
-        // 푸시 알림 실패는 API 응답에 영향을 주지 않습니다
       });
 
       return {

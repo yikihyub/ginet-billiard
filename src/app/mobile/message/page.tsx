@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, MoreVertical, Bell, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import LoadingSpinner from './_components/spinner/loading-spinner';
+import LoadingSpinner from '@/components/ui/loading-spinner';
 import ChatHeader from './_components/hedaer/header';
 
 // 채팅방 타입 정의

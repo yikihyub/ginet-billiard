@@ -91,7 +91,6 @@ export default function BilliardGroupsPage() {
   if (error) {
     return (
       <div className="p-4">
-        <MainBanner />
         <FilterSection onFilterChange={handleFilterChange} />
         <div className="mt-8 rounded-lg bg-red-50 p-4 text-center text-red-500">
           <p>{error}</p>
@@ -110,7 +109,6 @@ export default function BilliardGroupsPage() {
   if (clubs.length === 0) {
     return (
       <div className="p-4">
-        <MainBanner />
         <FilterSection onFilterChange={handleFilterChange} />
         <div className="mt-8 rounded-lg bg-gray-50 p-8 text-center">
           <p className="text-gray-500">검색 결과가 없습니다.</p>
@@ -124,7 +122,7 @@ export default function BilliardGroupsPage() {
 
   return (
     <div className="p-4">
-      <MainBanner />
+      {/* <MainBanner /> */}
       <FilterSection onFilterChange={handleFilterChange} />
       <div className="min-h-[50vh]">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

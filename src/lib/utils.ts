@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Match } from '@/types/(match)';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -123,4 +124,53 @@ export function formatRelativeTime(dateString: string): string {
 
   const diffInYears = Math.floor(diffInDays / 365);
   return `${diffInYears}년 전`;
+}
+
+export function formatGameType(type: string): string {
+  switch (type) {
+    case 'THREE_BALL':
+      return '3구';
+    case 'FOUR_BALL':
+      return '4구';
+    default:
+      return type;
+  }
+}
+
+/**
+ * 경기 시작 시간까지 남은 시간을 텍스트로 반환
+ */
+export function getTimeStatus(dateString: string): string {
+  const now = new Date();
+  const matchTime = new Date(dateString);
+  const diffHours = (matchTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (diffHours < 0) return '지남';
+  if (diffHours < 1) return `${Math.round(diffHours * 60)}분 후`;
+  return `${Math.round(diffHours)}시간 후`;
+}
+
+/**
+ * 상대방 ID를 반환하는 함수
+ */
+export function getOpponentId(match: any, userId: string): string {
+  return match.player1_id === userId ? match.player2_id : match.player1_id;
+}
+
+// 체크인 가능 여부 확인 함수 - 기존의 canCheckIn 함수를 업데이트
+export function canCheckIn(match: Match): boolean {
+  return (
+    match.match_status === 'ACCEPTED' && 
+    !match.user_checked_in
+  );
+}
+
+// 노쇼 신고 가능 여부 확인 함수
+export function canReportNoShow(match: Match): boolean {
+  return (
+    match.match_status === 'IN_PROGRESS' &&
+    match.user_checked_in &&
+    !match.opponent_checked_in &&
+    !match.no_show_status
+  );
 }

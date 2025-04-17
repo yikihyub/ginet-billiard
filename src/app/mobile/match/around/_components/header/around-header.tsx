@@ -1,11 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 
 export default function AroundHeader() {
   const router = useRouter();
+  const pathname = usePathname();
+  if (pathname.includes('/profile')) {
+    return null;
+  }
 
   return (
     <div className="flex items-center bg-white p-4">

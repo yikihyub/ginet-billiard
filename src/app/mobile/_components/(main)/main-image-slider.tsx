@@ -46,7 +46,7 @@ export default function JobPlanetSlider(): React.ReactElement {
   };
 
   return (
-    <div className="mx-auto overflow-visible pl-4">
+    <div className="mx-auto overflow-visible pl-[24px]">
       <Swiper
         modules={[Pagination, Autoplay]}
         pagination={paginationOptions}

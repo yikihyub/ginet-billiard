@@ -1,4 +1,4 @@
-import Tab from './_components/tab/tab';
+import CommuHeader from './_components/header/commu-header';
 
 export default function MobileLayout({
   children,
@@ -7,7 +7,8 @@ export default function MobileLayout({
 }) {
   return (
     <>
-      <Tab />
+      <CommuHeader />
+      {/* <Tab /> */}
       {children}
     </>
   );

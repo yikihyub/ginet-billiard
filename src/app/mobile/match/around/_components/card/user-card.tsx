@@ -8,24 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import { useToast } from '@/hooks/use-toast';
-import { useUserContext } from '../context/match-context';
-
-import { EllipsisVertical } from 'lucide-react';
-import { MatchStatus, MatchUser } from '../../../_types';
+import { MatchStatus } from '../../../_types';
 
 import { ConfirmationModal } from '../modal/confirm-modal';
+import UserActionsDrawer from '../button/detail-button';
 
-// 타입 정의 (기존 타입과 함께 사용)
-// interface ConfirmationModalProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   matchId: string;
-//   opponentId: string;
-//   onAccept: (matchId: string) => void;
-//   onReject: (matchId: string) => void;
-// }
-
-export default function UserCard({ user }: { user: MatchUser }) {
+export default function UserCard({ user }: any) {
   const router = useRouter();
   const { toast } = useToast();
   const { data: session } = useSession();
@@ -41,17 +29,21 @@ export default function UserCard({ user }: { user: MatchUser }) {
     hasUnratedMatches: false,
     hasRated: false,
     existingMatch: null,
+    activeRequestsCount: 0,
+    maxRequests: 3,
+    hasPenalty: false,
+    penaltyExpiresAt: null,
+    otherUserHasActiveMatch: false,
+    otherUserMatchStatus: 'NONE',
   });
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 컨텍스트에서 gameType 가져오기
-  const { gameType } = useUserContext();
 
   useEffect(() => {
     checkMatchStatus();
   }, [userId, user.mb_id]);
 
+  // 경기 상태값 확인
   const checkMatchStatus = async () => {
     if (!userId) return;
 
@@ -71,6 +63,12 @@ export default function UserCard({ user }: { user: MatchUser }) {
         hasUnratedMatches: data.hasUnratedMatches,
         hasRated: data.hasRated,
         existingMatch: data.existingMatch,
+        activeRequestsCount: data.activeRequestsCount || 0,
+        maxRequests: data.maxRequests || 3,
+        hasPenalty: data.hasPenalty || false,
+        penaltyExpiresAt: data.penaltyExpiresAt || null,
+        otherUserHasActiveMatch: data.otherUserHasActiveMatch,
+        otherUserMatchStatus: data.otherUserMatchStatus,
       });
     } catch (error) {
       console.error('매치 상태 확인 오류:', error);
@@ -167,7 +165,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
           return (
             <Button
               variant="outline"
-              className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+              className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-white px-3 py-1 font-bold text-[#333] shadow-none"
             >
               매칭 대기중
             </Button>
@@ -177,7 +175,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
           return (
             <Button
               onClick={openMatchModal}
-              className="w-full rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white hover:bg-green-700"
+              className="text-md h-14 w-full rounded-md bg-green-600 px-3 py-1 font-bold text-white hover:bg-green-700"
             >
               매치 상세 보기
             </Button>
@@ -188,99 +186,196 @@ export default function UserCard({ user }: { user: MatchUser }) {
             <Button
               variant="outline"
               disabled
-              className="focus:none w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-bold text-gray-400 shadow-none"
+              className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-1 font-bold text-gray-400 shadow-none"
             >
-              매칭 대기중
+              다른 회원과 매칭 진행중
             </Button>
           );
         }
 
       case 'ACCEPTED':
-        return (
-          <Button
-            variant="outline"
-            className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
-          >
-            매칭 성사됨
-          </Button>
-        );
-
-      case 'IN_PROGRESS':
-        return (
-          <div className="flex w-full flex-col gap-2">
+        if (
+          matchStatus.matchRole === 'REQUESTER' ||
+          matchStatus.matchRole === 'RECEIVER'
+        ) {
+          return (
             <Button
               variant="outline"
-              className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+              className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-white px-3 py-1 font-bold text-[#333] shadow-none"
             >
-              경기 진행 중
+              매칭 성사됨
             </Button>
-            {(matchStatus.matchRole === 'REQUESTER' ||
-              matchStatus.matchRole === 'RECEIVER') && (
+          );
+        } else {
+          // 제3자에게 보여지는 버튼
+          return (
+            <Button
+              variant="outline"
+              disabled
+              className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-1 font-bold text-gray-400 shadow-none"
+            >
+              다른 회원과 매칭 성사됨
+            </Button>
+          );
+        }
+
+      case 'IN_PROGRESS':
+        if (
+          matchStatus.matchRole === 'REQUESTER' ||
+          matchStatus.matchRole === 'RECEIVER'
+        ) {
+          return (
+            <div className="flex w-full flex-col gap-2">
               <Button
                 variant="default"
                 onClick={() => handleCompleteMatch(matchStatus.matchId!)}
-                className="w-full rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700"
+                className="text-md h-14 w-full rounded-md bg-blue-600 px-3 py-1 font-bold text-white hover:bg-blue-700"
               >
                 경기 종료하기
               </Button>
-            )}
-          </div>
-        );
-
-      case 'COMPLETED':
-        return (
-          <div className="flex w-full gap-2">
+            </div>
+          );
+        } else {
+          // 제3자에게 보여지는 버튼
+          return (
             <Button
               variant="outline"
-              className="focus:none w-full flex-1 rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+              disabled
+              className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-1 font-bold text-gray-400 shadow-none"
             >
-              경기 종료
+              다른 회원과 경기 진행중
             </Button>
-            {!matchStatus.hasRated &&
-              (matchStatus.matchRole === 'REQUESTER' ||
-                matchStatus.matchRole === 'RECEIVER') && (
+          );
+        }
+
+      case 'COMPLETED':
+        if (
+          matchStatus.matchRole === 'REQUESTER' ||
+          matchStatus.matchRole === 'RECEIVER'
+        ) {
+          if (!matchStatus.hasRated) {
+            // 내가 참여자이고 아직 평가하지 않은 경우
+            return (
+              <div className="flex w-full gap-2">
                 <Button
                   variant="default"
                   onClick={() =>
                     router.push(`/mobile/management/eva/${matchStatus.matchId}`)
                   }
-                  className="w-full flex-1 rounded-md bg-yellow-600 px-3 py-1 text-xs font-medium text-white hover:bg-yellow-700"
+                  className="text-md h-14 w-full flex-1 rounded-md bg-yellow-600 px-3 py-1 font-bold text-white hover:bg-yellow-700"
                 >
                   평가하기
                 </Button>
-              )}
-          </div>
-        );
+              </div>
+            );
+          } else {
+            // 이미 평가한 경우
+            return (
+              <Button
+                variant="outline"
+                className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-white px-3 py-1 font-bold text-[#333] shadow-none"
+              >
+                경기 종료
+              </Button>
+            );
+          }
+        } else {
+          // 제3자에게 보여지는 버튼
+          return (
+            <Button
+              variant="outline"
+              disabled
+              className="focus:none text-md h-14 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-1 font-bold text-gray-400 shadow-none"
+            >
+              다른 회원과 경기 종료됨
+            </Button>
+          );
+        }
 
       default:
         // 매치가 없는 경우
-        return matchStatus.canRequest ? (
-          <Button
-            onClick={() =>
-              router.push(
-                `/mobile/match/request?opponent=${user.mb_id}&name=${encodeURIComponent(user.name)}`
-              )
-            }
-            className="w-full rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white hover:bg-green-700"
-          >
-            경기신청
-          </Button>
-        ) : matchStatus.hasPendingMatches ? (
-          <Button
-            disabled
-            className="w-full rounded-md bg-gray-400 px-3 py-1 text-xs font-medium text-white"
-            title="이미 진행 중인 매칭이 있습니다"
-          >
-            경기신청 불가
-          </Button>
-        ) : matchStatus.hasUnratedMatches ? (
-          <Button
-            onClick={() => router.push('/mobile/match/pending-ratings')}
-            className="w-full rounded-md bg-yellow-600 px-3 py-1 text-xs font-medium text-white hover:bg-yellow-700"
-          >
-            평가 필요
-          </Button>
-        ) : null;
+        if (matchStatus.hasPenalty) {
+          // 패널티가 있는 경우
+          const expiresDate = matchStatus.penaltyExpiresAt
+            ? new Date(matchStatus.penaltyExpiresAt).toLocaleDateString('ko-KR')
+            : '알 수 없음';
+
+          return (
+            <Button
+              disabled
+              className="text-md h-14 w-full rounded-md bg-red-400 px-3 py-1 font-bold text-white"
+              title={`'매칭 제한'} (해제: ${expiresDate})`}
+            >
+              매칭 제한됨
+            </Button>
+          );
+        } else if (matchStatus.activeRequestsCount >= matchStatus.maxRequests) {
+          // 최대 요청 수에 도달한 경우
+          return (
+            <Button
+              disabled
+              className="text-md h-14 w-full rounded-md bg-amber-400 px-3 py-1 font-bold text-white"
+              title={`최대 ${matchStatus.maxRequests}개의 매칭 요청만 가능합니다`}
+            >
+              요청 한도 도달
+            </Button>
+          );
+        } else if (matchStatus.otherUserHasActiveMatch) {
+          // 카드의 사용자가 이미 다른 사람과 매치 중인 경우
+          return (
+            <Button
+              disabled
+              className="text-md h-14 w-full rounded-md bg-gray-400 px-3 py-1 font-bold text-white"
+              title="이 사용자는 현재 다른 매치 진행 중입니다"
+            >
+              경기신청 불가
+            </Button>
+          );
+        } else if (matchStatus.canRequest) {
+          return (
+            <Button
+              onClick={() =>
+                router.push(
+                  `/mobile/match/request?opponent=${user.mb_id}&name=${encodeURIComponent(user.name)}`
+                )
+              }
+              className="text-md h-14 w-full rounded-md bg-green-600 px-3 py-1 font-bold text-white hover:bg-green-700"
+            >
+              경기신청
+            </Button>
+          );
+        } else if (
+          matchStatus.hasPendingMatches ||
+          matchStatus.hasUnratedMatches
+        ) {
+          // 진행 중 매치가 있거나 미평가 매치가 있는 경우 모두 동일한 버튼으로 표시
+          let title = '현재 경기 신청이 불가능합니다';
+          if (matchStatus.hasPendingMatches) {
+            title = '이미 진행 중인 매칭이 있습니다';
+          } else if (matchStatus.hasUnratedMatches) {
+            title = '평가해야 할 경기가 있습니다';
+          }
+
+          return (
+            <Button
+              disabled
+              className="text-md h-14 w-full rounded-md bg-gray-400 px-3 py-1 font-bold text-white"
+              title={title}
+            >
+              경기신청 불가
+            </Button>
+          );
+        } else {
+          return (
+            <Button
+              disabled
+              className="w-full rounded-md bg-gray-400 px-3 py-1 text-white"
+              title="현재 경기 신청이 불가능합니다  h-14 text-md font-bold"
+            >
+              경기신청 불가
+            </Button>
+          );
+        }
     }
   };
 
@@ -290,7 +385,7 @@ export default function UserCard({ user }: { user: MatchUser }) {
 
   return (
     <>
-      <li className="py-3">
+      <li className="py-4">
         <div className="mb-3 flex flex-col">
           <div className="mb-2 flex justify-between">
             <div className="flex items-center gap-2">
@@ -321,10 +416,14 @@ export default function UserCard({ user }: { user: MatchUser }) {
                   ? '3구'
                   : user.preferGame === 'FOUR_BALL'
                     ? '4구'
-                    : gameType}
+                    : '포켓볼'}
               </div>
               <div>
-                <EllipsisVertical className="h-4 w-4" />
+                <UserActionsDrawer
+                  userId={user.mb_id}
+                  username={user.name}
+                  moveUrl={moveUrl}
+                />
               </div>
             </div>
           </div>
@@ -352,14 +451,14 @@ export default function UserCard({ user }: { user: MatchUser }) {
         </div>
         {/* 하단 버튼 */}
         <div className="mt-1 flex justify-end gap-2">
-          <div className="flex-1">
+          {/* <div className="flex-1">
             <Button
               onClick={moveUrl}
-              className="focus:none w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none"
+              className="w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-bold text-[#333] shadow-none hover:bg-white focus:outline-none"
             >
               프로필
             </Button>
-          </div>
+          </div> */}
           <div className="flex-1">{renderMatchButton()}</div>
         </div>
       </li>

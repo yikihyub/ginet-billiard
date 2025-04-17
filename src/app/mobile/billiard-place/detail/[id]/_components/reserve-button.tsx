@@ -134,16 +134,16 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
         <DrawerTrigger className="fixed bottom-0 w-full bg-white p-4 shadow-lg">
           <div
             onClick={() => setIsOpen(true)}
-            className="w-full bg-blue-500 py-3 font-bold text-white"
+            className="w-full bg-green-500 py-3 font-bold text-white"
           >
             예약하기
           </div>
         </DrawerTrigger>
-        <DrawerContent className="overflow-y-auto p-4">
+        <DrawerContent className="max-h-[80vh] p-4">
           <DrawerHeader>
             <DrawerTitle className="text-center"></DrawerTitle>
           </DrawerHeader>
-          <div className="px-4 py-6">
+          <div className="overflow-y-auto px-4 py-6">
             <Accordion type="single" collapsible className="space-y-4">
               {/* 시간 선택 */}
               <AccordionItem value="time" className="rounded-lg border">
@@ -168,7 +168,7 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
                             isPassed
                               ? 'cursor-not-allowed bg-gray-100 text-gray-400'
                               : selectedTime === time
-                                ? 'bg-blue-500 text-white'
+                                ? 'bg-green-500 text-white'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
@@ -197,7 +197,7 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
                         onClick={() => setSelectedType(type)}
                         className={`rounded-lg px-6 py-2 text-sm font-medium transition-colors ${
                           selectedType === type
-                            ? 'bg-blue-500 text-white'
+                            ? 'bg-green-500 text-white'
                             : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -226,7 +226,7 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
                         onClick={() => setSelectedDuration(value)}
                         className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                           selectedDuration === value
-                            ? 'bg-blue-500 text-white'
+                            ? 'bg-green-500 text-white'
                             : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -255,7 +255,7 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
                         onClick={() => setSelectedTable(table)}
                         className={`rounded-lg p-3 text-sm font-medium transition-colors ${
                           selectedTable === table
-                            ? 'bg-blue-500 text-white'
+                            ? 'bg-green-500 text-white'
                             : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
@@ -293,7 +293,7 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
               className={`mt-4 w-full rounded-lg py-4 font-bold ${
                 !selectedTime || !selectedTable
                   ? 'bg-gray-300 text-gray-500'
-                  : 'bg-blue-500 text-white'
+                  : 'bg-green-500 text-white'
               }`}
             >
               예약하기

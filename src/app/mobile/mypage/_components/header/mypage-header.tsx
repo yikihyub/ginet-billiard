@@ -7,7 +7,7 @@ import { ChevronLeft } from 'lucide-react';
 export default function MypageHeader() {
   const router = useRouter();
   return (
-    <div className="flex justify-between p-4">
+    <div className="flex justify-between bg-white p-4">
       <div onClick={() => router.back()} className="flex-1">
         <ChevronLeft />
       </div>

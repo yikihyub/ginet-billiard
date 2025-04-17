@@ -50,7 +50,7 @@ export const trackPageExit = () => {
     window.addEventListener('beforeunload', () => {
       // 비동기 요청이 완료되기 전에 페이지가 언로드될 수 있으므로
       // 간단한 방법으로 종료 시간 전송 (보낸 데이터가 화면 전환시 소실될 수 있음)
-      const exitTime = new Date().toISOString();
+      const exitTime = new Date();
       
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/analytics/exit', JSON.stringify({ 

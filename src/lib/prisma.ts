@@ -1,15 +1,23 @@
+// import { PrismaClient } from '@prisma/client';
+
+// const globalForPrisma = globalThis as unknown as {
+//   prisma?: PrismaClient;
+// };
+
+// export const prisma =
+//   globalForPrisma.prisma ??
+//   new PrismaClient({
+//     log: ['query'],
+//   });
+
+// if (process.env.NODE_ENV !== 'production') {
+//   globalForPrisma.prisma = prisma;
+// }
+
 import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
-};
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: ['query'], // ← 개발 중에 쿼리 로그 확인용 (선택)
-  });
+export const prisma = globalForPrisma.prisma || new PrismaClient();
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
