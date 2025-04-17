@@ -48,6 +48,8 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    console.log(matches)
+    
     // 클라이언트에 필요한 형식으로 데이터 가공
     const formattedMatches = matches.map((match: any) => {
       const player1 = match.bi_user_bi_match_player1_idTobi_user;
