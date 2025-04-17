@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import MatchHeader from './_components/header/match-header';
 
 interface MemberSearchPageLayoutProps {
   children: ReactNode;
@@ -7,5 +8,10 @@ interface MemberSearchPageLayoutProps {
 export default function MemberSearchPageLayout({
   children,
 }: MemberSearchPageLayoutProps) {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <MatchHeader />
+      {children}
+    </div>
+  );
 }

@@ -41,15 +41,21 @@ export interface UserContextType {
 
 
 export interface MatchStatus {
-  canRequest: boolean;
+  matchRole: 'REQUESTER' | 'RECEIVER' | 'OBSERVER' | 'NONE';
   status: 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'NONE' | undefined;
+  canRequest: boolean;
   matchId: string | null;
   isRequester: boolean;
-  matchRole: 'REQUESTER' | 'RECEIVER' | 'OBSERVER' | 'NONE';
   hasPendingMatches: boolean;
   hasUnratedMatches: boolean;
   hasRated: boolean;
-  existingMatch: any | null; // 또는 구체적인 매치 타입으로 정의
+  existingMatch: any | null;
+  activeRequestsCount: number;
+  maxRequests: number;
+  hasPenalty: boolean;
+  penaltyExpiresAt: Date | null;
+  otherUserHasActiveMatch: boolean;
+  otherUserMatchStatus: string;
 }
 
 export interface MatchUser {

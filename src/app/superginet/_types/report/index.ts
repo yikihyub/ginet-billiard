@@ -113,3 +113,31 @@ export interface ReportReviewResponse {
   report: Report;
   review: ReportReview;
 }
+
+export interface Metrics {
+  totalReports: number;
+  pendingReports: number;
+  resolvedReports: number;
+  falseReports: number;
+  reportsByType: {
+    HARASSMENT: number;
+    SPAM: number;
+    INAPPROPRIATE: number;
+    HATE_SPEECH: number;
+    THREAT: number;
+    PERSONAL_INFO: number;
+    OTHER: number;
+  };
+  reportsByDate: {
+    date: string;
+    count: number;
+  }[];
+}
+
+export interface Filters {
+  status: string;
+  type: string;
+  dateFrom: Date | null;
+  dateTo: Date | null;
+  search: string;
+}

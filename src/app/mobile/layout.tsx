@@ -9,7 +9,7 @@ export default function MobileRootLayout({ children }: MobileRootLayoutProps) {
   return (
     <>
       {' '}
-      {children}
+      <div>{children}</div>
       <Suspense fallback={null}>
         <PopupManager location="client" />
       </Suspense>

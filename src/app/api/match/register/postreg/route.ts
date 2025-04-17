@@ -36,16 +36,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // 3. 매치 참가자 등록
-    await prisma.bi_match_participant.create({
-      data: {
-        match_id: match.id,
-        user_id: user.id,
-        team: 1,
-      },
-    });
-
-    // 4. 응답 데이터 구성
+    // 3. 응답 데이터 구성
     const response: MatchResponse = {
       id: match.id,
       matchType,
@@ -53,14 +44,6 @@ export async function POST(request: Request) {
       status: match.status,
       playerCount,
       currentPlayers: 1,
-      participants: [
-        {
-          id: user.id,
-          name: user.name,
-          handicap: user.user_three_ability,
-          team: 1,
-        },
-      ],
       createdAt: match.created_at,
     };
 

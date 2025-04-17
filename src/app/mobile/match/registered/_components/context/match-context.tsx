@@ -70,7 +70,7 @@ export const MatchProvider = ({ children }: { children: ReactNode }) => {
 
       // 먼저 현재 진행 중인 매치가 있는지 확인
       const statusCheck = await fetch(
-        `/api/match/status?player1_id=${player.bi_user.mb_id}&player2_id=${userId}`
+        `/api/match/status?otherUserId=${player.bi_user.mb_id}&currentUserId=${userId}`
       );
       const statusData = await statusCheck.json();
 

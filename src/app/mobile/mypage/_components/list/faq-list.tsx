@@ -81,6 +81,16 @@ export default function FaqListClient({ faqs, categories }: Props) {
           ))
         )}
       </div>
+
+      <style jsx>{`
+        summary::-webkit-details-marker {
+          display: none;
+        }
+
+        summary::marker {
+          display: none;
+        }
+      `}</style>
     </>
   );
 }

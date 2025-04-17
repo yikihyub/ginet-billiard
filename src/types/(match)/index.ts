@@ -10,7 +10,7 @@ export interface CreateMatchDTO {
     name: string;
     phone: string;
     handicap: number;
-    storeAddress: string;
+    storeAddress: number;
   };
 }
 
@@ -21,12 +21,6 @@ export interface MatchResponse {
   status: string;
   playerCount: number;
   currentPlayers: number;
-  participants: Array<{
-    id: number;
-    name: string;
-    handicap: number;
-    team: number;
-  }>;
   createdAt: Date | string;
 }
 
@@ -151,4 +145,78 @@ export interface MemberReview {
   player2_name: string;
   match_id: number;
   match_date: string | undefined;
+}
+
+export interface Match {
+  match_id: number;
+  match_date: string;
+  match_status: string;
+  game_type: string;
+  match_type: string;
+  location?: string;
+  player1_id: string;
+  player1_name?: string;
+  player1_dama?: number;
+  player1_image?: string;
+  player2_id: string;
+  player2_name?: string;
+  player2_dama?: number;
+  player2_image?: string;
+  player1_score?: number;
+  player2_score?: number;
+  winner_id?: string;
+  loser_id?: string;
+  user_checked_in: boolean;
+  opponent_checked_in: boolean;
+  no_show_status: number;
+  has_rated: boolean;
+  opponent_has_rated?: boolean;  // 상대방이 평가했는지 여부
+  both_rated?: boolean;         // 양쪽 모두 평가했는지 여부
+  venue: Venue;
+  preferred_date: string;
+}
+
+// 위도와 경도 좌표를 포함한 위치 정보 타입
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
+// 당구장(매장) 정보 타입
+export interface Venue {
+  id: number;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+}
+
+// Match 타입에 추가될 venue 필드 타입
+export interface MatchWithVenue extends Match {
+  venue: Venue;
+}
+
+// 위치 에러 상태 타입
+export interface LocationState {
+  currentLocation: Coordinates | null;
+  distance: number | null;
+  isWithinCheckInDistance: boolean;
+  error: string;
+  isLoading: boolean;
+}
+
+// 위치 변경 액션 타입
+export type LocationAction = 
+  | { type: 'SET_CURRENT_LOCATION'; payload: Coordinates }
+  | { type: 'SET_DISTANCE'; payload: number }
+  | { type: 'SET_WITHIN_DISTANCE'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'RESET' };
+
+export interface MemberSearchPageProps {
+  searchParams: Promise<{
+    distance?: string;
+    type?: string;
+  }>;
 }

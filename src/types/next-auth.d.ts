@@ -9,7 +9,14 @@ declare module 'next-auth' {
       name?: string | null;
       email?: string | null;
       image?: string | null;
-      bi_level?: sring | null;
+      bi_level?: string | null;
     } & DefaultSession['user'];
+  }
+
+    interface User {
+    id: string;
+    phonenum: string;
+    mb_id: string | null;
+    bi_level?: string | null;
   }
 }

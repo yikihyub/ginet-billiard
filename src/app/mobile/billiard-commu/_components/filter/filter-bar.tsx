@@ -10,7 +10,7 @@ export default function FilterBar({ activeFilter }: FilterBarProps) {
   const router = useRouter();
 
   const handleFilterChange = (filterId: string) => {
-    router.push(`/billiard-commu?page=1&category=all&filter=${filterId}`);
+    router.push(`/billiard-commu/main?page=1&category=all&filter=${filterId}`);
   };
 
   return (

@@ -1,5 +1,3 @@
-import MypageHeader from './_components/header/mypage-header';
-
 export default function MobileMypageLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default function MobileMypageLayout({
 }) {
   return (
     <>
-      <MypageHeader />
       <div className="flex min-h-screen flex-col bg-[#FAFAFA]">{children}</div>
     </>
   );

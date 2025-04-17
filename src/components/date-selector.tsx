@@ -69,12 +69,12 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     generateDates();
   }, [selectedDate]);
 
-  useEffect(() => {
-    if (todayRef.current) {
-      // 오늘 날짜로 스크롤
-      todayRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-    }
-  }, [dates]);
+  // useEffect(() => {
+  //   if (todayRef.current) {
+  //     // 오늘 날짜로 스크롤
+  //     todayRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+  //   }
+  // }, [dates]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);

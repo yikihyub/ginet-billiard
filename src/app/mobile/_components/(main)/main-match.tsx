@@ -165,7 +165,7 @@ export default function MainMatch() {
   };
 
   return (
-    <div className="m-auto max-w-1024px space-y-4 p-4">
+    <div className="m-auto max-w-1024px space-y-4 px-4 pb-[76px] pt-4">
       <div className="mb-4 flex items-center justify-between pr-4 pt-2">
         <div className="text-md font-bold">경기</div>
         <Link href="/mobile/match-result" className="text-xs text-gray-400">

@@ -1,11 +1,21 @@
 import React from 'react';
 
+import MypageHeader from './_components/header/mypage-header';
 import MenuItem from './_components/item/menu-item';
 import ProfileHeader from './_components/header/profile-header';
 import LogOutButton from './_components/button/logout-button';
 
 export default function MobileMypage() {
   const menuGroups = [
+    {
+      title: '나의활동',
+      items: [
+        { name: '4구 기록', path: '/mypage/four-ball' },
+        { name: '3구 기록', path: '/mypage/billiard-place' },
+        { name: '포켓볼 기록', path: '/mypage/pocketball' },
+        { name: '최근 게시물', path: '/mypage/latest-post' },
+      ],
+    },
     {
       title: '당구장',
       items: [
@@ -20,22 +30,17 @@ export default function MobileMypage() {
       ],
     },
     {
-      title: '기록',
-      items: [
-        { name: '4구 기록', path: '/mypage/four-ball' },
-        { name: '3구 기록', path: '/mypage/billiard-place' },
-        { name: '포켓볼 기록', path: '/mypage/pocketball' },
-      ],
-    },
-    {
       title: '고객센터 및 설정',
       items: [
         { name: '1:1 문의', path: '/mobile/mypage/qna/my-inquiries' },
         { name: '공지사항', path: '/mobile/notice' },
         { name: '자주묻는 질문', path: '/mypage/faq' },
         { name: '알림설정', path: '/mypage/notice-set' },
-        { name: '차단 친구 관리', path: '/mypage/block-set' },
       ],
+    },
+    {
+      title: '사용자설정',
+      items: [{ name: '차단 사용자 관리', path: '/mypage/block-member' }],
     },
     // {
     //   title: '결제',
@@ -64,53 +69,68 @@ export default function MobileMypage() {
   ];
 
   return (
-    <div className="flex w-full flex-col">
-      {/* 프로필 섹션 */}
-      <ProfileHeader />
+    <>
+      <MypageHeader />
+      <div className="flex w-full flex-col">
+        {/* 프로필 섹션 */}
+        <ProfileHeader />
 
-      <div className="">
-        {/* 당구장 */}
-        <div className="mt-2 border-gray-200 bg-white p-4 shadow-sm">
-          <div className="mb-2 text-sm font-semibold">
-            {menuGroups[0].title}
+        <div className="">
+          {/* 당구장 */}
+          <div className="mt-2 border-gray-200 bg-white p-4 shadow-sm">
+            <div className="mb-2 text-sm font-semibold">
+              {menuGroups[0].title}
+            </div>
+            <div className="text-sm">
+              {menuGroups[0].items.map((item) => (
+                <MenuItem key={item.path} label={item.name} href={item.path} />
+              ))}
+            </div>
           </div>
-          <div className="text-sm">
-            {menuGroups[0].items.map((item) => (
-              <MenuItem key={item.path} label={item.name} href={item.path} />
-            ))}
-          </div>
-        </div>
 
-        {/* 기록 */}
-        <div className="bg-white pb-4 pl-4 pr-4 shadow-sm">
-          <div className="mb-2 border-t pt-4 text-sm font-semibold">
-            {menuGroups[1].title}
+          {/* 기록 */}
+          <div className="bg-white pb-4 pl-4 pr-4 shadow-sm">
+            <div className="mb-2 border-t pt-4 text-sm font-semibold">
+              {menuGroups[1].title}
+            </div>
+            <div className="text-sm">
+              {menuGroups[1].items.map((item) => (
+                <MenuItem key={item.path} label={item.name} href={item.path} />
+              ))}
+            </div>
           </div>
-          <div className="text-sm">
-            {menuGroups[1].items.map((item) => (
-              <MenuItem key={item.path} label={item.name} href={item.path} />
-            ))}
-          </div>
-        </div>
 
-        {/* 고객센터 및 설정 */}
-        <div className="bg-white pb-4 pl-4 pr-4 shadow-sm">
-          <div className="mb-2 border-t pt-4 text-sm font-semibold">
-            {menuGroups[2].title}
+          {/* 고객센터 및 설정 */}
+          <div className="bg-white pb-4 pl-4 pr-4 shadow-sm">
+            <div className="mb-2 border-t pt-4 text-sm font-semibold">
+              {menuGroups[2].title}
+            </div>
+            <div className="text-sm">
+              {menuGroups[2].items.map((item) => (
+                <MenuItem key={item.path} label={item.name} href={item.path} />
+              ))}
+            </div>
           </div>
-          <div className="text-sm">
-            {menuGroups[2].items.map((item) => (
-              <MenuItem key={item.path} label={item.name} href={item.path} />
-            ))}
-          </div>
-        </div>
 
-        {/* 로그아웃 버튼 */}
-        <div className="bg-white pb-4">
-          <LogOutButton />
+          {/* 사용자 설정 */}
+          <div className="bg-white pb-4 pl-4 pr-4 shadow-sm">
+            <div className="mb-2 border-t pt-4 text-sm font-semibold">
+              {menuGroups[3].title}
+            </div>
+            <div className="text-sm">
+              {menuGroups[3].items.map((item) => (
+                <MenuItem key={item.path} label={item.name} href={item.path} />
+              ))}
+            </div>
+          </div>
+
+          {/* 로그아웃 버튼 */}
+          <div className="bg-white pb-4">
+            <LogOutButton />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
