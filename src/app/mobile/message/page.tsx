@@ -6,6 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ChatHeader from './_components/hedaer/header';
+import { createClient } from '@supabase/supabase-js';
+
+// Supabase 클라이언트 설정
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
 // 채팅방 타입 정의
 interface ChatRoom {
@@ -28,28 +34,64 @@ export default function MessagePage() {
   const [error, setError] = useState<string | null>(null);
 
   const userId = session?.user.mb_id;
-  console.log(userId);
 
   // 채팅방 목록 가져오기
   useEffect(() => {
     async function fetchChatRooms() {
-      if (status === 'loading') return; // 세션 로딩 중이면 기다림
-
       if (status === 'unauthenticated') {
         router.push('/login?redirect=/message'); // 로그인되지 않은 경우 로그인 페이지로 이동
         return;
       }
 
+      if (!userId) return;
+
       try {
         setLoading(true);
-        const response = await fetch('/api/chat/chatroom');
 
-        if (!response.ok) {
+        // Supabase에서 채팅방 목록 가져오기
+        const { data, error } = await supabase
+          .from('chat_rooms')
+          .select('*')
+          .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+          .order('updated_at', { ascending: false });
+
+        if (error) {
           throw new Error('채팅방 목록을 가져오는데 실패했습니다.');
         }
 
-        const data = await response.json();
-        setChatRooms(data);
+        // 데이터 형식 변환
+        const formattedRooms: ChatRoom[] = data.map((room) => {
+          // 상대방 정보 추출
+          const otherUser =
+            room.user1_id === userId
+              ? {
+                  id: room.user2_id,
+                  name: room.user2_name,
+                  type: room.user2_type,
+                }
+              : {
+                  id: room.user1_id,
+                  name: room.user1_name,
+                  type: room.user1_type,
+                };
+
+          return {
+            message_id: room.id,
+            user: otherUser.name,
+            userType: otherUser.type,
+            lastMessage: room.last_message,
+            isRead:
+              room.user1_id === userId
+                ? room.is_read_by_user1
+                : room.is_read_by_user2,
+            time: new Date(room.updated_at).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          };
+        });
+
+        setChatRooms(formattedRooms);
       } catch (err) {
         console.error('채팅방 목록 가져오기 오류:', err);
         setError(
@@ -63,37 +105,105 @@ export default function MessagePage() {
     }
 
     fetchChatRooms();
-  }, [status, router]);
+
+    // Supabase Realtime 구독 설정
+    const chatRoomsSubscription = supabase
+      .channel('chat_rooms_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'chat_rooms',
+          filter: `user1_id=eq.${userId} OR user2_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log('채팅방 변경 감지:', payload);
+          // 변경사항이 있을 때 목록 다시 가져오기
+          fetchChatRooms();
+        }
+      )
+      .subscribe();
+
+    // 컴포넌트 언마운트 시 구독 해제
+    return () => {
+      supabase.removeChannel(chatRoomsSubscription);
+    };
+  }, [userId, status, router]);
 
   // 필터링된 채팅방 목록
   const filteredChatRooms = chatRooms.filter((room) => {
     if (activeTab === '전체') return true;
     if (activeTab === '안 읽은 채팅방') return !room.isRead;
+    if (activeTab === '개인') return room.userType === '개인';
+    if (activeTab === '동호회') return room.userType === '동호회';
     return true;
   });
 
-  const handleChatRoomClick = (message_id: string) => {
+  const handleChatRoomClick = async (message_id: string) => {
+    // 채팅방 클릭 시 읽음 상태로 업데이트
+    if (userId) {
+      // 채팅방 정보 가져오기
+      const { data: roomData } = await supabase
+        .from('chat_rooms')
+        .select('*')
+        .eq('id', message_id)
+        .single();
+
+      if (roomData) {
+        // 읽음 상태 업데이트
+        const updateField =
+          roomData.user1_id === userId
+            ? 'is_read_by_user1'
+            : 'is_read_by_user2';
+
+        await supabase
+          .from('chat_rooms')
+          .update({ [updateField]: true })
+          .eq('id', message_id);
+      }
+    }
+
+    // 채팅방 페이지로 이동
     router.push(`/message/${message_id}`);
   };
 
   // 채팅방 전체 삭제 기능
   const handleDeleteAllChats = async () => {
-    if (confirm('모든 채팅방을 삭제하시겠습니까?')) {
-      try {
-        const response = await fetch('/api/message/delete-all', {
-          method: 'DELETE',
-        });
+    if (!userId || !confirm('모든 채팅방을 삭제하시겠습니까?')) return;
 
-        if (response.ok) {
-          setChatRooms([]);
-          setShowOptions(false);
-        } else {
-          alert('채팅방 삭제에 실패했습니다.');
-        }
-      } catch (err) {
-        console.error('채팅방 삭제 오류:', err);
-        alert('채팅방 삭제 중 오류가 발생했습니다.');
-      }
+    try {
+      // 사용자가 참여한 모든 채팅방 조회
+      const { data: userRooms } = await supabase
+        .from('chat_rooms')
+        .select('id')
+        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
+
+      if (!userRooms?.length) return;
+
+      // 채팅방 ID 목록
+      const roomIds = userRooms.map((room) => room.id);
+
+      // 트랜잭션으로 채팅 메시지와 채팅방 삭제
+      const { error: messagesError } = await supabase
+        .from('chat_messages')
+        .delete()
+        .in('room_id', roomIds);
+
+      if (messagesError) throw new Error('메시지 삭제 실패');
+
+      const { error: roomsError } = await supabase
+        .from('chat_rooms')
+        .delete()
+        .in('id', roomIds);
+
+      if (roomsError) throw new Error('채팅방 삭제 실패');
+
+      setChatRooms([]);
+      setShowOptions(false);
+    } catch (err) {
+      console.error('채팅방 삭제 오류:', err);
+      alert('채팅방 삭제 중 오류가 발생했습니다.');
     }
   };
 
