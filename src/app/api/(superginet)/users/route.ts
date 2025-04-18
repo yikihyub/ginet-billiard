@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     const includeStats = searchParams.get('stats') === 'true';
 
     // 기본 필터 조건
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     
     // 검색어 필터
@@ -56,6 +57,7 @@ export async function GET(request: NextRequest) {
     const totalUsers = await prisma.user.count({ where });
     
     // 정렬 옵션
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const orderBy: any = {};
     orderBy[sortField] = sortDirection;
     
