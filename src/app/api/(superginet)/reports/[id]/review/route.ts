@@ -4,8 +4,13 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/config/authOptions';
 import { v4 as uuid } from 'uuid';
 
-import { action_type } from '@prisma/client';
-
+export type action_type =
+  | 'NONE'
+  | 'WARNING'
+  | 'TEMPORARY_BAN'
+  | 'PERMANENT_BAN'
+  | 'CONTENT_REMOVAL'
+  | 'FEATURE_RESTRICTION';
 
 // 관리자 권한 체크 함수
 async function isAdmin(userId: string): Promise<boolean> {

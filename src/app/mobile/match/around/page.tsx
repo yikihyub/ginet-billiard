@@ -4,13 +4,19 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/config/authOptions';
 import { prisma } from '@/lib/prisma';
 import { calculateDistance } from '@/lib/utils';
-import { GameType } from '@prisma/client';
 
 import MainBanner from '../_components/banner/main-banner';
 import FilterSection from './_components/filter/filter-section';
 
 import { MatchUser, MemberSearchPageProps } from '@/types/(match)';
 import UserCard from './_components/card/user-card';
+
+export const GameTypeEnum = {
+  THREE_BALL: 'THREE_BALL',
+  FOUR_BALL: 'FOUR_BALL',
+} as const;
+
+export type GameType = keyof typeof GameTypeEnum;
 
 export default async function MemberSearchPage({
   searchParams,
@@ -34,8 +40,8 @@ export default async function MemberSearchPage({
   // 문자열 → enum 매핑 (포켓볼 추가)
   const gameTypeMap: Record<string, GameType | null> = {
     전체: null,
-    '3구': GameType.THREE_BALL,
-    '4구': GameType.FOUR_BALL,
+    '3구': 'THREE_BALL',
+    '4구': 'FOUR_BALL',
   };
 
   const mappedGameType = gameTypeMap[rawGameType] ?? null;
