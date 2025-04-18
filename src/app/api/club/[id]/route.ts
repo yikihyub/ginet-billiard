@@ -342,6 +342,7 @@ export async function GET(
       });
 
       // 5. 관련 사용자 정보 조회
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let usersArray: any[] = [];
       
       if (userIds.size > 0) {
@@ -365,6 +366,7 @@ export async function GET(
           }
           return acc;
         },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as { [userId: string]: any }
       );
 

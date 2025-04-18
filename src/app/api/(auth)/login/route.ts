@@ -61,9 +61,7 @@ export async function POST(request: Request) {
         },
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPass } = user;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { ...userWithoutPass } = user;
 
       // 세션에는 IP 제외하고 필수 정보만 포함
       const sessionData = {

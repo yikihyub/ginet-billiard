@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { startOfDay, startOfWeek, startOfMonth, subHours } from 'date-fns';
+import { prisma } from '@/lib/prisma';
+
+interface TimeCountRow {
+  time_period: string;
+  count: number | string; // DB에서 올 땐 string일 수도 있음
+}
+
+interface DeviceCountRow {
+  device_type: string | null;
+  count: number | string;
+}
+
+interface PageStatsRow {
+  page_url: string;
+  visitors: number | string;
+  pageviews: number | string;
+  avg_time: number | string | null;
+}
 
 export async function GET(req: NextRequest ) {
   const { searchParams } = new URL(req.url);
@@ -113,10 +130,10 @@ async function getVisitorsByTime(startDate: Date, range: string) {
   `;
 
   // PostgreSQL 결과를 JS 객체로 변환
-  return Array.isArray(result) 
-    ? result.map((row: any) => ({
+  return Array.isArray(result)
+    ? result.map((row: TimeCountRow) => ({
         time: row.time_period,
-        count: Number(row.count)
+        count: Number(row.count),
       }))
     : [];
 }
@@ -138,9 +155,9 @@ async function getDeviceStats(startDate: Date) {
   `;
 
   return Array.isArray(result)
-    ? result.map((row: any) => ({
+    ? result.map((row: DeviceCountRow) => ({
         device: row.device_type || 'unknown',
-        count: Number(row.count)
+        count: Number(row.count),
       }))
     : [];
 }
@@ -166,11 +183,11 @@ async function getPopularPages(startDate: Date) {
   `;
 
   return Array.isArray(result)
-    ? result.map((row: any) => ({
+    ? result.map((row: PageStatsRow) => ({
         url: row.page_url,
         visitors: Number(row.visitors),
         pageviews: Number(row.pageviews),
-        avgTime: Math.round(Number(row.avg_time) || 0)
+        avgTime: Math.round(Number(row.avg_time) || 0),
       }))
     : [];
 }

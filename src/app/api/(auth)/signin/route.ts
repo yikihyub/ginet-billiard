@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 import bcrypt from 'bcryptjs';
+import { Store } from '@/types/(match)';
 
 export async function POST(request: NextRequest) {
   try {
@@ -53,8 +54,7 @@ export async function POST(request: NextRequest) {
       preferred_skill_level: matching.preferredSkillLevel,
       play_style: matching.playStyle,
       preferred_time: matching.preferredTime,
-      favorite_store_ids: selectedStores.map((store: any) => store.id),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      favorite_store_ids: selectedStores.map((store: Store) => store.id),
       agree_marketing: agree_marketing || false,
       agree_marketing_privacy: agree_marketing_privacy || false,
     };

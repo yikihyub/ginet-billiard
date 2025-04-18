@@ -113,10 +113,41 @@ action_taken: decision === 'NO_ACTION' ? null : decision as action_type,
         });
       } else {
         // 새 레코드 생성
+        // const metricsId = uuid();
+        // const reportTypeField = getReportTypeField(report.type);
+        
+        // const initialData: any = {
+        //   id: metricsId,
+        //   date: today,
+        //   total_reports: 1,
+        //   resolved_reports: decision !== 'NO_ACTION' ? 1 : 0,
+        //   pending_reports: 0,
+        //   false_reports: decision === 'NO_ACTION' ? 1 : 0,
+        // };
+        
+        // if (reportTypeField) {
+        //   initialData[reportTypeField] = 1;
+        // }
+        
+        // await tx.bi_report_metrics.create({
+        //   data: initialData
+        // });
+
+        // 새 레코드 생성
         const metricsId = uuid();
         const reportTypeField = getReportTypeField(report.type);
         
-        const initialData: any = {
+        interface BiReportMetricsData {
+          id: string;
+          date: Date;
+          total_reports: number;
+          resolved_reports: number;
+          pending_reports: number;
+          false_reports: number;
+          [key: string]: string | number | Date; // For dynamic fields
+        }
+        
+        const initialData: BiReportMetricsData = {
           id: metricsId,
           date: today,
           total_reports: 1,

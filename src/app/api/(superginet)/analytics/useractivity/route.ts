@@ -3,6 +3,18 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/config/authOptions';
 
+interface VisitLogsWhereInput {
+  visit_time?: {
+    not?: null;
+    gte?: Date;
+    lte?: Date;
+  };
+  ip_address?: {
+    contains: string;
+  };
+  device_type?: string;
+}
+
 export async function GET(request: NextRequest) {
   try {
     // 권한 확인 (어드민만 접근 가능)
@@ -31,11 +43,19 @@ export async function GET(request: NextRequest) {
       : new Date();
 
     // 기본 쿼리 조건
-    const where: any = {
-      AND: [
-        { visit_time: { gte: startDateTime } },
-        { visit_time: { lte: endDateTime } }
-      ]
+    // const where: any = {
+    //   AND: [
+    //     { visit_time: { gte: startDateTime } },
+    //     { visit_time: { lte: endDateTime } }
+    //   ]
+    // };
+
+    const where: VisitLogsWhereInput = {
+      visit_time: {
+        not: null,
+        gte: startDateTime,
+        lte: endDateTime,
+      },
     };
 
     // IP 주소 필터링
