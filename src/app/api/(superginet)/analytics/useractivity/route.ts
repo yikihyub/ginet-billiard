@@ -3,23 +3,19 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/config/authOptions';
 
-interface UserActivity {
+type UserActivity = {
   id: number;
+  ip_address: string;
+  user_id: string;
   username: string | null;
-  visit_time?: Date | null;
-  ip_address?: string | null;
-  user_id?: number | null;
-  device_type?: string | null;
+  visit_time: Date |  string | null;
+  page_url?: string | null;
+  referer_url: string | null;
   browser?: string | null;
   os?: string | null;
-  page_url?: string | null;
-  referer_url?: string | null;
-  time_spent?: number | null;
-  bi_user?: {
-    name?: string | null;
-    email?: string | null;
-  } | null;
-}
+  device_type?: string | null;
+  time_spent: number;
+};
 
 interface VisitLogsWhereInput {
   visit_time?: {
@@ -32,6 +28,24 @@ interface VisitLogsWhereInput {
   };
   device_type?: string;
 }
+
+// ✅ Prisma에서 조회되는 activity 객체 타입
+type PrismaActivity = {
+  id: number;
+  user_id: number | null;
+  ip_address: string | null;
+  visit_time: Date  | string | null;
+  page_url?: string | null;
+  referer_url: string | null;
+  browser?: string | null;
+  os?: string | null;
+  device_type?: string | null;
+  time_spent: number | null;
+  bi_user: {
+    name: string;
+    email: string;
+  } | null;
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -108,20 +122,20 @@ export async function GET(request: NextRequest) {
     });
 
     // 결과 포맷팅
-    const formattedActivities = activities.map((activity): UserActivity => ({
+    const formattedActivities: UserActivity[] = activities.map((activity: PrismaActivity) => ({
       id: activity.id,
       ip_address: activity.ip_address || '',
-      user_id: activity.user_id,
+      user_id: activity.user_id?.toString() || '', // number | null → string
       username: activity.bi_user?.name || null,
       visit_time: activity.visit_time,
-      page_url: activity.page_url,
+      page_url: activity.page_url ?? '',
       referer_url: activity.referer_url,
-      browser: activity.browser,
+      browser: activity.browser ?? '',
       os: activity.os,
       device_type: activity.device_type,
-      time_spent: activity.time_spent
+      time_spent: activity.time_spent ?? 0 // null → 0
     }));
-
+    
     return NextResponse.json({
       activities: formattedActivities,
       total,
