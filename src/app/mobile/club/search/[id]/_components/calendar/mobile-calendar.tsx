@@ -43,7 +43,7 @@ export function MobileCalendar({ schedules }: ScheduleTabProps) {
   const firstDayOfMonth = getFirstDayOfMonth(year, month);
 
   // Create calendar days array
-  const days = [];
+  const days: (number | null)[] = [];
   for (let i = 0; i < firstDayOfMonth; i++) {
     days.push(null); // Empty cells for days before the 1st of month
   }

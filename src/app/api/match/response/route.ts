@@ -111,7 +111,13 @@ export async function POST(request: NextRequest) {
       });
 
      // 매치가 수락된 경우에만 채팅방 생성
-      let chatRoom = null;
+      let chatRoom: {
+        id: string;
+        name: string;
+        group_id: string;
+        created_at: Date;
+        updated_at: Date;
+      } | null = null;
       if (response === 'ACCEPTED') {
         // 2. 채팅방 생성
         const player1 = await tx.user.findUnique({

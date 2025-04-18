@@ -36,7 +36,7 @@ export function toRad(degree: number) {
 // 30분 단위로 시간 슬롯 생성하는 함수
 
 export const generateTimeSlots = (startTime: string, endTime: string) => {
-  const slots = [];
+const slots: string[] = [];
   const start = new Date(`2000-01-01 ${startTime}`);
   const end = new Date(`2000-01-01 ${endTime}`);
 

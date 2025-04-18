@@ -31,7 +31,7 @@ export default function ReserveButton({ store }: ReserveButtonProps) {
   console.log(showReservationForm);
 
   const generateTimeSlots = (startTime: string, endTime: string) => {
-    const slots = [];
+    const slots: Array<string> = [];
     const start = new Date(`2000-01-01 ${startTime}`);
     const end = new Date(`2000-01-01 ${endTime}`);
 
