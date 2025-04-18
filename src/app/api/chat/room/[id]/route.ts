@@ -75,7 +75,16 @@ export async function GET(
     const matchUid = chatRoom.group_id?.replace(/^group-/, '');
 
     // 매치 정보 조회 (group_id가 매치 ID인 경우)
-    let matchInfo = null;
+    let matchInfo: {
+      match_id: number;
+      match_status: string | null;
+      player1_id: string | null;
+      player2_id: string | null;
+      preferred_date: Date | null;
+      game_type: string | null;
+      location: number | null;
+      is_requester: boolean;
+    } | null = null;
     if (chatRoom.group_id) {
       const match = await prisma.bi_match.findUnique({
         where: { match_uid: matchUid },
