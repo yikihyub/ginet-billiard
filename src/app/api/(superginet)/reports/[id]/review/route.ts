@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/config/authOptions';
 import { v4 as uuid } from 'uuid';
 
 import { action_type } from '@prisma/client';
-const prisma = new PrismaClient();
+
 
 // 관리자 권한 체크 함수
 async function isAdmin(userId: string): Promise<boolean> {
