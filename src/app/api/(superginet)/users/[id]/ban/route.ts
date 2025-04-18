@@ -43,12 +43,14 @@ export async function POST(
     }
     
     // 만료 날짜 계산 (duration이 -2면 영구 차단)
-    let banExpiresAt = null;
-    if (duration > 0) {
-      banExpiresAt = new Date();
-      banExpiresAt.setDate(banExpiresAt.getDate() + duration);
-    }
-    
+let banExpiresAt: Date | null = null;
+
+if (duration > 0) {
+  const expires = new Date();
+  expires.setDate(expires.getDate() + duration);
+  banExpiresAt = expires;
+}
+
     // 사용자 차단 처리
     const updatedUser = await prisma.user.update({
       where: { id: userId },

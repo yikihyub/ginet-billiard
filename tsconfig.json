@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "noImplicitAny": false,
+    "noImplicitAny": false, //이거 any허용인데, 최종적으로 할때는 다 검사해야됨.
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
