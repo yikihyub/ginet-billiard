@@ -3,6 +3,24 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/config/authOptions';
 
+interface UserActivity {
+  id: number;
+  username: string | null;
+  visit_time?: Date | null;
+  ip_address?: string | null;
+  user_id?: number | null;
+  device_type?: string | null;
+  browser?: string | null;
+  os?: string | null;
+  page_url?: string | null;
+  referer_url?: string | null;
+  time_spent?: number | null;
+  bi_user?: {
+    name?: string | null;
+    email?: string | null;
+  } | null;
+}
+
 interface VisitLogsWhereInput {
   visit_time?: {
     not?: null;
@@ -90,7 +108,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 결과 포맷팅
-    const formattedActivities = activities.map(activity => ({
+    const formattedActivities = activities.map((activity): UserActivity => ({
       id: activity.id,
       ip_address: activity.ip_address || '',
       user_id: activity.user_id,
