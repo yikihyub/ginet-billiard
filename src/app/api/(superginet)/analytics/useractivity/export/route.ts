@@ -4,6 +4,22 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/config/authOptions';
 import * as Papa from 'papaparse';
 
+interface UserActivity {
+  visit_time?: Date | null;
+  ip_address?: string | null;
+  user_id?: number | null;
+  device_type?: string | null;
+  browser?: string | null;
+  os?: string | null;
+  page_url?: string | null;
+  referer_url?: string | null;
+  time_spent?: number | null;
+  bi_user?: {
+    name?: string | null;
+    email?: string | null;
+  } | null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     // 권한 확인 (어드민만 접근 가능)
@@ -64,7 +80,7 @@ export async function GET(request: NextRequest) {
     });
 
     // CSV 포맷으로 변환
-    const csvData = activities.map(activity => ({
+    const csvData = activities.map((activity: UserActivity) => ({
       '방문 시간': activity.visit_time ? new Date(activity.visit_time).toLocaleString('ko-KR') : '',
       'IP 주소': activity.ip_address || '',
       '사용자 ID': activity.user_id || '',
