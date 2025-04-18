@@ -11,12 +11,7 @@ import FilterSection from './_components/filter/filter-section';
 import { MatchUser, MemberSearchPageProps } from '@/types/(match)';
 import UserCard from './_components/card/user-card';
 
-export const GameTypeEnum = {
-  THREE_BALL: 'THREE_BALL',
-  FOUR_BALL: 'FOUR_BALL',
-} as const;
-
-export type GameType = keyof typeof GameTypeEnum;
+type GameType = 'THREE_BALL' | 'FOUR_BALL';
 
 export default async function MemberSearchPage({
   searchParams,
